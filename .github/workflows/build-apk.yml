@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-
   workflow_dispatch:
 
 jobs:
@@ -12,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -29,7 +27,7 @@ jobs:
           java-version: "21"
           cache: gradle
 
-      - name: Install dependencies
+      - name: Install npm dependencies
         run: npm install --legacy-peer-deps
 
       - name: Add Android platform
@@ -50,9 +48,7 @@ jobs:
         run: |
           set -e
 
-          echo "======================================"
-          echo "Applying native Android patch"
-          echo "======================================"
+          echo "Applying native Android patch..."
 
           mkdir -p android/app/src/main/java/com/humzaarif/islamicfinance
           mkdir -p android/app/src/main/res/xml
@@ -62,21 +58,17 @@ jobs:
           MANIFEST="android/app/src/main/AndroidManifest.xml"
 
           if [ ! -f "$MAIN_ACTIVITY" ]; then
-            echo "ERROR: MainActivity.java not found!"
-            echo "Expected:"
-            echo "$MAIN_ACTIVITY"
+            echo "ERROR: MainActivity.java not found"
             exit 1
           fi
 
           if [ ! -f "$FILE_PATHS" ]; then
-            echo "ERROR: file_paths.xml not found!"
-            echo "Expected:"
-            echo "$FILE_PATHS"
+            echo "ERROR: file_paths.xml not found"
             exit 1
           fi
 
           if [ ! -f "$MANIFEST" ]; then
-            echo "ERROR: AndroidManifest.xml not found!"
+            echo "ERROR: AndroidManifest.xml not found"
             exit 1
           fi
 
@@ -86,57 +78,16 @@ jobs:
           cp "$FILE_PATHS" \
             android/app/src/main/res/xml/file_paths.xml
 
-          echo "MainActivity.java copied."
-          echo "file_paths.xml copied."
+          echo "Native files copied successfully."
 
           if ! grep -q "androidx.core.content.FileProvider" "$MANIFEST"; then
-
-            python3 <<'PY'
-from pathlib import Path
-
-manifest = Path(
-    "android/app/src/main/AndroidManifest.xml"
-)
-
-text = manifest.read_text()
-
-provider = """
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-
-        </provider>
-"""
-
-if "</application>" not in text:
-    raise SystemExit(
-        "ERROR: </application> not found in AndroidManifest.xml"
-    )
-
-text = text.replace(
-    "</application>",
-    provider + "\n    </application>",
-    1
-)
-
-manifest.write_text(text)
-
-print("FileProvider added successfully.")
-PY
-
+            python3 -c 'from pathlib import Path; p=Path("android/app/src/main/AndroidManifest.xml"); s=p.read_text(); x="        <provider android:name=\"androidx.core.content.FileProvider\" android:authorities=\"${applicationId}.fileprovider\" android:exported=\"false\" android:grantUriPermissions=\"true\"><meta-data android:name=\"android.support.FILE_PROVIDER_PATHS\" android:resource=\"@xml/file_paths\" /></provider>"; p.write_text(s.replace("</application>", x + "\n    </application>", 1))'
+            echo "FileProvider added."
           else
             echo "FileProvider already exists."
           fi
 
-          echo "======================================"
-          echo "Native Android patch completed"
-          echo "======================================"
+          echo "Native Android patch completed."
 
       - name: Make Gradle executable
         run: chmod +x android/gradlew
