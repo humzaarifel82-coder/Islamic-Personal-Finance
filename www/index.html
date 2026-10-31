@@ -3,5652 +3,874 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-
 <title>Islamic Personal Finance</title>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
 <style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;width:100%;min-height:100%}
+body{font-family:"Inter",Arial,sans-serif;background:#eef6fd;color:#17324f;font-size:14px}
+.app{width:100%;max-width:520px;min-height:100vh;margin:auto;background:#f7fbff;position:relative}
+.header{padding:20px 18px 17px;background:linear-gradient(135deg,#075cae,#0b78d0);color:white}
+.header-row{display:flex;align-items:center;gap:13px}
+.logo{width:43px;height:43px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.20);font-size:20px;font-weight:800}
+.header h1{margin:0;font-size:18px;line-height:1.25;font-weight:800}
+.header p{margin:4px 0 0;font-size:10px;color:rgba(255,255,255,.76)}
+.tabs{width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:white;border-bottom:1px solid #dce8f2;position:sticky;top:0;z-index:50}
+.tab{height:64px;border:0;border-right:1px solid #edf2f6;background:white;color:#8191a2;font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative;cursor:pointer}
+.tab:last-child{border-right:0}
+.tabs.has-other-emi{grid-template-columns:repeat(5,minmax(0,1fr))}.tab-icon{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#f1f6fa;font-size:13px}
+.tab-title{font-size:7px;white-space:nowrap;font-weight:700}
+.tab.active{color:#075cae}
+.tab.active .tab-icon{background:#e5f2ff;color:#075cae}
+.tab.active::after{content:"";position:absolute;bottom:0;left:12px;right:12px;height:3px;border-radius:3px 3px 0 0;background:#075cae}
+.tab.locked{opacity:.38}
+.tab-content{display:none;width:100%}
+.tab-content.active{display:block}
+.content{padding:15px}
+.card,.report-card{background:white;border:1px solid #dce8f2;border-radius:14px;padding:17px;margin-bottom:13px;box-shadow:0 5px 18px rgba(38,88,130,.045)}
+.card-title,.report-title{font-size:14px;font-weight:800;color:#173b60;margin-bottom:16px}
+.form-group{margin-bottom:15px}
+label{display:block;margin-bottom:7px;font-size:10px;font-weight:700;color:#526b84}
+.input-wrap{position:relative}
+input{width:100%;height:46px;border:1px solid #ccdbe7;border-radius:9px;background:#fff;padding:0 12px;font-family:inherit;font-size:14px;font-weight:600;color:#17324f;outline:none;-webkit-appearance:none}
+input:focus{border-color:#4c9fe0;box-shadow:0 0 0 3px rgba(76,159,224,.11)}
+input::placeholder{color:#a8b5c1;font-weight:400}
+.currency{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#6b8298;font-size:12px;font-weight:700;pointer-events:none}
+.currency-input{padding-left:34px}
+.two-column{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.multiple-box{background:#edf7ff;border:1px solid #cfe6f8;border-radius:11px;padding:13px;margin-top:3px}
+.multiple-top{display:flex;align-items:center;justify-content:space-between}
+.multiple-label{font-size:9px;color:#6b8094;font-weight:600}
+.multiple-value{margin-top:2px;font-size:25px;line-height:1;color:#075cae;font-weight:800}
+.manual-btn{height:32px;padding:0 10px;border:1px solid #acd0ed;border-radius:7px;background:white;color:#075cae;font-family:inherit;font-size:9px;font-weight:700;cursor:pointer}
+.limit-box{margin-top:12px;padding:14px;border-radius:11px;background:#f0faf7;border:1px solid #c9eadf}
+.limit-label{font-size:9px;font-weight:600;color:#648078}
+.limit-value{margin-top:3px;font-size:21px;font-weight:800;color:#087857}
+.limit-note{margin-top:5px;font-size:9px;line-height:1.5;color:#71827e}
+.max-note{margin-top:5px;font-size:9px;color:#81909e}
+.max-note strong{color:#075cae}
+.kibor-row{display:flex;gap:7px}
+.kibor-row input{flex:1}
+.sbp-btn{height:46px;padding:0 10px;display:flex;align-items:center;justify-content:center;white-space:nowrap;text-decoration:none;border:1px solid #b9d9f1;border-radius:9px;background:#eff8ff;color:#075cae;font-size:9px;font-weight:700}
+.rate-box{margin-top:3px;border-radius:11px;padding:15px;text-align:center;background:linear-gradient(135deg,#edf7ff,#f7fbff);border:1px solid #cce3f5}
+.rate-label{font-size:9px;color:#73879a;font-weight:600}
+.rate-value{margin-top:4px;font-size:27px;font-weight:800;color:#075cae}
+.primary-btn{width:100%;height:47px;margin-top:14px;border:0;border-radius:9px;background:linear-gradient(135deg,#096bc2,#0755a0);color:white;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 6px 14px rgba(7,86,168,.18)}
+.dbr-heading{margin-bottom:14px}
+.dbr-heading h2{margin:0;color:#173b60;font-size:16px;font-weight:800}
+.dbr-heading p{margin:5px 0 0;font-size:9px;line-height:1.5;color:#82909e}
+.dbr-card{background:white;border:1px solid #dce8f2;border-radius:13px;padding:15px;margin-bottom:11px}
+.dbr-label{font-size:9px;font-weight:600;color:#7a8a99}
+.dbr-value{margin-top:5px;font-size:19px;font-weight:800;color:#173b60}
+.helper{margin-top:6px;font-size:9px;line-height:1.5;color:#81909e}
+.obligation{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#f3f8fc;border:1px solid #dce8f2;border-radius:11px;padding:14px;margin-bottom:11px}
+.obligation-label{font-size:9px;color:#718293;font-weight:600}
+.obligation-value{font-size:19px;font-weight:800;color:#173b60}
+.dbr-result{padding:22px 15px;text-align:center;border-radius:13px;background:linear-gradient(135deg,#edf7ff,#f8fcff);border:1px solid #c9e3f5}
+.dbr-result-label{font-size:9px;font-weight:600;color:#73879a}
+.dbr-result-value{margin-top:3px;font-size:39px;font-weight:800;color:#075cae;letter-spacing:-1px}
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.summary-item{background:#f5f9fc;border:1px solid #e0eaf1;border-radius:10px;padding:11px}
+.summary-label{font-size:8px;color:#788b9d;font-weight:600}
+.summary-value{margin-top:4px;font-size:14px;color:#173b60;font-weight:800;overflow-wrap:anywhere}
+.table-wrap{width:100%;overflow-x:auto;border:1px solid #dce8f2;border-radius:11px;background:white}
+.amort-table{width:100%;min-width:650px;border-collapse:collapse;font-size:9px}
+.amort-table th{background:#edf6fd;color:#41617d;font-weight:800;padding:10px 7px;border-bottom:1px solid #d7e5ef;text-align:right;white-space:nowrap}
+.amort-table th:first-child,.amort-table td:first-child{text-align:center}
+.amort-table td{padding:9px 7px;border-bottom:1px solid #edf2f6;color:#536c83;text-align:right;white-space:nowrap}
+.amort-table tr:last-child td{border-bottom:0}
+.amort-table td strong{color:#173b60}
+.footer{padding:15px;text-align:center;color:#8a9aaa;font-size:8px;background:#f7fbff}
+.modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(15,38,60,.48);backdrop-filter:blur(3px);padding:18px;align-items:center;justify-content:center}
+.modal.show{display:flex}
+.modal-box{width:100%;max-width:390px;max-height:90vh;overflow-y:auto;background:white;border-radius:16px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.20)}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.modal-head h2{margin:0;font-size:17px;color:#173b60}
+.close{width:30px;height:30px;border:0;border-radius:50%;background:#f0f4f7;color:#687b8d;font-size:18px;cursor:pointer}
+.result-highlight{padding:17px;border-radius:11px;background:#edf8f4;border:1px solid #c8e9dc;text-align:center;margin-bottom:10px}
+.result-label{font-size:9px;color:#6e837c;font-weight:600}
+.result-number{margin-top:5px;font-size:27px;font-weight:800;color:#087857}
+.result-secondary{padding:14px;border-radius:11px;background:#f5f8fb;border:1px solid #dce7ef;text-align:center}
+.result-secondary .result-number{color:#173b60;font-size:19px}
+.modal-message{margin-top:12px;text-align:center;color:#748494;font-size:9px;line-height:1.5}
+@media(max-width:380px){.header{padding:17px 14px}.content{padding:12px}.card,.report-card{padding:14px}.two-column{gap:8px}.sbp-btn{padding:0 7px;font-size:8px}.tab{height:60px}.tab-title{font-size:7px}.tab-icon{width:24px;height:24px}}
+@media(min-width:521px){body{padding:25px 0}.app{min-height:auto;border-radius:18px;overflow:hidden;box-shadow:0 15px 45px rgba(29,76,115,.10)}.header{border-radius:18px 18px 0 0}}
+
+.emi-options{display:flex;flex-direction:column;gap:9px}
+.emi-option{display:flex;align-items:center;gap:11px;padding:12px;border:1px solid #dce8f2;border-radius:10px;background:#f8fbfe;cursor:pointer}
+.emi-option:has(input:checked){border-color:#76b4e5;background:#edf7ff}.emi-option input{width:18px;height:18px;flex:0 0 18px;margin:0;accent-color:#075cae}
+.emi-option span{display:flex;flex-direction:column;gap:3px}
+.emi-option strong{font-size:11px;color:#173b60}
+.emi-option small{font-size:9px;color:#81909e;font-weight:500}
+.emi-form-card{background:#fff;border:1px solid #dce8f2;border-radius:13px;padding:15px;margin-bottom:12px;box-shadow:0 5px 18px rgba(38,88,130,.045)}
+.emi-form-title{font-size:13px;font-weight:800;color:#173b60;margin-bottom:13px}
+.emi-calculated{margin-top:10px;padding:12px;border-radius:10px;background:#edf7ff;border:1px solid #cce3f5}
+.emi-calculated-label{font-size:9px;color:#73879a;font-weight:700}
+.emi-calculated-value{margin-top:4px;font-size:22px;font-weight:800;color:#075cae}
+.emi-rate-note{font-size:9px;color:#81909e;margin-top:7px;line-height:1.5}
 
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent
-}
 
-html,body{
-  margin:0;
-  padding:0;
-  width:100%;
-  min-height:100%
-}
+.customer-details-card .form-group{margin-bottom:12px}
+.customer-details-card input{width:100%;height:42px;border:1px solid #dce8f2;border-radius:9px;padding:0 12px;font:inherit;font-size:12px;color:#173b60;background:#fbfdff;box-sizing:border-box;outline:none}
+.customer-details-card input:focus{border-color:#76b4e5;box-shadow:0 0 0 3px rgba(7,92,174,.08)}
+.customer-details-card .primary-btn{width:100%;margin-top:3px}
 
-body{
-  font-family:"Inter",Arial,sans-serif;
-  background:#eef6fd;
-  color:#17324f;
-  font-size:14px
-}
 
-.app{
-  width:100%;
-  max-width:520px;
-  min-height:100vh;
-  margin:auto;
-  background:#f7fbff;
-  position:relative
-}
-
-.header{
-  padding:20px 18px 17px;
-  background:linear-gradient(135deg,#075cae,#0b78d0);
-  color:white
-}
-
-.header-row{
-  display:flex;
-  align-items:center;
-  gap:13px
-}
-
-.logo{
-  width:43px;
-  height:43px;
-  flex-shrink:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:12px;
-  background:rgba(255,255,255,.16);
-  border:1px solid rgba(255,255,255,.20);
-  font-size:20px;
-  font-weight:800
-}
-
-.header h1{
-  margin:0;
-  font-size:18px;
-  line-height:1.25;
-  font-weight:800
-}
-
-.header p{
-  margin:4px 0 0;
-  font-size:10px;
-  color:rgba(255,255,255,.76)
-}
-
-.tabs{
-  width:100%;
-  display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
-  background:white;
-  border-bottom:1px solid #dce8f2;
-  position:sticky;
-  top:0;
-  z-index:50
-}
-
-.tab{
-  height:64px;
-  border:0;
-  border-right:1px solid #edf2f6;
-  background:white;
-  color:#8191a2;
-  font-family:inherit;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:4px;
-  position:relative;
-  cursor:pointer
-}
-
-.tab:last-child{
-  border-right:0
-}
-
-.tabs.has-other-emi{
-  grid-template-columns:repeat(5,minmax(0,1fr))
-}
-
-.tab-icon{
-  width:26px;
-  height:26px;
-  border-radius:8px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#f1f6fa;
-  font-size:13px
-}
-
-.tab-title{
-  font-size:7px;
-  white-space:nowrap;
-  font-weight:700
-}
-
-.tab.active{
-  color:#075cae
-}
-
-.tab.active .tab-icon{
-  background:#e5f2ff;
-  color:#075cae
-}
-
-.tab.active::after{
-  content:"";
-  position:absolute;
-  bottom:0;
-  left:12px;
-  right:12px;
-  height:3px;
-  border-radius:3px 3px 0 0;
-  background:#075cae
-}
-
-.tab.locked{
-  opacity:.38
-}
-
-.tab-content{
-  display:none;
-  width:100%
-}
-
-.tab-content.active{
-  display:block
-}
-
-.content{
-  padding:15px
-}
-
-.card,
-.report-card{
-  background:white;
-  border:1px solid #dce8f2;
-  border-radius:14px;
-  padding:17px;
-  margin-bottom:13px;
-  box-shadow:0 5px 18px rgba(38,88,130,.045)
-}
-
-.card-title,
-.report-title{
-  font-size:14px;
-  font-weight:800;
-  color:#173b60;
-  margin-bottom:16px
-}
-
-.form-group{
-  margin-bottom:15px
-}
-
-label{
-  display:block;
-  margin-bottom:7px;
-  font-size:10px;
-  font-weight:700;
-  color:#526b84
-}
-
-.input-wrap{
-  position:relative
-}
-
-input{
-  width:100%;
-  height:46px;
-  border:1px solid #ccdbe7;
-  border-radius:9px;
-  background:#fff;
-  padding:0 12px;
-  font-family:inherit;
-  font-size:14px;
-  font-weight:600;
-  color:#17324f;
-  outline:none;
-  -webkit-appearance:none
-}
-
-input:focus{
-  border-color:#4c9fe0;
-  box-shadow:0 0 0 3px rgba(76,159,224,.11)
-}
-
-input::placeholder{
-  color:#a8b5c1;
-  font-weight:400
-}
-
-.currency{
-  position:absolute;
-  left:12px;
-  top:50%;
-  transform:translateY(-50%);
-  color:#6b8298;
-  font-size:12px;
-  font-weight:700;
-  pointer-events:none
-}
-
-.currency-input{
-  padding-left:34px
-}
-
-.two-column{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:11px
-}
-
-.multiple-box{
-  background:#edf7ff;
-  border:1px solid #cfe6f8;
-  border-radius:11px;
-  padding:13px;
-  margin-top:3px
-}
-
-.multiple-top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between
-}
-
-.multiple-label{
-  font-size:9px;
-  color:#6b8094;
-  font-weight:600
-}
-
-.multiple-value{
-  margin-top:2px;
-  font-size:25px;
-  line-height:1;
-  color:#075cae;
-  font-weight:800
-}
-
-.manual-btn{
-  height:32px;
-  padding:0 10px;
-  border:1px solid #acd0ed;
-  border-radius:7px;
-  background:white;
-  color:#075cae;
-  font-family:inherit;
-  font-size:9px;
-  font-weight:700;
-  cursor:pointer
-}
-
-.limit-box{
-  margin-top:12px;
-  padding:14px;
-  border-radius:11px;
-  background:#f0faf7;
-  border:1px solid #c9eadf
-}
-
-.limit-label{
-  font-size:9px;
-  font-weight:600;
-  color:#648078
-}
-
-.limit-value{
-  margin-top:3px;
-  font-size:21px;
-  font-weight:800;
-  color:#087857
-}
-
-.limit-note{
-  margin-top:5px;
-  font-size:9px;
-  line-height:1.5;
-  color:#71827e
-}
-
-.max-note{
-  margin-top:5px;
-  font-size:9px;
-  color:#81909e
-}
-
-.max-note strong{
-  color:#075cae
-}
-
-.kibor-row{
-  display:flex;
-  gap:7px
-}
-
-.kibor-row input{
-  flex:1
-}
-
-.sbp-btn{
-  height:46px;
-  padding:0 10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  white-space:nowrap;
-  text-decoration:none;
-  border:1px solid #b9d9f1;
-  border-radius:9px;
-  background:#eff8ff;
-  color:#075cae;
-  font-size:9px;
-  font-weight:700
-}
-
-.rate-box{
-  margin-top:3px;
-  border-radius:11px;
-  padding:15px;
-  text-align:center;
-  background:linear-gradient(135deg,#edf7ff,#f7fbff);
-  border:1px solid #cce3f5
-}
-
-.rate-label{
-  font-size:9px;
-  color:#73879a;
-  font-weight:600
-}
-
-.rate-value{
-  margin-top:4px;
-  font-size:27px;
-  font-weight:800;
-  color:#075cae
-}
-
-.primary-btn{
-  width:100%;
-  height:47px;
-  margin-top:14px;
-  border:0;
-  border-radius:9px;
-  background:linear-gradient(135deg,#096bc2,#0755a0);
-  color:white;
-  font-family:inherit;
-  font-size:12px;
-  font-weight:700;
-  cursor:pointer;
-  box-shadow:0 6px 14px rgba(7,86,168,.18)
-}
-
-.dbr-heading{
-  margin-bottom:14px
-}
-
-.dbr-heading h2{
-  margin:0;
-  color:#173b60;
-  font-size:16px;
-  font-weight:800
-}
-
-.dbr-heading p{
-  margin:5px 0 0;
-  font-size:9px;
-  line-height:1.5;
-  color:#82909e
-}
-
-.dbr-card{
-  background:white;
-  border:1px solid #dce8f2;
-  border-radius:13px;
-  padding:15px;
-  margin-bottom:11px
-}
-
-.dbr-label{
-  font-size:9px;
-  font-weight:600;
-  color:#7a8a99
-}
-
-.dbr-value{
-  margin-top:5px;
-  font-size:19px;
-  font-weight:800;
-  color:#173b60
-}
-
-.helper{
-  margin-top:6px;
-  font-size:9px;
-  line-height:1.5;
-  color:#81909e
-}
-
-.obligation{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  background:#f3f8fc;
-  border:1px solid #dce8f2;
-  border-radius:11px;
-  padding:14px;
-  margin-bottom:11px
-}
-
-.obligation-label{
-  font-size:9px;
-  color:#718293;
-  font-weight:600
-}
-
-.obligation-value{
-  font-size:19px;
-  font-weight:800;
-  color:#173b60
-}
-
-.dbr-result{
-  padding:22px 15px;
-  text-align:center;
-  border-radius:13px;
-  background:linear-gradient(135deg,#edf7ff,#f8fcff);
-  border:1px solid #c9e3f5
-}
-
-.dbr-result-label{
-  font-size:9px;
-  font-weight:600;
-  color:#73879a
-}
-
-.dbr-result-value{
-  margin-top:3px;
-  font-size:39px;
-  font-weight:800;
-  color:#075cae;
-  letter-spacing:-1px
-}
-
-.summary-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:9px
-}
-
-.summary-item{
-  background:#f5f9fc;
-  border:1px solid #e0eaf1;
-  border-radius:10px;
-  padding:11px
-}
-
-.summary-label{
-  font-size:8px;
-  color:#788b9d;
-  font-weight:600
-}
-
-.summary-value{
-  margin-top:4px;
-  font-size:14px;
-  color:#173b60;
-  font-weight:800;
-  overflow-wrap:anywhere
-}
-
-.table-wrap{
-  width:100%;
-  overflow-x:auto;
-  border:1px solid #dce8f2;
-  border-radius:11px;
-  background:white
-}
-
-.amort-table{
-  width:100%;
-  min-width:650px;
-  border-collapse:collapse;
-  font-size:9px
-}
-
-.amort-table th{
-  background:#edf6fd;
-  color:#41617d;
-  font-weight:800;
-  padding:10px 7px;
-  border-bottom:1px solid #d7e5ef;
-  text-align:right;
-  white-space:nowrap
-}
-
-.amort-table th:first-child,
-.amort-table td:first-child{
-  text-align:center
-}
-
-.amort-table td{
-  padding:9px 7px;
-  border-bottom:1px solid #edf2f6;
-  color:#536c83;
-  text-align:right;
-  white-space:nowrap
-}
-
-.amort-table tr:last-child td{
-  border-bottom:0
-}
-
-.amort-table td strong{
-  color:#173b60
-}
-
-.footer{
-  padding:15px;
-  text-align:center;
-  color:#8a9aaa;
-  font-size:8px;
-  background:#f7fbff
-}
-
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:1000;
-  background:rgba(15,38,60,.48);
-  backdrop-filter:blur(3px);
-  padding:18px;
-  align-items:center;
-  justify-content:center
-}
-
-.modal.show{
-  display:flex
-}
-
-.modal-box{
-  width:100%;
-  max-width:390px;
-  max-height:90vh;
-  overflow-y:auto;
-  background:white;
-  border-radius:16px;
-  padding:20px;
-  box-shadow:0 20px 60px rgba(0,0,0,.20)
-}
-
-.modal-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:16px
-}
-
-.modal-head h2{
-  margin:0;
-  font-size:17px;
-  color:#173b60
-}
-
-.close{
-  width:30px;
-  height:30px;
-  border:0;
-  border-radius:50%;
-  background:#f0f4f7;
-  color:#687b8d;
-  font-size:18px;
-  cursor:pointer
-}
-
-.result-highlight{
-  padding:17px;
-  border-radius:11px;
-  background:#edf8f4;
-  border:1px solid #c8e9dc;
-  text-align:center;
-  margin-bottom:10px
-}
-
-.result-label{
-  font-size:9px;
-  color:#6e837c;
-  font-weight:600
-}
-
-.result-number{
-  margin-top:5px;
-  font-size:27px;
-  font-weight:800;
-  color:#087857
-}
-
-.result-secondary{
-  padding:14px;
-  border-radius:11px;
-  background:#f5f8fb;
-  border:1px solid #dce7ef;
-  text-align:center
-}
-
-.result-secondary .result-number{
-  color:#173b60;
-  font-size:19px
-}
-
-.modal-message{
-  margin-top:12px;
-  text-align:center;
-  color:#748494;
-  font-size:9px;
-  line-height:1.5
-}
-
-.documents-preview-box{
-  max-width:430px;
-  padding:18px
-}
-
-.documents-preview-subtitle{
-  font-size:10px;
-  color:#718397;
-  margin:-8px 0 10px
-}
-
-.documents-preview-list{
-  border:1px solid #dce8f2;
-  border-radius:12px;
-  background:#fff;
-  overflow:hidden;
-  max-height:58vh;
-  overflow-y:auto
-}
-
-.documents-preview-item{
-  display:grid;
-  grid-template-columns:28px 1fr 20px;
-  gap:8px;
-  align-items:start;
-  padding:11px 10px;
-  border-bottom:1px solid #e3ebf2;
-  font-size:12px;
-  line-height:1.45;
-  color:#17324f
-}
-
-.documents-preview-item:last-child{
-  border-bottom:0
-}
-
-.documents-preview-num{
-  font-weight:800;
-  color:#075cae
-}
-
-.documents-preview-boxmark{
-  width:16px;
-  height:16px;
-  border:2px solid #17324f;
-  border-radius:3px;
-  margin-top:1px;
-  background:#fff
-}
-
-.documents-preview-note{
-  font-size:9px;
-  line-height:1.4;
-  color:#718397;
-  margin:10px 2px 12px
-}
-
-.documents-share-btn{
-  width:100%;
-  margin-top:0
-}
-
-.emi-options{
-  display:flex;
-  flex-direction:column;
-  gap:9px
-}
-
-.emi-option{
-  display:flex;
-  align-items:center;
-  gap:11px;
-  padding:12px;
-  border:1px solid #dce8f2;
-  border-radius:10px;
-  background:#f8fbfe;
-  cursor:pointer
-}
-
-.emi-option:has(input:checked){
-  border-color:#76b4e5;
-  background:#edf7ff
-}
-
-.emi-option input{
-  width:18px;
-  height:18px;
-  flex:0 0 18px;
-  margin:0;
-  accent-color:#075cae
-}
-
-.emi-option span{
-  display:flex;
-  flex-direction:column;
-  gap:3px
-}
-
-.emi-option strong{
-  font-size:11px;
-  color:#173b60
-}
-
-.emi-option small{
-  font-size:9px;
-  color:#81909e;
-  font-weight:500
-}
-
-.emi-form-card{
-  background:#fff;
-  border:1px solid #dce8f2;
-  border-radius:13px;
-  padding:15px;
-  margin-bottom:12px;
-  box-shadow:0 5px 18px rgba(38,88,130,.045)
-}
-
-.emi-form-title{
-  font-size:13px;
-  font-weight:800;
-  color:#173b60;
-  margin-bottom:13px
-}
-
-.emi-calculated{
-  margin-top:10px;
-  padding:12px;
-  border-radius:10px;
-  background:#edf7ff;
-  border:1px solid #cce3f5
-}
-
-.emi-calculated-label{
-  font-size:9px;
-  color:#73879a;
-  font-weight:700
-}
-
-.emi-calculated-value{
-  margin-top:4px;
-  font-size:22px;
-  font-weight:800;
-  color:#075cae
-}
-
-.emi-rate-note{
-  font-size:9px;
-  color:#81909e;
-  margin-top:7px;
-  line-height:1.5
-}
-
-.customer-details-card .form-group{
-  margin-bottom:12px
-}
-
-.customer-details-card input{
-  width:100%;
-  height:42px;
-  border:1px solid #dce8f2;
-  border-radius:9px;
-  padding:0 12px;
-  font:inherit;
-  font-size:12px;
-  color:#173b60;
-  background:#fbfdff;
-  box-sizing:border-box;
-  outline:none
-}
-
-.customer-details-card input:focus{
-  border-color:#76b4e5;
-  box-shadow:0 0 0 3px rgba(7,92,174,.08)
-}
-
-.customer-details-card .primary-btn{
-  width:100%;
-  margin-top:3px
-}
-
-.documents-list{
-  display:flex;
-  flex-direction:column;
-  border:1px solid #dce8f2;
-  border-radius:12px;
-  overflow:hidden;
-  background:#fff;
-  margin-bottom:16px
-}
-
-.document-row{
-  display:grid;
-  grid-template-columns:34px 1fr 28px;
-  gap:8px;
-  align-items:center;
-  padding:13px 14px;
-  border-bottom:1px solid #dce8f2;
-  font-size:14px;
-  line-height:1.45
-}
-
-.document-row:last-child{
-  border-bottom:0
-}
-
-.document-number{
-  font-weight:700;
-  color:#075cae
-}
-
-.document-text{
-  color:#17324f
-}
-
-.print-checkbox{
-  width:18px;
-  height:18px;
-  border:2px solid #17324f;
-  border-radius:3px;
-  display:block;
-  background:#fff
-}
-
-@media(max-width:380px){
-
-  .header{
-    padding:17px 14px
-  }
-
-  .content{
-    padding:12px
-  }
-
-  .card,
-  .report-card{
-    padding:14px
-  }
-
-  .two-column{
-    gap:8px
-  }
-
-  .sbp-btn{
-    padding:0 7px;
-    font-size:8px
-  }
-
-  .tab{
-    height:60px
-  }
-
-  .tab-title{
-    font-size:7px
-  }
-
-  .tab-icon{
-    width:24px;
-    height:24px
-  }
-
-}
-
-@media(min-width:521px){
-
-  body{
-    padding:25px 0
-  }
-
-  .app{
-    min-height:auto;
-    border-radius:18px;
-    overflow:hidden;
-    box-shadow:0 15px 45px rgba(29,76,115,.10)
-  }
-
-  .header{
-    border-radius:18px 18px 0 0
-  }
-
-}
+.documents-list{display:flex;flex-direction:column;border:1px solid #dce8f2;border-radius:12px;overflow:hidden;background:#fff;margin-bottom:16px}.document-row{display:grid;grid-template-columns:34px 1fr 28px;gap:8px;align-items:center;padding:13px 14px;border-bottom:1px solid #dce8f2;font-size:14px;line-height:1.45}.document-row:last-child{border-bottom:0}.document-number{font-weight:700;color:#075cae}.document-text{color:#17324f}.print-checkbox{width:18px;height:18px;border:2px solid #17324f;border-radius:3px;display:block;background:#fff}
 
 </style>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-
 </head>
-
 <body>
-
 <div class="app">
-
 <header class="header">
-
-<div class="header-row">
-
-<div class="logo">☪</div>
-
-<div>
-<h1>Islamic Personal Finance</h1>
-<p>Installment &amp; DBR Calculator</p>
-</div>
-
-</div>
-
+  <div class="header-row">
+    <div class="logo">☪</div>
+    <div><h1>Islamic Personal Finance</h1><p>Installment &amp; DBR Calculator</p></div>
+  </div>
 </header>
 
 <nav class="tabs">
-
-<button class="tab active"
-id="incomeBtn"
-onclick="openTab('incomeTab',this)">
-
-<div class="tab-icon">◉</div>
-<div class="tab-title">Income</div>
-
-</button>
-
-<button class="tab"
-id="installmentBtn"
-onclick="openTab('installmentTab',this)">
-
-<div class="tab-icon">▣</div>
-<div class="tab-title">Installment</div>
-
-</button>
-
-<button class="tab locked"
-id="dbrBtn"
-onclick="openDBR()">
-
-<div class="tab-icon">▥</div>
-<div class="tab-title">DBR</div>
-
-</button>
-
-<button class="tab locked"
-id="amortBtn"
-onclick="openAmortization()">
-
-<div class="tab-icon">▤</div>
-<div class="tab-title">Amortization</div>
-
-</button>
-
-<button class="tab"
-id="documentsBtn"
-onclick="openTab('documentsTab',this)">
-
-<div class="tab-icon">☷</div>
-<div class="tab-title">Documents Checklist</div>
-
-</button>
-
+  <button class="tab active" id="incomeBtn" onclick="openTab('incomeTab',this)"><div class="tab-icon">◉</div><div class="tab-title">Income</div></button>
+  <button class="tab" id="installmentBtn" onclick="openTab('installmentTab',this)"><div class="tab-icon">▣</div><div class="tab-title">Installment</div></button>
+  <button class="tab locked" id="dbrBtn" onclick="openDBR()"><div class="tab-icon">▥</div><div class="tab-title">DBR</div></button>
+  <button class="tab locked" id="amortBtn" onclick="openAmortization()"><div class="tab-icon">▤</div><div class="tab-title">Amortization</div></button>
+  <button class="tab" id="documentsBtn" onclick="openTab('documentsTab',this)"><div class="tab-icon">☷</div><div class="tab-title">Documents Checklist</div></button>
 </nav>
 
-
-<!-- INCOME -->
-
 <section id="incomeTab" class="tab-content active">
-
 <div class="content">
-
 <div class="card">
-
-<div class="card-title">
-Income Assessment
+  <div class="card-title">Income Assessment</div>
+  <div class="form-group">
+    <label>Net Monthly Income</label>
+    <div class="input-wrap"><span class="currency">₨</span><input id="income" class="currency-input" type="text" inputmode="numeric" placeholder="100,000" oninput="incomeChanged(this)"></div>
+  </div>
+  <div class="multiple-box">
+    <div class="multiple-top">
+      <div><div class="multiple-label">Applicable Income Multiple</div><div id="multiple" class="multiple-value">6×</div></div>
+      <button class="manual-btn" onclick="manualMultiple()">Manual Multiple</button>
+    </div>
+  </div>
+  <div class="limit-box">
+    <div class="limit-label">Maximum Allowable Financing</div>
+    <div id="limit" class="limit-value">₨ 0</div>
+    <div class="limit-note">Maximum financing is calculated from net income and applicable multiple.</div>
+  </div>
 </div>
-
-<div class="form-group">
-
-<label>
-Net Monthly Income
-</label>
-
-<div class="input-wrap">
-
-<span class="currency">₨</span>
-
-<input
-id="income"
-class="currency-input"
-type="text"
-inputmode="numeric"
-placeholder="100,000"
-oninput="incomeChanged(this)"
->
-
 </div>
-
-</div>
-
-<div class="multiple-box">
-
-<div class="multiple-top">
-
-<div>
-
-<div class="multiple-label">
-Applicable Income Multiple
-</div>
-
-<div id="multiple"
-class="multiple-value">
-6×
-</div>
-
-</div>
-
-<button
-class="manual-btn"
-onclick="manualMultiple()">
-
-Manual Multiple
-
-</button>
-
-</div>
-
-</div>
-
-<div class="limit-box">
-
-<div class="limit-label">
-Maximum Allowable Financing
-</div>
-
-<div id="limit"
-class="limit-value">
-₨ 0
-</div>
-
-<div class="limit-note">
-Maximum financing is calculated from net income and applicable multiple.
-</div>
-
-</div>
-
-</div>
-
-</div>
-
 </section>
-
-
-<!-- INSTALLMENT -->
 
 <section id="installmentTab" class="tab-content">
-
 <div class="content">
-
 <div class="card">
-
-<div class="card-title">
-Installment Calculator
+  <div class="card-title">Installment Calculator</div>
+  <div class="form-group">
+    <label>Financing Amount</label>
+    <div class="input-wrap"><span class="currency">₨</span><input id="amount" class="currency-input" type="text" inputmode="numeric" placeholder="1,000,000" oninput="amountChanged(this)"></div>
+    <div class="max-note">Maximum Allowable: <strong id="amountLimit">₨ 0</strong></div>
+  </div>
+  <div class="form-group">
+    <label>1-Year KIBOR (12-Month)</label>
+    <div class="kibor-row">
+      <input id="kibor" type="number" step="0.01" min="0" placeholder="Enter KIBOR" oninput="updateRate()">
+      <a class="sbp-btn" href="https://www.sbp.org.pk/economic-data/kibor-rates" target="_blank" rel="noopener">SBP KIBOR ↗</a>
+    </div>
+  </div>
+  <div class="two-column">
+    <div class="form-group"><label>Spread Rate</label><input id="spread" type="number" step="0.01" min="0" placeholder="3.00" oninput="updateRate()" value="18"></div>
+    <div class="form-group"><label>Tenure (Months)</label><input id="tenure" type="text" inputmode="numeric" maxlength="2" placeholder="6 - 48" oninput="tenureChanged(this)"></div>
+  </div>
+  <div class="rate-box"><div class="rate-label">Total Rate</div><div class="rate-value"><span id="totalRate">0.00</span>%</div></div>
+  <button class="primary-btn" onclick="calculateInstallment()">Calculate Installment</button>
 </div>
-
-<div class="form-group">
-
-<label>
-Financing Amount
-</label>
-
-<div class="input-wrap">
-
-<span class="currency">₨</span>
-
-<input
-id="amount"
-class="currency-input"
-type="text"
-inputmode="numeric"
-placeholder="1,000,000"
-oninput="amountChanged(this)"
->
-
 </div>
-
-<div class="max-note">
-Maximum Allowable:
-<strong id="amountLimit">₨ 0</strong>
-</div>
-
-</div>
-
-<div class="form-group">
-
-<label>
-1-Year KIBOR (12-Month)
-</label>
-
-<div class="kibor-row">
-
-<input
-id="kibor"
-type="number"
-step="0.01"
-min="0"
-placeholder="Enter KIBOR"
-oninput="updateRate()"
->
-
-<a
-class="sbp-btn"
-href="https://www.sbp.org.pk/economic-data/kibor-rates"
-target="_blank"
-rel="noopener">
-
-SBP KIBOR ↗
-
-</a>
-
-</div>
-
-</div>
-
-<div class="two-column">
-
-<div class="form-group">
-
-<label>
-Spread Rate
-</label>
-
-<input
-id="spread"
-type="number"
-step="0.01"
-min="0"
-placeholder="3.00"
-oninput="updateRate()"
-value="18"
->
-
-</div>
-
-<div class="form-group">
-
-<label>
-Tenure (Months)
-</label>
-
-<input
-id="tenure"
-type="text"
-inputmode="numeric"
-maxlength="2"
-placeholder="6 - 48"
-oninput="tenureChanged(this)"
->
-
-</div>
-
-</div>
-
-<div class="rate-box">
-
-<div class="rate-label">
-Total Rate
-</div>
-
-<div class="rate-value">
-<span id="totalRate">0.00</span>%
-</div>
-
-</div>
-
-<button
-class="primary-btn"
-onclick="calculateInstallment()">
-
-Calculate Installment
-
-</button>
-
-</div>
-
-</div>
-
 </section>
-
-
-<!-- DBR -->
 
 <section id="dbrTab" class="tab-content">
-
 <div class="content">
-
-<div
-class="dbr-heading"
-style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-
-<div>
-
-<h2>
-Debt Burden Ratio
-</h2>
-
-<p>
-DBR is calculated using total monthly obligation divided by net monthly income.
-</p>
-
+  <div class="dbr-heading" style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+    <div><h2>Debt Burden Ratio</h2><p>DBR is calculated using total monthly obligation divided by net monthly income.</p></div>
+    <button class="manual-btn" style="height:auto;min-height:38px;white-space:nowrap" onclick="openOtherEMISelector()">＋ EMI Calculator</button>
+  </div>
+  <div class="dbr-card"><div class="dbr-label">Net Monthly Income</div><div id="dbrIncome" class="dbr-value">₨ 0</div></div>
+  <div class="dbr-card"><div class="dbr-label">Main Finance Installment</div><div id="dbrInstallment" class="dbr-value">₨ 0</div></div>
+  <div class="dbr-card"><div class="dbr-label">Total EMI Obligation</div><div id="otherEMITotal" class="dbr-value">₨ 0</div><div class="helper">Total of all selected EMI options.</div></div>
+  <div id="dbrEMIBreakdown" class="dbr-card" style="display:none"><div class="dbr-label">Selected EMI Breakdown</div><div id="dbrEMIBreakdownItems" style="margin-top:8px"></div></div>
+  <div class="obligation"><div class="obligation-label">Total Monthly Obligation</div><div id="totalObligation" class="obligation-value">₨ 0</div></div>
+  <div class="dbr-result"><div class="dbr-result-label">Current DBR</div><div id="dbr" class="dbr-result-value">0.00%</div></div>
 </div>
-
-<button
-class="manual-btn"
-style="height:auto;min-height:38px;white-space:nowrap"
-onclick="openOtherEMISelector()">
-
-＋ EMI Calculator
-
-</button>
-
-</div>
-
-<div class="dbr-card">
-
-<div class="dbr-label">
-Net Monthly Income
-</div>
-
-<div id="dbrIncome"
-class="dbr-value">
-₨ 0
-</div>
-
-</div>
-
-<div class="dbr-card">
-
-<div class="dbr-label">
-Main Finance Installment
-</div>
-
-<div id="dbrInstallment"
-class="dbr-value">
-₨ 0
-</div>
-
-</div>
-
-<div class="dbr-card">
-
-<div class="dbr-label">
-Total EMI Obligation
-</div>
-
-<div id="otherEMITotal"
-class="dbr-value">
-₨ 0
-</div>
-
-<div class="helper">
-Total of all selected EMI options.
-</div>
-
-</div>
-
-<div
-id="dbrEMIBreakdown"
-class="dbr-card"
-style="display:none">
-
-<div class="dbr-label">
-Selected EMI Breakdown
-</div>
-
-<div
-id="dbrEMIBreakdownItems"
-style="margin-top:8px">
-</div>
-
-</div>
-
-<div class="obligation">
-
-<div class="obligation-label">
-Total Monthly Obligation
-</div>
-
-<div id="totalObligation"
-class="obligation-value">
-₨ 0
-</div>
-
-</div>
-
-<div class="dbr-result">
-
-<div class="dbr-result-label">
-Current DBR
-</div>
-
-<div id="dbr"
-class="dbr-result-value">
-0.00%
-</div>
-
-</div>
-
-</div>
-
 </section>
 
 
-<!-- AMORTIZATION -->
 
 <section id="amortizationTab" class="tab-content">
-
 <div class="content">
-
-<div class="report-card customer-details-card">
-
-<div class="report-title">
-Customer Details for Printable Sheet
+  <div class="report-card customer-details-card">
+    <div class="report-title">Customer Details for Printable Sheet</div>
+    <div class="form-group"><label for="customerName">Customer Name</label><input id="customerName" type="text" placeholder="Enter customer full name" autocomplete="name"></div>
+    <div class="form-group"><label for="customerCNIC">CNIC Number</label><input id="customerCNIC" type="text" inputmode="numeric" maxlength="13" pattern="[0-9]{13}" placeholder="Enter 13-digit CNIC" oninput="this.value=this.value.replace(/\D/g,'').slice(0,13)"></div>
+    <button class="manual-btn" style="width:100%;margin-top:10px" onclick="shareReport()">Share Amortization Sheet</button>
+  </div>
+  <div class="report-card">
+    <div class="report-title">Amortization Report</div>
+    <div class="summary-grid">
+      <div class="summary-item"><div class="summary-label">Financing Amount</div><div id="reportAmount" class="summary-value">₨ 0</div></div>
+      <div class="summary-item"><div class="summary-label">Total Rate</div><div id="reportRate" class="summary-value">0.00%</div></div>
+      <div class="summary-item"><div class="summary-label">Tenure</div><div id="reportTenure" class="summary-value">0 Months</div></div>
+      <div class="summary-item"><div class="summary-label">Monthly Installment</div><div id="reportInstallment" class="summary-value">₨ 0</div></div>
+      <div class="summary-item"><div class="summary-label">Total Principal</div><div id="reportPrincipal" class="summary-value">₨ 0</div></div>
+      <div class="summary-item"><div class="summary-label">Total Profit</div><div id="reportProfit" class="summary-value">₨ 0</div></div>
+      <div class="summary-item"><div class="summary-label">Total Payable</div><div id="reportTotal" class="summary-value">₨ 0</div></div>
+      <div class="summary-item"><div class="summary-label">KIBOR + Spread</div><div id="reportBreakup" class="summary-value">0.00% + 0.00%</div></div>
+    </div>
+  </div>
+  <div class="report-card">
+    <div class="report-title">Monthly Repayment Schedule</div>
+    <div class="table-wrap">
+      <table class="amort-table">
+        <thead><tr><th>Month</th><th>Opening</th><th>Installment</th><th>Principal</th><th>Profit</th><th>Closing</th></tr></thead>
+        <tbody id="amortBody"></tbody>
+      </table>
+    </div>
+  </div>
 </div>
-
-<div class="form-group">
-
-<label for="customerName">
-Customer Name
-</label>
-
-<input
-id="customerName"
-type="text"
-placeholder="Enter customer full name"
-autocomplete="name"
->
-
-</div>
-
-<div class="form-group">
-
-<label for="customerCNIC">
-CNIC Number
-</label>
-
-<input
-id="customerCNIC"
-type="text"
-inputmode="numeric"
-maxlength="13"
-pattern="[0-9]{13}"
-placeholder="Enter 13-digit CNIC"
-oninput="this.value=this.value.replace(/\D/g,'').slice(0,13)"
->
-
-</div>
-
-<button
-class="manual-btn"
-style="width:100%;margin-top:10px"
-onclick="shareReport()">
-
-Share Amortization Sheet
-
-</button>
-
-</div>
-
-
-<div class="report-card">
-
-<div class="report-title">
-Amortization Report
-</div>
-
-<div class="summary-grid">
-
-<div class="summary-item">
-<div class="summary-label">Financing Amount</div>
-<div id="reportAmount" class="summary-value">₨ 0</div>
-</div>
-
-<div class="summary-item">
-<div class="summary-label">Total Rate</div>
-<div id="reportRate" class="summary-value">0.00%</div>
-</div>
-
-<div class="summary-item">
-<div class="summary-label">Tenure</div>
-<div id="reportTenure" class="summary-value">0 Months</div>
-</div>
-
-<div class="summary-item">
-<div class="summary-label">Monthly Installment</div>
-<div id="reportInstallment" class="summary-value">₨ 0</div>
-</div>
-
-<div class="summary-item">
-<div class="summary-label">Total Principal</div>
-<div id="reportPrincipal" class="summary-value">₨ 0</div>
-</div>
-
-<div class="summary-item">
-<div class="summary-label">Total Profit</div>
-<div id="reportProfit" class="summary-value">₨ 0</div>
-</div>
-
-<div class="summary-item">
-<div class="summary-label">Total Payable</div>
-<div id="reportTotal" class="summary-value">₨ 0</div>
-</div>
-
-<div class="summary-item">
-<div class="summary-label">KIBOR + Spread</div>
-<div id="reportBreakup" class="summary-value">
-0.00% + 0.00%
-</div>
-</div>
-
-</div>
-
-</div>
-
-
-<div class="report-card">
-
-<div class="report-title">
-Monthly Repayment Schedule
-</div>
-
-<div class="table-wrap">
-
-<table class="amort-table">
-
-<thead>
-
-<tr>
-<th>Month</th>
-<th>Opening</th>
-<th>Installment</th>
-<th>Principal</th>
-<th>Profit</th>
-<th>Closing</th>
-</tr>
-
-</thead>
-
-<tbody id="amortBody">
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
-</div>
-
 </section>
-
-
-<!-- DOCUMENTS -->
 
 <section id="documentsTab" class="tab-content">
-
 <div class="content">
-
-<div class="report-card checklist-card">
-
-<div class="report-title">
-Documents Checklist
+  <div class="report-card checklist-card">
+    <div class="report-title">Documents Checklist</div>
+    <div class="helper" style="margin-bottom:14px">Required documents for processing. The checkboxes are for printed checklist use only.</div>
+    <div id="documentsChecklist" class="documents-list">
+      <div class="document-row"><span class="document-number">1.</span><span class="document-text">Clear copy of CNIC with Original seen.</span><span class="print-checkbox" aria-hidden="true"></span></div>
+      <div class="document-row"><span class="document-number">2.</span><span class="document-text">Two photographs</span><span class="print-checkbox" aria-hidden="true"></span></div>
+      <div class="document-row"><span class="document-number">3.</span><span class="document-text">Application form duly filled and signed by customer along with RSM endorsement</span><span class="print-checkbox" aria-hidden="true"></span></div>
+      <div class="document-row"><span class="document-number">4.</span><span class="document-text">KYC along with RSM endorsement</span><span class="print-checkbox" aria-hidden="true"></span></div>
+      <div class="document-row"><span class="document-number">5.</span><span class="document-text">Last 3 months Salary slip. (Last 6 months Salary slip in case of variable salary)</span><span class="print-checkbox" aria-hidden="true"></span></div>
+      <div class="document-row"><span class="document-number">6.</span><span class="document-text">Employment letter with Date of joining &amp; Employment status.</span><span class="print-checkbox" aria-hidden="true"></span></div>
+      <div class="document-row"><span class="document-number">7.</span><span class="document-text">Last 6 months Bank statement with salary reflection.</span><span class="print-checkbox" aria-hidden="true"></span></div>
+      <div class="document-row"><span class="document-number">8.</span><span class="document-text">Previous two years experience letter, if current employment is less then 2 years.</span><span class="print-checkbox" aria-hidden="true"></span></div>
+      <div class="document-row"><span class="document-number">9.</span><span class="document-text">Verified SS card.</span><span class="print-checkbox" aria-hidden="true"></span></div>
+    </div>
+    <button class="manual-btn" style="width:100%;margin-top:10px" onclick="shareDocumentsChecklist()">Share Documents Checklist PDF</button>
+  </div>
 </div>
-
-<div
-class="helper"
-style="margin-bottom:14px">
-
-Required documents for processing. The checkboxes are for printed checklist use only.
-
-</div>
-
-<div
-id="documentsChecklist"
-class="documents-list">
-
-<div class="document-row">
-<span class="document-number">1.</span>
-<span class="document-text">
-Clear copy of CNIC with Original seen.
-</span>
-<span class="print-checkbox" aria-hidden="true"></span>
-</div>
-
-<div class="document-row">
-<span class="document-number">2.</span>
-<span class="document-text">
-Two photographs
-</span>
-<span class="print-checkbox" aria-hidden="true"></span>
-</div>
-
-<div class="document-row">
-<span class="document-number">3.</span>
-<span class="document-text">
-Application form duly filled and signed by customer along with RSM endorsement
-</span>
-<span class="print-checkbox" aria-hidden="true"></span>
-</div>
-
-<div class="document-row">
-<span class="document-number">4.</span>
-<span class="document-text">
-KYC along with RSM endorsement
-</span>
-<span class="print-checkbox" aria-hidden="true"></span>
-</div>
-
-<div class="document-row">
-<span class="document-number">5.</span>
-<span class="document-text">
-Last 3 months Salary slip. (Last 6 months Salary slip in case of variable salary)
-</span>
-<span class="print-checkbox" aria-hidden="true"></span>
-</div>
-
-<div class="document-row">
-<span class="document-number">6.</span>
-<span class="document-text">
-Employment letter with Date of joining &amp; Employment status.
-</span>
-<span class="print-checkbox" aria-hidden="true"></span>
-</div>
-
-<div class="document-row">
-<span class="document-number">7.</span>
-<span class="document-text">
-Last 6 months Bank statement with salary reflection.
-</span>
-<span class="print-checkbox" aria-hidden="true"></span>
-</div>
-
-<div class="document-row">
-<span class="document-number">8.</span>
-<span class="document-text">
-Previous two years experience letter, if current employment is less then 2 years.
-</span>
-<span class="print-checkbox" aria-hidden="true"></span>
-</div>
-
-<div class="document-row">
-<span class="document-number">9.</span>
-<span class="document-text">
-Verified SS card.
-</span>
-<span class="print-checkbox" aria-hidden="true"></span>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
 </section>
 
-
-<!-- DOCUMENT PREVIEW MODAL -->
-
-<div
-id="documentsPreviewModal"
-class="modal">
-
-<div class="modal-box documents-preview-box">
-
-<div class="modal-head">
-
-<h2>
-Documents Checklist
-</h2>
-
-<button
-class="close"
-onclick="closeModal('documentsPreviewModal')">
-
-×
-
-</button>
-
+<footer class="footer">Powered by Syed Muhammad Humza Arif</footer>
 </div>
 
-<div class="documents-preview-subtitle">
-PDF preview
-</div>
-
-<div
-id="documentsPreviewList"
-class="documents-preview-list">
-</div>
-
-<div class="documents-preview-note">
-
-Checklist boxes are intentionally left blank for printing and manual use.
-
-</div>
-
-<button
-id="documentsShareBtn"
-class="primary-btn documents-share-btn"
-onclick="shareGeneratedChecklistPDF()">
-
-Share PDF
-
-</button>
-
-</div>
-
-</div>
-
-
-<!-- CUSTOMER DETAILS MODAL -->
-
-<div
-id="customerDetailsModal"
-class="modal">
-
-<div class="modal-box">
-
-<div class="modal-head">
-
-<h2>
-Customer Details
-</h2>
-
-<button
-class="close"
-onclick="closeModal('customerDetailsModal')">
-
-×
-
-</button>
-
-</div>
-
-<div
-class="modal-message"
-style="margin-bottom:14px">
-
-Enter customer details to view the amortization sheet.
-
-</div>
-
-<div class="form-group">
-
-<label for="customerNameModal">
-Customer Name
-</label>
-
-<input
-id="customerNameModal"
-type="text"
-placeholder="Enter customer full name"
-autocomplete="name"
->
-
-</div>
-
-<div class="form-group">
-
-<label for="customerCNICModal">
-CNIC Number (13 digits)
-</label>
-
-<input
-id="customerCNICModal"
-type="text"
-inputmode="numeric"
-maxlength="13"
-pattern="[0-9]{13}"
-placeholder="Enter 13-digit CNIC"
-oninput="this.value=this.value.replace(/\D/g,'').slice(0,13)"
->
-
-</div>
-
-<button
-class="primary-btn"
-onclick="syncCustomerDetailsAndOpen()">
-
-Continue to Amortization
-
-</button>
-
-</div>
-
-</div>
-
-
-<!-- EMI MODAL -->
-
-<div
-id="otherEMISelectorModal"
-class="modal">
-
-<div class="modal-box">
-
-<div class="modal-head">
-
-<h2>
-EMI Calculator
-</h2>
-
-<button
-class="close"
-onclick="closeModal('otherEMISelectorModal')">
-
-×
-
-</button>
-
-</div>
-
-<div
-class="modal-message"
-style="margin-bottom:14px">
-
-Select the EMI types you need. Calculation fields for selected types will appear below.
-
-</div>
-
-<div class="emi-options">
-
-<label class="emi-option">
-
-<input
-type="checkbox"
-value="creditCard"
-class="emi-option-check">
-
-<span>
-<strong>Credit Card</strong>
-</span>
-
-</label>
-
-<label class="emi-option">
-
-<input
-type="checkbox"
-value="runningFinance"
-class="emi-option-check">
-
-<span>
-<strong>Running Finance</strong>
-</span>
-
-</label>
-
-<label class="emi-option">
-
-<input
-type="checkbox"
-value="personalLoan"
-class="emi-option-check">
-
-<span>
-<strong>Personal Loan</strong>
-</span>
-
-</label>
-
-<label class="emi-option">
-
-<input
-type="checkbox"
-value="autoFinance"
-class="emi-option-check">
-
-<span>
-<strong>Auto Finance Loan</strong>
-</span>
-
-</label>
-
-<label class="emi-option">
-
-<input
-type="checkbox"
-value="mortgageLoan"
-class="emi-option-check">
-
-<span>
-<strong>Mortgage Loan</strong>
-</span>
-
-</label>
-
-<label class="emi-option">
-
-<input
-type="checkbox"
-value="otherEMI"
-class="emi-option-check">
-
-<span>
-<strong>Other EMI</strong>
-</span>
-
-</label>
-
-</div>
-
-<div
-id="otherEMIPopupForms"
-style="margin-top:14px">
-</div>
-
-<div
-class="emi-calculated"
-style="margin-top:12px">
-
-<div class="emi-calculated-label">
-Total EMI Obligation
-</div>
-
-<div
-class="emi-calculated-value"
-id="popupEMITotal">
-
-₨ 0
-
-</div>
-
-</div>
-
-<button
-class="primary-btn"
-style="margin-top:14px"
-onclick="applyOtherEMISelection()">
-
-Apply Selected EMIs to DBR
-
-</button>
-
-</div>
-
-</div>
-
-
-<!-- RESULT MODAL -->
-
-<div
-id="resultModal"
-class="modal">
-
-<div class="modal-box">
-
-<div class="modal-head">
-
-<h2>
-Installment Result
-</h2>
-
-<button
-class="close"
-onclick="closeModal('resultModal')">
-
-×
-
-</button>
-
-</div>
-
-<div class="result-highlight">
-
-<div class="result-label">
-Monthly Installment
-</div>
-
-<div
-id="resultInstallment"
-class="result-number">
-
-₨ 0
-
-</div>
-
-</div>
-
-<div class="result-secondary">
-
-<div class="result-label">
-Total Payable
-</div>
-
-<div
-id="resultTotal"
-class="result-number">
-
-₨ 0
-
-</div>
-
-</div>
-
-<div class="modal-message">
-
-The calculated installment is based on the financing amount, total rate and selected tenure.
-
-</div>
-
-<button
-class="primary-btn"
-onclick="closeModal('resultModal')">
-
-Close
-
-</button>
-
-</div>
-
-</div>
-
-
-<!-- LIMIT MODAL -->
-
-<div
-id="limitModal"
-class="modal">
-
-<div class="modal-box">
-
-<div class="modal-head">
-
-<h2>
-Maximum Limit
-</h2>
-
-<button
-class="close"
-onclick="closeModal('limitModal')">
-
-×
-
-</button>
-
-</div>
-
-<div class="result-highlight">
-
-<div class="result-label">
-Maximum Allowable Financing
-</div>
-
-<div
-id="popupLimit"
-class="result-number">
-
-₨ 0
-
-</div>
-
-</div>
-
-<div class="modal-message">
-
-Financing amount cannot exceed the maximum allowable financing calculated from income and the applicable multiple.
-
-</div>
-
-<button
-class="primary-btn"
-onclick="closeModal('limitModal')">
-
-Okay
-
-</button>
-
-</div>
-
-</div>
-
-
-<!-- MANUAL MULTIPLE MODAL -->
-
-<div
-id="manualModal"
-class="modal">
-
-<div class="modal-box">
-
-<div class="modal-head">
-
-<h2>
-Manual Multiple
-</h2>
-
-<button
-class="close"
-onclick="closeModal('manualModal')">
-
-×
-
-</button>
-
-</div>
-
-<div class="form-group">
-
-<label>
-Enter Multiple
-</label>
-
-<input
-id="manualValue"
-type="number"
-min="0"
-step="0.01"
-placeholder="e.g. 7"
-oninput="manualLimitUpdate()"
->
-
-</div>
-
-<div class="limit-box">
-
-<div class="limit-label">
-Maximum Allowable Financing
-</div>
-
-<div
-id="manualLimit"
-class="limit-value">
-
-₨ 0
-
-</div>
-
-</div>
-
-<button
-class="primary-btn"
-onclick="applyManual()">
-
-Apply Multiple
-
-</button>
-
-</div>
-
-</div>
-
-
-<footer class="footer">
-
-Powered by Syed Muhammad Humza Arif
-
-</footer>
-
-</div>
-
+<div id="customerDetailsModal" class="modal"><div class="modal-box">
+  <div class="modal-head"><h2>Customer Details</h2><button class="close" onclick="closeModal('customerDetailsModal')">×</button></div>
+  <div class="modal-message" style="margin-bottom:14px">Enter customer details to view the amortization sheet.</div>
+  <div class="form-group"><label for="customerNameModal">Customer Name</label><input id="customerNameModal" type="text" placeholder="Enter customer full name" autocomplete="name"></div>
+  <div class="form-group"><label for="customerCNICModal">CNIC Number (13 digits)</label><input id="customerCNICModal" type="text" inputmode="numeric" maxlength="13" pattern="[0-9]{13}" placeholder="Enter 13-digit CNIC" oninput="this.value=this.value.replace(/\D/g,'').slice(0,13)"></div>
+  <button class="primary-btn" onclick="syncCustomerDetailsAndOpen()">Continue to Amortization</button>
+</div></div>
+
+<div id="otherEMISelectorModal" class="modal"><div class="modal-box">
+  <div class="modal-head"><h2>EMI Calculator</h2><button class="close" onclick="closeModal('otherEMISelectorModal')">×</button></div>
+  <div class="modal-message" style="margin-bottom:14px">Select the EMI types you need. Calculation fields for selected types will appear below.</div>
+  <div class="emi-options">
+    <label class="emi-option"><input type="checkbox" value="creditCard" class="emi-option-check"> <span><strong>Credit Card</strong></span></label>
+    <label class="emi-option"><input type="checkbox" value="runningFinance" class="emi-option-check"> <span><strong>Running Finance</strong></span></label>
+    <label class="emi-option"><input type="checkbox" value="personalLoan" class="emi-option-check"> <span><strong>Personal Loan</strong></span></label>
+    <label class="emi-option"><input type="checkbox" value="autoFinance" class="emi-option-check"> <span><strong>Auto Finance Loan</strong></span></label>
+    <label class="emi-option"><input type="checkbox" value="mortgageLoan" class="emi-option-check"> <span><strong>Mortgage Loan</strong></span></label>
+    <label class="emi-option"><input type="checkbox" value="otherEMI" class="emi-option-check"> <span><strong>Other EMI</strong></span></label>
+  </div>
+  <div id="otherEMIPopupForms" style="margin-top:14px"></div>
+  <div class="emi-calculated" style="margin-top:12px"><div class="emi-calculated-label">Total EMI Obligation</div><div class="emi-calculated-value" id="popupEMITotal">₨ 0</div></div>
+  <button class="primary-btn" style="margin-top:14px" onclick="applyOtherEMISelection()">Apply Selected EMIs to DBR</button>
+</div></div>
+
+<div id="resultModal" class="modal"><div class="modal-box">
+  <div class="modal-head"><h2>Installment Result</h2><button class="close" onclick="closeModal('resultModal')">×</button></div>
+  <div class="result-highlight"><div class="result-label">Monthly Installment</div><div id="resultInstallment" class="result-number">₨ 0</div></div>
+  <div class="result-secondary"><div class="result-label">Total Payable</div><div id="resultTotal" class="result-number">₨ 0</div></div>
+  <div class="modal-message">The calculated installment is based on the financing amount, total rate and selected tenure.</div>
+  <button class="primary-btn" onclick="closeModal('resultModal')">Close</button>
+</div></div>
+
+<div id="limitModal" class="modal"><div class="modal-box">
+  <div class="modal-head"><h2>Maximum Limit</h2><button class="close" onclick="closeModal('limitModal')">×</button></div>
+  <div class="result-highlight"><div class="result-label">Maximum Allowable Financing</div><div id="popupLimit" class="result-number">₨ 0</div></div>
+  <div class="modal-message">Financing amount cannot exceed the maximum allowable financing calculated from income and the applicable multiple.</div>
+  <button class="primary-btn" onclick="closeModal('limitModal')">Okay</button>
+</div></div>
+
+<div id="manualModal" class="modal"><div class="modal-box">
+  <div class="modal-head"><h2>Manual Multiple</h2><button class="close" onclick="closeModal('manualModal')">×</button></div>
+  <div class="form-group"><label>Enter Multiple</label><input id="manualValue" type="number" min="0" step="0.01" placeholder="e.g. 7" oninput="manualLimitUpdate()"></div>
+  <div class="limit-box"><div class="limit-label">Maximum Allowable Financing</div><div id="manualLimit" class="limit-value">₨ 0</div></div>
+  <button class="primary-btn" onclick="applyManual()">Apply Multiple</button>
+</div></div>
 
 <script>
-
-/* =========================================================
-   BASIC CALCULATOR
-   ========================================================= */
-
 let multiple = 6;
 let manualMode = false;
 let installmentValue = 0;
 
-function numberValue(value){
-
-  return parseFloat(
-    String(value || "").replace(/,/g,"")
-  ) || 0;
-
+function numberValue(value) {
+  return parseFloat(String(value || "").replace(/,/g, "")) || 0;
 }
-
-function formatNumber(value){
-
-  if(!isFinite(value)) return "0";
-
-  return Math.round(value)
-    .toLocaleString("en-PK");
-
+function formatNumber(value) {
+  if (!isFinite(value)) return "0";
+  return Math.round(value).toLocaleString("en-PK");
 }
-
-function pkr(value){
-
+function pkr(value) {
   return "₨ " + formatNumber(value);
-
 }
-
-function formatInput(input){
-
-  const raw =
-    input.value.replace(/[^0-9]/g,"");
-
-  input.value =
-    raw
-      ? Number(raw).toLocaleString("en-PK")
-      : "";
-
+function formatInput(input) {
+  const raw = input.value.replace(/[^0-9]/g, "");
+  input.value = raw ? Number(raw).toLocaleString("en-PK") : "";
 }
-
-function incomeChanged(input){
-
+function incomeChanged(input) {
   formatInput(input);
-
-  const income =
-    numberValue(input.value);
-
-  if(!manualMode){
-
-    multiple =
-      income < 100000
-        ? 6
-        : 8;
-
-  }
-
+  const income = numberValue(input.value);
+  if (!manualMode) multiple = income < 100000 ? 6 : 8;
   updateMultiple();
   updateLimit();
   updateDBR();
   updateDBRStatus();
-
 }
-
-function updateMultiple(){
-
-  const value =
-    Number(multiple);
-
+function updateMultiple() {
+  const value = Number(multiple);
   document.getElementById("multiple").textContent =
-    Number.isInteger(value)
-      ? value + "×"
-      : value.toFixed(2) + "×";
-
+    Number.isInteger(value) ? value + "×" : value.toFixed(2) + "×";
 }
-
-function updateLimit(){
-
-  const income =
-    numberValue(
-      document.getElementById("income").value
-    );
-
-  const limit =
-    income * multiple;
-
-  document.getElementById("limit").textContent =
-    pkr(limit);
-
-  document.getElementById("amountLimit").textContent =
-    pkr(limit);
-
+function updateLimit() {
+  const income = numberValue(document.getElementById("income").value);
+  const limit = income * multiple;
+  document.getElementById("limit").textContent = pkr(limit);
+  document.getElementById("amountLimit").textContent = pkr(limit);
   forceAmountLimit();
-
 }
-
-function amountChanged(input){
-
-  const raw =
-    input.value.replace(/[^0-9]/g,"");
-
-  if(!raw){
-
-    input.value="";
-    return;
-
-  }
-
-  const amount =
-    Number(raw);
-
-  const income =
-    numberValue(
-      document.getElementById("income").value
-    );
-
-  const max =
-    income * multiple;
-
-  if(income > 0 && amount > max){
-
-    input.value =
-      Math.floor(max)
-        .toLocaleString("en-PK");
-
+function amountChanged(input) {
+  const raw = input.value.replace(/[^0-9]/g, "");
+  if (!raw) { input.value = ""; return; }
+  const amount = Number(raw);
+  const income = numberValue(document.getElementById("income").value);
+  const max = income * multiple;
+  if (income > 0 && amount > max) {
+    input.value = Math.floor(max).toLocaleString("en-PK");
     showLimit(max);
-
     return;
-
   }
-
-  input.value =
-    amount.toLocaleString("en-PK");
-
+  input.value = amount.toLocaleString("en-PK");
 }
-
-function forceAmountLimit(){
-
-  const input =
-    document.getElementById("amount");
-
-  if(!input) return;
-
-  const amount =
-    numberValue(input.value);
-
-  const income =
-    numberValue(
-      document.getElementById("income").value
-    );
-
-  if(income <= 0 || amount <= 0)
-    return;
-
-  const max =
-    income * multiple;
-
-  if(amount > max){
-
-    input.value =
-      Math.floor(max)
-        .toLocaleString("en-PK");
-
-  }
-
+function forceAmountLimit() {
+  const input = document.getElementById("amount");
+  if (!input) return;
+  const amount = numberValue(input.value);
+  const income = numberValue(document.getElementById("income").value);
+  if (income <= 0 || amount <= 0) return;
+  const max = income * multiple;
+  if (amount > max) input.value = Math.floor(max).toLocaleString("en-PK");
 }
-
-function manualMultiple(){
-
-  const income =
-    numberValue(
-      document.getElementById("income").value
-    );
-
-  if(income <= 0){
-
-    alert(
-      "Please enter Net Monthly Income first."
-    );
-
-    return;
-
-  }
-
-  document.getElementById("manualValue").value =
-    manualMode
-      ? multiple
-      : "";
-
+function manualMultiple() {
+  const income = numberValue(document.getElementById("income").value);
+  if (income <= 0) { alert("Please enter Net Monthly Income first."); return; }
+  document.getElementById("manualValue").value = manualMode ? multiple : "";
   manualLimitUpdate();
-
-  document
-    .getElementById("manualModal")
-    .classList.add("show");
-
+  document.getElementById("manualModal").classList.add("show");
 }
-
-function manualLimitUpdate(){
-
-  const income =
-    numberValue(
-      document.getElementById("income").value
-    );
-
-  const value =
-    parseFloat(
-      document.getElementById("manualValue").value
-    );
-
-  document.getElementById("manualLimit").textContent =
-    pkr(income * (value || 0));
-
+function manualLimitUpdate() {
+  const income = numberValue(document.getElementById("income").value);
+  const value = parseFloat(document.getElementById("manualValue").value);
+  document.getElementById("manualLimit").textContent = pkr(income * (value || 0));
 }
-
-function applyManual(){
-
-  const value =
-    parseFloat(
-      document.getElementById("manualValue").value
-    );
-
-  if(isNaN(value) || value <= 0){
-
-    alert(
-      "Please enter a valid multiple."
-    );
-
-    return;
-
-  }
-
+function applyManual() {
+  const value = parseFloat(document.getElementById("manualValue").value);
+  if (isNaN(value) || value <= 0) { alert("Please enter a valid multiple."); return; }
   multiple = value;
   manualMode = true;
-
   updateMultiple();
   updateLimit();
-
   closeModal("manualModal");
-
 }
-
-function updateRate(){
-
-  const kibor =
-    parseFloat(
-      document.getElementById("kibor").value
-    ) || 0;
-
-  const spread =
-    parseFloat(
-      document.getElementById("spread").value
-    ) || 0;
-
-  document.getElementById("totalRate").textContent =
-    (kibor + spread).toFixed(2);
-
-  if(
-    typeof calculateOtherEMIs === "function" &&
-    selectedEMITypes.length
-  ){
-
-    calculateOtherEMIs();
-
-  }
-
+function updateRate() {
+  const kibor = parseFloat(document.getElementById("kibor").value) || 0;
+  const spread = parseFloat(document.getElementById("spread").value) || 0;
+  document.getElementById("totalRate").textContent = (kibor + spread).toFixed(2);
+  if (typeof calculateOtherEMIs === "function" && selectedEMITypes.length) calculateOtherEMIs();
 }
-
-function tenureChanged(input){
-
-  input.value =
-    input.value
-      .replace(/[^0-9]/g,"")
-      .substring(0,2);
-
+function tenureChanged(input) {
+  input.value = input.value.replace(/[^0-9]/g, "").substring(0, 2);
 }
-
-function PMT(principal,annualRate,months){
-
-  const monthlyRate =
-    annualRate / 100 / 12;
-
-  if(monthlyRate === 0)
-    return principal / months;
-
-  const factor =
-    Math.pow(
-      1 + monthlyRate,
-      months
-    );
-
-  return (
-    principal *
-    monthlyRate *
-    factor
-  ) / (factor - 1);
-
+function PMT(principal, annualRate, months) {
+  const monthlyRate = annualRate / 100 / 12;
+  if (monthlyRate === 0) return principal / months;
+  const factor = Math.pow(1 + monthlyRate, months);
+  return (principal * monthlyRate * factor) / (factor - 1);
 }
+function calculateInstallment() {
+  const income = numberValue(document.getElementById("income").value);
+  const amount = numberValue(document.getElementById("amount").value);
+  const kibor = parseFloat(document.getElementById("kibor").value);
+  const spread = parseFloat(document.getElementById("spread").value) || 0;
+  const tenure = parseInt(document.getElementById("tenure").value, 10);
 
-
-/* =========================================================
-   INSTALLMENT
-   ========================================================= */
-
-function calculateInstallment(){
-
-  const income =
-    numberValue(
-      document.getElementById("income").value
-    );
-
-  const amount =
-    numberValue(
-      document.getElementById("amount").value
-    );
-
-  const kibor =
-    parseFloat(
-      document.getElementById("kibor").value
-    );
-
-  const spread =
-    parseFloat(
-      document.getElementById("spread").value
-    ) || 0;
-
-  const tenure =
-    parseInt(
-      document.getElementById("tenure").value,
-      10
-    );
-
-  if(income <= 0){
-
-    alert(
-      "Please enter Net Monthly Income first."
-    );
-
-    openTab(
-      "incomeTab",
-      document.getElementById("incomeBtn")
-    );
-
+  if (income <= 0) {
+    alert("Please enter Net Monthly Income first.");
+    openTab("incomeTab", document.getElementById("incomeBtn"));
     return;
-
   }
-
-  if(amount <= 0){
-
-    alert(
-      "Please enter Financing Amount."
-    );
-
-    return;
-
-  }
-
-  const max =
-    income * multiple;
-
-  if(amount > max){
-
-    document.getElementById("amount").value =
-      Math.floor(max)
-        .toLocaleString("en-PK");
-
+  if (amount <= 0) { alert("Please enter Financing Amount."); return; }
+  const max = income * multiple;
+  if (amount > max) {
+    document.getElementById("amount").value = Math.floor(max).toLocaleString("en-PK");
     showLimit(max);
-
     return;
-
+  }
+  if (isNaN(kibor) || kibor < 0) { alert("Please enter KIBOR rate."); return; }
+  if (isNaN(spread) || spread < 0) { alert("Please enter a valid Spread Rate."); return; }
+  if (isNaN(tenure) || tenure < 6 || tenure > 48) {
+    alert("Tenure must be between 6 and 48 months.");
+    return;
   }
 
-  if(isNaN(kibor) || kibor < 0){
+  const totalRate = kibor + spread;
+  const installment = PMT(amount, totalRate, tenure);
+  const totalPayable = installment * tenure;
+  installmentValue = installment;
 
-    alert(
-      "Please enter KIBOR rate."
-    );
+  document.getElementById("resultInstallment").textContent = pkr(installment);
+  document.getElementById("resultTotal").textContent = pkr(totalPayable);
 
-    return;
-
-  }
-
-  if(isNaN(spread) || spread < 0){
-
-    alert(
-      "Please enter a valid Spread Rate."
-    );
-
-    return;
-
-  }
-
-  if(
-    isNaN(tenure) ||
-    tenure < 6 ||
-    tenure > 48
-  ){
-
-    alert(
-      "Tenure must be between 6 and 48 months."
-    );
-
-    return;
-
-  }
-
-  const totalRate =
-    kibor + spread;
-
-  const installment =
-    PMT(
-      amount,
-      totalRate,
-      tenure
-    );
-
-  const totalPayable =
-    installment * tenure;
-
-  installmentValue =
-    installment;
-
-  document.getElementById(
-    "resultInstallment"
-  ).textContent =
-    pkr(installment);
-
-  document.getElementById(
-    "resultTotal"
-  ).textContent =
-    pkr(totalPayable);
-
-  generateAmortization(
-    amount,
-    totalRate,
-    tenure,
-    installment,
-    kibor,
-    spread
-  );
-
-  document
-    .getElementById("resultModal")
-    .classList.add("show");
-
+  generateAmortization(amount, totalRate, tenure, installment, kibor, spread);
+  document.getElementById("resultModal").classList.add("show");
   updateDBR();
   updateDBRStatus();
-
 }
-
-function updateDBRStatus(){
-
-  const income =
-    numberValue(
-      document.getElementById("income").value
-    );
-
-  const button =
-    document.getElementById("dbrBtn");
-
-  if(
-    income > 0 &&
-    installmentValue > 0
-  ){
-
-    button.classList.remove("locked");
-
-  }else{
-
-    button.classList.add("locked");
-
-  }
-
+function updateDBRStatus() {
+  const income = numberValue(document.getElementById("income").value);
+  const button = document.getElementById("dbrBtn");
+  if (income > 0 && installmentValue > 0) button.classList.remove("locked");
+  else button.classList.add("locked");
 }
-
-function openDBR(){
-
-  const income =
-    numberValue(
-      document.getElementById("income").value
-    );
-
-  if(
-    income <= 0 ||
-    installmentValue <= 0
-  ){
-
-    return;
-
-  }
-
-  openTab(
-    "dbrTab",
-    document.getElementById("dbrBtn")
-  );
-
+function openDBR() {
+  const income = numberValue(document.getElementById("income").value);
+  if (income <= 0 || installmentValue <= 0) return;
+  openTab("dbrTab", document.getElementById("dbrBtn"));
 }
-
-
-/* =========================================================
-   EMI
-   ========================================================= */
-
 const EMI_TYPES = {
-
-  creditCard:{
-    title:"Credit Card",
-    kind:"limit",
-    rateText:"5% of limit"
-  },
-
-  runningFinance:{
-    title:"Running Finance",
-    kind:"limit",
-    rateText:"5% of limit"
-  },
-
-  personalLoan:{
-    title:"Personal Loan",
-    kind:"pmt",
-    rateText:"27% fixed annual rate"
-  },
-
-  autoFinance:{
-    title:"Auto Finance Loan",
-    kind:"pmt",
-    rateText:"KIBOR + 8% annual rate"
-  },
-
-  mortgageLoan:{
-    title:"Mortgage Loan",
-    kind:"pmt",
-    rateText:"KIBOR + 5% annual rate"
-  },
-
-  otherEMI:{
-    title:"Other EMI",
-    kind:"manual",
-    rateText:"Manual monthly EMI"
-  }
-
+  creditCard: { title: "Credit Card", kind: "limit", rateText: "5% of limit" },
+  runningFinance: { title: "Running Finance", kind: "limit", rateText: "5% of limit" },
+  personalLoan: { title: "Personal Loan", kind: "pmt", rateText: "27% fixed annual rate" },
+  autoFinance: { title: "Auto Finance Loan", kind: "pmt", rateText: "KIBOR + 8% annual rate" },
+  mortgageLoan: { title: "Mortgage Loan", kind: "pmt", rateText: "KIBOR + 5% annual rate" },
+  otherEMI: { title: "Other EMI", kind: "manual", rateText: "Manual monthly EMI" }
 };
-
 let selectedEMITypes = [];
 let emiValues = {};
 let appliedEMIValues = {};
 
-function openOtherEMISelector(){
-
-  const modal =
-    document.getElementById(
-      "otherEMISelectorModal"
-    );
-
-  document
-    .querySelectorAll(".emi-option-check")
-    .forEach(check => {
-
-      check.checked =
-        selectedEMITypes
-          .includes(check.value);
-
-    });
-
+function openOtherEMISelector() {
+  const modal = document.getElementById("otherEMISelectorModal");
+  document.querySelectorAll(".emi-option-check").forEach(check => {
+    check.checked = selectedEMITypes.includes(check.value);
+  });
   renderOtherEMIPopupForms();
-
   modal.classList.add("show");
-
 }
-
-function applyOtherEMISelection(){
-
-  selectedEMITypes =
-    Array.from(
-      document.querySelectorAll(
-        ".emi-option-check:checked"
-      )
-    ).map(
-      el => el.value
-    );
-
+function applyOtherEMISelection() {
+  selectedEMITypes = Array.from(document.querySelectorAll(".emi-option-check:checked")).map(el => el.value);
   appliedEMIValues = {};
-
-  selectedEMITypes.forEach(type => {
-
-    appliedEMIValues[type] =
-      {
-        ...(emiValues[type] || {})
-      };
-
-  });
-
+  selectedEMITypes.forEach(type => { appliedEMIValues[type] = {...(emiValues[type] || {})}; });
   calculateOtherEMIs();
-
-  closeModal(
-    "otherEMISelectorModal"
-  );
-
+  closeModal("otherEMISelectorModal");
 }
-
-function renderOtherEMIPopupForms(){
-
-  const selected =
-    Array.from(
-      document.querySelectorAll(
-        ".emi-option-check:checked"
-      )
-    ).map(
-      el => el.value
-    );
-
-  const host =
-    document.getElementById(
-      "otherEMIPopupForms"
-    );
-
+function renderOtherEMIPopupForms() {
+  const selected = Array.from(document.querySelectorAll(".emi-option-check:checked")).map(el => el.value);
+  const host = document.getElementById("otherEMIPopupForms");
   host.innerHTML = "";
-
   selected.forEach(type => {
-
-    if(!emiValues[type])
-      emiValues[type] = {};
-
-    const meta =
-      EMI_TYPES[type];
-
-    const card =
-      document.createElement("div");
-
-    card.className =
-      "emi-form-card";
-
-    card.innerHTML = `
-
-      <div class="emi-form-title">
-        ${meta.title}
-      </div>
-
-      <div class="emi-inputs"></div>
-
-      <div class="emi-calculated">
-
-        <div class="emi-calculated-label">
-          Calculated Monthly EMI
-        </div>
-
-        <div
-          class="emi-calculated-value"
-          id="emiResult_${type}">
-
-          ₨ 0
-
-        </div>
-
-      </div>
-    `;
-
+    if (!emiValues[type]) emiValues[type] = {};
+    const meta = EMI_TYPES[type];
+    const card = document.createElement("div");
+    card.className = "emi-form-card";
+    card.innerHTML = `<div class="emi-form-title">${meta.title}</div><div class="emi-inputs"></div><div class="emi-calculated"><div class="emi-calculated-label">Calculated Monthly EMI</div><div class="emi-calculated-value" id="emiResult_${type}">₨ 0</div></div>`;
     host.appendChild(card);
-
-    const inputs =
-      card.querySelector(
-        ".emi-inputs"
-      );
-
-    if(
-      type === "creditCard" ||
-      type === "runningFinance"
-    ){
-
-      const label =
-        type === "creditCard"
-          ? "Credit Card Limit"
-          : "Running Finance Limit";
-
-      inputs.innerHTML = `
-
-        <div class="form-group">
-
-          <label>
-            ${label}
-          </label>
-
-          <div class="input-wrap">
-
-            <span class="currency">
-              ₨
-            </span>
-
-            <input
-              id="emiAmount_${type}"
-              class="currency-input"
-              type="text"
-              inputmode="numeric"
-              placeholder="0"
-            >
-
-          </div>
-
-        </div>
-      `;
-
-      const input =
-        inputs.querySelector("input");
-
-      input.value =
-        emiValues[type].amount
-          ? Number(
-              emiValues[type].amount
-            ).toLocaleString("en-PK")
-          : "";
-
-      input.addEventListener(
-        "input",
-        () => {
-
-          formatInput(input);
-
-          emiValues[type].amount =
-            numberValue(input.value);
-
-          calculateOtherEMIs();
-
-        }
-      );
-
-    }else if(
-      type === "personalLoan" ||
-      type === "autoFinance" ||
-      type === "mortgageLoan"
-    ){
-
-      const label =
-        type === "personalLoan"
-          ? "Personal Loan Limit / Amount"
-          : (
-            type === "autoFinance"
-              ? "Auto Finance Loan Amount"
-              : "Mortgage Loan Amount"
-          );
-
-      inputs.innerHTML = `
-
-        <div class="form-group">
-
-          <label>
-            ${label}
-          </label>
-
-          <div class="input-wrap">
-
-            <span class="currency">
-              ₨
-            </span>
-
-            <input
-              id="emiAmount_${type}"
-              class="currency-input"
-              type="text"
-              inputmode="numeric"
-              placeholder="0"
-            >
-
-          </div>
-
-        </div>
-
-        <div class="form-group">
-
-          <label>
-            Tenure (Months)
-          </label>
-
-          <input
-            id="emiTenure_${type}"
-            type="number"
-            min="1"
-            max="360"
-            step="1"
-            placeholder="e.g. 60"
-          >
-
-        </div>
-      `;
-
-      const amountInput =
-        inputs.querySelector(
-          `#emiAmount_${type}`
-        );
-
-      const tenureInput =
-        inputs.querySelector(
-          `#emiTenure_${type}`
-        );
-
-      amountInput.value =
-        emiValues[type].amount
-          ? Number(
-              emiValues[type].amount
-            ).toLocaleString("en-PK")
-          : "";
-
-      tenureInput.value =
-        emiValues[type].tenure || "";
-
-      amountInput.addEventListener(
-        "input",
-        () => {
-
-          formatInput(amountInput);
-
-          emiValues[type].amount =
-            numberValue(
-              amountInput.value
-            );
-
-          calculateOtherEMIs();
-
-        }
-      );
-
-      tenureInput.addEventListener(
-        "input",
-        () => {
-
-          emiValues[type].tenure =
-            parseInt(
-              tenureInput.value,
-              10
-            ) || 0;
-
-          calculateOtherEMIs();
-
-        }
-      );
-
-    }else{
-
-      inputs.innerHTML = `
-
-        <div class="form-group">
-
-          <label>
-            Monthly EMI Amount
-          </label>
-
-          <div class="input-wrap">
-
-            <span class="currency">
-              ₨
-            </span>
-
-            <input
-              id="emiAmount_${type}"
-              class="currency-input"
-              type="text"
-              inputmode="numeric"
-              placeholder="Enter monthly installment"
-            >
-
-          </div>
-
-        </div>
-      `;
-
-      const input =
-        inputs.querySelector("input");
-
-      input.value =
-        emiValues[type].amount
-          ? Number(
-              emiValues[type].amount
-            ).toLocaleString("en-PK")
-          : "";
-
-      input.addEventListener(
-        "input",
-        () => {
-
-          formatInput(input);
-
-          emiValues[type].amount =
-            numberValue(input.value);
-
-          calculateOtherEMIs();
-
-        }
-      );
-
+    const inputs = card.querySelector(".emi-inputs");
+    if (type === "creditCard" || type === "runningFinance") {
+      const label = type === "creditCard" ? "Credit Card Limit" : "Running Finance Limit";
+      inputs.innerHTML = `<div class="form-group"><label>${label}</label><div class="input-wrap"><span class="currency">₨</span><input id="emiAmount_${type}" class="currency-input" type="text" inputmode="numeric" placeholder="0"></div></div>`;
+      const input = inputs.querySelector("input");
+      input.value = emiValues[type].amount ? Number(emiValues[type].amount).toLocaleString("en-PK") : "";
+      input.addEventListener("input", () => { formatInput(input); emiValues[type].amount = numberValue(input.value); calculateOtherEMIs(); });
+    } else if (type === "personalLoan" || type === "autoFinance" || type === "mortgageLoan") {
+      const label = type === "personalLoan" ? "Personal Loan Limit / Amount" : (type === "autoFinance" ? "Auto Finance Loan Amount" : "Mortgage Loan Amount");
+      inputs.innerHTML = `<div class="form-group"><label>${label}</label><div class="input-wrap"><span class="currency">₨</span><input id="emiAmount_${type}" class="currency-input" type="text" inputmode="numeric" placeholder="0"></div></div><div class="form-group"><label>Tenure (Months)</label><input id="emiTenure_${type}" type="number" min="1" max="360" step="1" placeholder="e.g. 60"></div>`;
+      const amountInput = inputs.querySelector(`#emiAmount_${type}`);
+      const tenureInput = inputs.querySelector(`#emiTenure_${type}`);
+      amountInput.value = emiValues[type].amount ? Number(emiValues[type].amount).toLocaleString("en-PK") : "";
+      tenureInput.value = emiValues[type].tenure || "";
+      amountInput.addEventListener("input", () => { formatInput(amountInput); emiValues[type].amount = numberValue(amountInput.value); calculateOtherEMIs(); });
+      tenureInput.addEventListener("input", () => { emiValues[type].tenure = parseInt(tenureInput.value, 10) || 0; calculateOtherEMIs(); });
+    } else {
+      inputs.innerHTML = `<div class="form-group"><label>Monthly EMI Amount</label><div class="input-wrap"><span class="currency">₨</span><input id="emiAmount_${type}" class="currency-input" type="text" inputmode="numeric" placeholder="Enter monthly installment"></div></div>`;
+      const input = inputs.querySelector("input");
+      input.value = emiValues[type].amount ? Number(emiValues[type].amount).toLocaleString("en-PK") : "";
+      input.addEventListener("input", () => { formatInput(input); emiValues[type].amount = numberValue(input.value); calculateOtherEMIs(); });
     }
-
   });
-
   calculateOtherEMIs();
-
 }
-
-document.addEventListener(
-  "change",
-  event => {
-
-    if(
-      event.target &&
-      event.target.classList.contains(
-        "emi-option-check"
-      )
-    ){
-
-      renderOtherEMIPopupForms();
-
-    }
-
-  }
-);
-
-function getEMIValue(type,data){
-
-  data =
-    data || {};
-
-  const amount =
-    Number(data.amount) || 0;
-
-  if(
-    type === "creditCard" ||
-    type === "runningFinance"
-  ){
-
-    return amount * 0.05;
-
-  }
-
-  if(type === "otherEMI"){
-
-    return amount;
-
-  }
-
-  const tenure =
-    parseInt(
-      data.tenure,
-      10
-    ) || 0;
-
-  if(
-    amount <= 0 ||
-    tenure <= 0 ||
-    tenure > 360
-  ){
-
-    return 0;
-
-  }
-
-  const kibor =
-    parseFloat(
-      document.getElementById(
-        "kibor"
-      ).value
-    ) || 0;
-
-  const rate =
-    type === "personalLoan"
-      ? 27
-      : (
-        type === "autoFinance"
-          ? kibor + 8
-          : kibor + 5
-      );
-
-  return PMT(
-    amount,
-    rate,
-    tenure
-  );
-
+document.addEventListener("change", event => {
+  if (event.target && event.target.classList.contains("emi-option-check")) renderOtherEMIPopupForms();
+});
+function getEMIValue(type, data) {
+  data = data || {};
+  const amount = Number(data.amount) || 0;
+  if (type === "creditCard" || type === "runningFinance") return amount * 0.05;
+  if (type === "otherEMI") return amount;
+  const tenure = parseInt(data.tenure, 10) || 0;
+  if (amount <= 0 || tenure <= 0 || tenure > 360) return 0;
+  const kibor = parseFloat(document.getElementById("kibor").value) || 0;
+  const rate = type === "personalLoan" ? 27 : (type === "autoFinance" ? kibor + 8 : kibor + 5);
+  return PMT(amount, rate, tenure);
 }
-
-function calculateOtherEMIs(){
-
-  const popupSelected =
-    Array.from(
-      document.querySelectorAll(
-        ".emi-option-check:checked"
-      )
-    ).map(
-      el => el.value
-    );
-
+function calculateOtherEMIs() {
+  const popupSelected = Array.from(document.querySelectorAll(".emi-option-check:checked")).map(el => el.value);
   let popupTotal = 0;
-
   popupSelected.forEach(type => {
-
-    const emi =
-      getEMIValue(
-        type,
-        emiValues[type]
-      );
-
+    const emi = getEMIValue(type, emiValues[type]);
     popupTotal += emi;
-
-    const result =
-      document.getElementById(
-        `emiResult_${type}`
-      );
-
-    if(result){
-
-      result.textContent =
-        pkr(emi);
-
-    }
-
+    const result = document.getElementById(`emiResult_${type}`);
+    if (result) result.textContent = pkr(emi);
   });
-
-  const popupTotalEl =
-    document.getElementById(
-      "popupEMITotal"
-    );
-
-  if(popupTotalEl){
-
-    popupTotalEl.textContent =
-      pkr(popupTotal);
-
-  }
-
+  const popupTotalEl = document.getElementById("popupEMITotal");
+  if (popupTotalEl) popupTotalEl.textContent = pkr(popupTotal);
   updateDBR();
-
 }
-
-function updateDBR(){
-
-  const income =
-    numberValue(
-      document.getElementById(
-        "income"
-      ).value
-    );
-
-  const otherTotal =
-    selectedEMITypes.reduce(
-      (sum,type) =>
-        sum +
-        getEMIValue(
-          type,
-          appliedEMIValues[type]
-        ),
-      0
-    );
-
-  const total =
-    installmentValue +
-    otherTotal;
-
-  document.getElementById(
-    "dbrIncome"
-  ).textContent =
-    pkr(income);
-
-  document.getElementById(
-    "dbrInstallment"
-  ).textContent =
-    pkr(installmentValue);
-
-  document.getElementById(
-    "otherEMITotal"
-  ).textContent =
-    pkr(otherTotal);
-
-  document.getElementById(
-    "totalObligation"
-  ).textContent =
-    pkr(total);
-
-  const breakdownCard =
-    document.getElementById(
-      "dbrEMIBreakdown"
-    );
-
-  const breakdownHost =
-    document.getElementById(
-      "dbrEMIBreakdownItems"
-    );
-
-  if(selectedEMITypes.length){
-
-    breakdownCard.style.display =
-      "block";
-
-    breakdownHost.innerHTML =
-      selectedEMITypes
-        .map(type => `
-
-          <div
-            style="
-              display:flex;
-              justify-content:space-between;
-              gap:12px;
-              padding:8px 0;
-              border-bottom:1px solid #edf2f6;
-              font-size:10px
-            "
-          >
-
-            <span style="color:#718293">
-              ${EMI_TYPES[type].title}
-            </span>
-
-            <strong
-              style="
-                color:#173b60;
-                white-space:nowrap
-              "
-            >
-              ${pkr(
-                getEMIValue(
-                  type,
-                  appliedEMIValues[type]
-                )
-              )}
-            </strong>
-
-          </div>
-
-        `)
-        .join("");
-
-  }else{
-
-    breakdownCard.style.display =
-      "none";
-
-    breakdownHost.innerHTML =
-      "";
-
+function updateDBR() {
+  const income = numberValue(document.getElementById("income").value);
+  const otherTotal = selectedEMITypes.reduce((sum, type) => sum + getEMIValue(type, appliedEMIValues[type]), 0);
+  const total = installmentValue + otherTotal;
+  document.getElementById("dbrIncome").textContent = pkr(income);
+  document.getElementById("dbrInstallment").textContent = pkr(installmentValue);
+  document.getElementById("otherEMITotal").textContent = pkr(otherTotal);
+  document.getElementById("totalObligation").textContent = pkr(total);
+  const breakdownCard = document.getElementById("dbrEMIBreakdown");
+  const breakdownHost = document.getElementById("dbrEMIBreakdownItems");
+  if (selectedEMITypes.length) {
+    breakdownCard.style.display = "block";
+    breakdownHost.innerHTML = selectedEMITypes.map(type => `<div style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #edf2f6;font-size:10px"><span style="color:#718293">${EMI_TYPES[type].title}</span><strong style="color:#173b60;white-space:nowrap">${pkr(getEMIValue(type, appliedEMIValues[type]))}</strong></div>`).join("");
+  } else {
+    breakdownCard.style.display = "none";
+    breakdownHost.innerHTML = "";
   }
-
-  document.getElementById(
-    "dbr"
-  ).textContent =
-    income > 0
-      ? (
-        (total / income) * 100
-      ).toFixed(2) + "%"
-      : "0.00%";
-
+  document.getElementById("dbr").textContent = income > 0 ? ((total / income) * 100).toFixed(2) + "%" : "0.00%";
 }
-
-
-/* =========================================================
-   HELPERS
-   ========================================================= */
-
-function escapePrintText(value){
-
-  return String(value || "")
-    .replace(
-      /[&<>"']/g,
-      char => ({
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        '"':"&quot;",
-        "'":"&#39;"
-      }[char])
-    );
-
+function escapePrintText(value) {
+  return String(value || "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[char]));
 }
-
-function escapeHtml(text){
-
-  return String(text)
-    .replace(
-      /[&<>'"]/g,
-      ch => ({
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        "'":"&#39;",
-        '"':"&quot;"
-      }[ch])
-    );
-
-}
-
-
-/* =========================================================
-   NATIVE ANDROID PDF SHARE
-   ========================================================= */
-
-async function sharePdfWithNativeAndroid(
-  blob,
-  fileName,
-  mimeType="application/pdf"
-){
-
-  if(
-    !(
-      window.Android &&
-      typeof window.Android.sharePdf ===
-      "function"
-    )
-  ){
-
-    return false;
-
-  }
-
-  const base64 =
-    await new Promise(
-      (resolve,reject) => {
-
-        const reader =
-          new FileReader();
-
-        reader.onloadend =
-          () => {
-
-            try{
-
-              resolve(
-                String(
-                  reader.result || ""
-                ).split(",")[1] || ""
-              );
-
-            }catch(error){
-
-              reject(error);
-
-            }
-
-          };
-
-        reader.onerror =
-          reject;
-
-        reader.readAsDataURL(blob);
-
-      }
-    );
-
-  if(!base64){
-
-    throw new Error(
-      "Could not encode PDF for Android sharing."
-    );
-
-  }
-
-  window.Android.sharePdf(
-    base64,
-    fileName,
-    mimeType
-  );
-
-  return true;
-
-}
-
-
-/* =========================================================
-   AMORTIZATION PDF SHARE
-   ========================================================= */
-
-async function shareReport(){
-
-  if(
-    installmentValue <= 0 ||
-    !document.getElementById(
-      "amortBody"
-    ).children.length
-  ){
-
-    alert(
-      "Please calculate the installment first."
-    );
-
+async function shareReport() {
+  if (installmentValue <= 0 || !document.getElementById("amortBody").children.length) {
+    alert("Please calculate the installment first.");
     return;
-
   }
-
-  const customerName =
-    document.getElementById(
-      "customerName"
-    ).value.trim();
-
-  const customerCNIC =
-    document.getElementById(
-      "customerCNIC"
-    ).value.trim();
-
-  if(!customerName){
-
-    alert(
-      "Please enter the customer's name."
-    );
-
-    document
-      .getElementById(
-        "customerName"
-      )
-      .focus();
-
+  const customerName = document.getElementById("customerName").value.trim();
+  const customerCNIC = document.getElementById("customerCNIC").value.trim();
+  if (!customerName) {
+    alert("Please enter the customer's name.");
+    document.getElementById("customerName").focus();
     return;
-
   }
-
-  if(
-    !/^\d{5}-?\d{7}-?\d$/.test(
-      customerCNIC.replace(
-        /\s/g,
-        ""
-      )
-    )
-  ){
-
-    alert(
-      "Please enter a valid 13-digit CNIC number."
-    );
-
-    document
-      .getElementById(
-        "customerCNIC"
-      )
-      .focus();
-
+  if (!/^\d{5}-?\d{7}-?\d$/.test(customerCNIC.replace(/\s/g, ""))) {
+    alert("Please enter a valid 13-digit CNIC number.");
+    document.getElementById("customerCNIC").focus();
     return;
-
   }
 
-  try{
+  try {
+    const pdfBlob = await generateAmortizationPDF();
+    const fileName = "Amortization-Sheet-" + customerName.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "") + ".pdf";
+    const file = new File([pdfBlob], fileName, { type: "application/pdf" });
 
-    const pdfBlob =
-      await generateAmortizationPDF();
-
-    const safeName =
-      customerName
-        .replace(
-          /[^a-z0-9]+/gi,
-          "-"
-        )
-        .replace(
-          /^-|-$/g,
-          ""
-        );
-
-    const fileName =
-      "Amortization-Sheet-" +
-      safeName +
-      ".pdf";
-
-    const file =
-      new File(
-        [pdfBlob],
-        fileName,
-        {
-          type:"application/pdf"
-        }
-      );
-
-    /* Native Android first */
-
-    if(
-      await sharePdfWithNativeAndroid(
-        pdfBlob,
-        fileName,
-        "application/pdf"
-      )
-    ){
-
-      return;
-
-    }
-
-    /* Browser fallback */
-
-    if(
-      navigator.share &&
-      (
-        !navigator.canShare ||
-        navigator.canShare({
-          files:[file]
-        })
-      )
-    ){
-
+    if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
       await navigator.share({
-
-        title:
-          "Amortization Sheet - " +
-          customerName,
-
-        text:
-          "Islamic Personal Finance - Amortization Sheet",
-
-        files:[file]
-
+        title: "Amortization Sheet - " + customerName,
+        text: "Islamic Personal Finance - Amortization Sheet",
+        files: [file]
       });
-
       return;
-
     }
 
-    const url =
-      URL.createObjectURL(
-        pdfBlob
-      );
-
-    const link =
-      document.createElement(
-        "a"
-      );
-
+    const url = URL.createObjectURL(pdfBlob);
+    const link = document.createElement("a");
     link.href = url;
     link.download = fileName;
-
-    document.body.appendChild(
-      link
-    );
-
+    document.body.appendChild(link);
     link.click();
     link.remove();
-
-    setTimeout(
-      () =>
-        URL.revokeObjectURL(url),
-      2000
-    );
-
-    alert(
-      "PDF generated. The PDF has been saved/downloaded."
-    );
-
-  }catch(error){
-
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    alert("PDF generated. WhatsApp sharing is not supported by this browser; the PDF has been saved/downloaded.");
+  } catch (error) {
     console.error(error);
-
-    if(
-      error &&
-      error.name === "AbortError"
-    ){
-
-      return;
-
-    }
-
-    alert(
-      "PDF could not be generated. Please try again."
-    );
-
+    if (error && error.name === "AbortError") return;
+    alert("PDF could not be generated. Please try again.");
   }
-
 }
 
-
-/* =========================================================
-   AMORTIZATION PDF
-   ========================================================= */
-
-async function generateAmortizationPDF(){
-
-  if(
-    !window.jspdf ||
-    !window.jspdf.jsPDF
-  ){
-
-    throw new Error(
-      "PDF library is not available."
-    );
-
+async function generateAmortizationPDF() {
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    throw new Error("PDF library is not available.");
   }
-
-  const {jsPDF} =
-    window.jspdf;
-
-  const doc =
-    new jsPDF({
-
-      orientation:"landscape",
-      unit:"mm",
-      format:"a4"
-
-    });
-
-  const customerName =
-    document.getElementById(
-      "customerName"
-    ).value.trim();
-
-  const customerCNIC =
-    document.getElementById(
-      "customerCNIC"
-    ).value.trim();
-
-  const printedAt =
-    new Date().toLocaleString();
-
-  const pageWidth =
-    doc.internal.pageSize.getWidth();
-
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+  const customerName = document.getElementById("customerName").value.trim();
+  const customerCNIC = document.getElementById("customerCNIC").value.trim();
+  const printedAt = new Date().toLocaleString();
+  const pageWidth = doc.internal.pageSize.getWidth();
   const margin = 9;
 
-  doc.setFillColor(
-    7,92,174
-  );
-
-  doc.rect(
-    0,
-    0,
-    pageWidth,
-    22,
-    "F"
-  );
-
-  doc.setTextColor(
-    255,255,255
-  );
-
-  doc.setFont(
-    "helvetica",
-    "bold"
-  );
-
+  doc.setFillColor(7, 92, 174);
+  doc.rect(0, 0, pageWidth, 22, "F");
+  doc.setTextColor(255, 255, 255);
+  doc.setFont("helvetica", "bold");
   doc.setFontSize(16);
-
-  doc.text(
-    "Islamic Personal Finance",
-    pageWidth / 2,
-    9,
-    {
-      align:"center"
-    }
-  );
-
-  doc.setFont(
-    "helvetica",
-    "normal"
-  );
-
+  doc.text("Islamic Personal Finance", pageWidth / 2, 9, { align: "center" });
+  doc.setFont("helvetica", "normal");
   doc.setFontSize(8);
-
-  doc.text(
-    "Amortization / Monthly Repayment Schedule",
-    pageWidth / 2,
-    15,
-    {
-      align:"center"
-    }
-  );
+  doc.text("Amortization / Monthly Repayment Schedule", pageWidth / 2, 15, { align: "center" });
 
   let y = 27;
-
-  doc.setTextColor(
-    23,59,96
-  );
-
-  doc.setFont(
-    "helvetica",
-    "bold"
-  );
-
+  doc.setTextColor(23, 59, 96);
+  doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
-
-  doc.text(
-    "Customer Name:",
-    margin,
-    y
-  );
-
-  doc.setFont(
-    "helvetica",
-    "normal"
-  );
-
-  doc.text(
-    customerName,
-    margin + 25,
-    y
-  );
-
-  doc.setFont(
-    "helvetica",
-    "bold"
-  );
-
-  doc.text(
-    "CNIC:",
-    105,
-    y
-  );
-
-  doc.setFont(
-    "helvetica",
-    "normal"
-  );
-
-  doc.text(
-    customerCNIC,
-    118,
-    y
-  );
-
-  doc.setFont(
-    "helvetica",
-    "bold"
-  );
-
-  doc.text(
-    "Generated:",
-    180,
-    y
-  );
-
-  doc.setFont(
-    "helvetica",
-    "normal"
-  );
-
-  doc.text(
-    printedAt,
-    199,
-    y
-  );
+  doc.text("Customer Name:", margin, y);
+  doc.setFont("helvetica", "normal");
+  doc.text(customerName, margin + 25, y);
+  doc.setFont("helvetica", "bold");
+  doc.text("CNIC:", 105, y);
+  doc.setFont("helvetica", "normal");
+  doc.text(customerCNIC, 118, y);
+  doc.setFont("helvetica", "bold");
+  doc.text("Generated:", 180, y);
+  doc.setFont("helvetica", "normal");
+  doc.text(printedAt, 199, y);
 
   y += 7;
-
-  doc.setFont(
-    "helvetica",
-    "bold"
-  );
-
+  doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
-
-  doc.text(
-    "Finance Summary",
-    margin,
-    y
-  );
-
+  doc.text("Finance Summary", margin, y);
   y += 3;
 
-  const summaryItems =
-    Array.from(
-      document.querySelectorAll(
-        "#amortizationTab .summary-item"
-      )
-    ).map(
-      item => [
-
-        item.querySelector(
-          ".summary-label"
-        )?.textContent.trim() || "",
-
-        item.querySelector(
-          ".summary-value"
-        )?.textContent.trim() || ""
-
-      ]
-    );
-
+  const summaryItems = Array.from(document.querySelectorAll("#amortizationTab .summary-item")).map(item => [
+    item.querySelector(".summary-label")?.textContent.trim() || "",
+    item.querySelector(".summary-value")?.textContent.trim() || ""
+  ]);
   const summaryRows = [];
-
-  for(
-    let i=0;
-    i<summaryItems.length;
-    i+=4
-  ){
-
-    const row=[];
-
-    for(
-      let j=0;
-      j<4;
-      j++
-    ){
-
-      const item =
-        summaryItems[i+j] ||
-        ["",""];
-
-      row.push(
-        item[0] +
-        "\n" +
-        item[1]
-      );
-
+  for (let i = 0; i < summaryItems.length; i += 4) {
+    const row = [];
+    for (let j = 0; j < 4; j++) {
+      const item = summaryItems[i + j] || ["", ""];
+      row.push(item[0] + "\n" + item[1]);
     }
-
     summaryRows.push(row);
-
   }
-
   doc.autoTable({
-
-    startY:y,
-
-    body:summaryRows,
-
-    theme:"grid",
-
-    margin:{
-      left:margin,
-      right:margin
-    },
-
-    styles:{
-      font:"helvetica",
-      fontSize:7,
-      cellPadding:2.2,
-      textColor:[
-        23,59,96
-      ],
-      valign:"middle"
-    },
-
-    bodyStyles:{
-      fillColor:[
-        245,249,252
-      ]
-    },
-
-    didParseCell:data=>{
-
-      if(
-        data.section === "body"
-      ){
-
-        data.cell.styles.fontStyle =
-          "bold";
-
-      }
-
+    startY: y,
+    body: summaryRows,
+    theme: "grid",
+    margin: { left: margin, right: margin },
+    styles: { font: "helvetica", fontSize: 7, cellPadding: 2.2, textColor: [23, 59, 96], valign: "middle" },
+    bodyStyles: { fillColor: [245, 249, 252] },
+    didParseCell: data => {
+      if (data.section === "body") data.cell.styles.fontStyle = "bold";
     }
-
   });
 
-  y =
-    doc.lastAutoTable.finalY +
-    5;
-
-  doc.setFont(
-    "helvetica",
-    "bold"
-  );
-
+  y = doc.lastAutoTable.finalY + 5;
+  doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
+  doc.setTextColor(23, 59, 96);
+  doc.text("Monthly Repayment Schedule", margin, y);
 
-  doc.setTextColor(
-    23,59,96
+  const headers = Array.from(document.querySelectorAll("#amortBody tr:first-child td")).length ?
+    ["Month", "Opening", "Installment", "Principal", "Profit", "Closing"] : [];
+  const bodyRows = Array.from(document.querySelectorAll("#amortBody tr")).map(row =>
+    Array.from(row.querySelectorAll("td")).map(cell => cell.textContent.trim())
   );
-
-  doc.text(
-    "Monthly Repayment Schedule",
-    margin,
-    y
-  );
-
-  const headers = [
-    "Month",
-    "Opening",
-    "Installment",
-    "Principal",
-    "Profit",
-    "Closing"
-  ];
-
-  const bodyRows =
-    Array.from(
-      document.querySelectorAll(
-        "#amortBody tr"
-      )
-    ).map(
-      row =>
-        Array.from(
-          row.querySelectorAll(
-            "td"
-          )
-        ).map(
-          cell =>
-            cell.textContent.trim()
-        )
-    );
 
   doc.autoTable({
-
-    startY:y+2,
-
-    head:[headers],
-
-    body:bodyRows,
-
-    theme:"grid",
-
-    margin:{
-      top:8,
-      right:margin,
-      bottom:10,
-      left:margin
-    },
-
-    tableWidth:"auto",
-
-    styles:{
-      font:"helvetica",
-      fontSize:6.5,
-      cellPadding:1.7,
-      textColor:[
-        83,108,131
-      ],
-      lineColor:[
-        220,232,242
-      ],
-      lineWidth:.15,
-      halign:"right"
-    },
-
-    headStyles:{
-      fillColor:[
-        237,246,253
-      ],
-      textColor:[
-        65,97,125
-      ],
-      fontStyle:"bold",
-      halign:"right"
-    },
-
-    columnStyles:{
-      0:{
-        halign:"center",
-        cellWidth:15
-      }
-    },
-
-    alternateRowStyles:{
-      fillColor:[
-        247,251,255
-      ]
-    },
-
-    rowPageBreak:"avoid",
-
-    showHead:"everyPage"
-
+    startY: y + 2,
+    head: [headers],
+    body: bodyRows,
+    theme: "grid",
+    margin: { top: 8, right: margin, bottom: 10, left: margin },
+    tableWidth: "auto",
+    styles: { font: "helvetica", fontSize: 6.5, cellPadding: 1.7, textColor: [83, 108, 131], lineColor: [220, 232, 242], lineWidth: 0.15, halign: "right" },
+    headStyles: { fillColor: [237, 246, 253], textColor: [65, 97, 125], fontStyle: "bold", halign: "right" },
+    columnStyles: { 0: { halign: "center", cellWidth: 15 } },
+    alternateRowStyles: { fillColor: [247, 251, 255] },
+    rowPageBreak: "avoid",
+    showHead: "everyPage"
   });
 
-  const pageCount =
-    doc.getNumberOfPages();
-
-  for(
-    let page=1;
-    page<=pageCount;
-    page++
-  ){
-
+  const pageCount = doc.getNumberOfPages();
+  for (let page = 1; page <= pageCount; page++) {
     doc.setPage(page);
-
-    doc.setDrawColor(
-      220,232,242
-    );
-
-    doc.line(
-      margin,
-      195,
-      pageWidth-margin,
-      195
-    );
-
-    doc.setFont(
-      "helvetica",
-      "normal"
-    );
-
+    doc.setDrawColor(220, 232, 242);
+    doc.line(margin, 195, pageWidth - margin, 195);
+    doc.setFont("helvetica", "normal");
     doc.setFontSize(6.5);
-
-    doc.setTextColor(
-      113,130,147
-    );
-
-    doc.text(
-      "Confidential customer finance information",
-      margin,
-      199
-    );
-
-    doc.text(
-      "Powered by Syed Muhammad Humza Arif",
-      pageWidth-margin,
-      199,
-      {
-        align:"right"
-      }
-    );
-
-    doc.text(
-      "Page " +
-      page +
-      " of " +
-      pageCount,
-      pageWidth/2,
-      199,
-      {
-        align:"center"
-      }
-    );
-
+    doc.setTextColor(113, 130, 147);
+    doc.text("Confidential customer finance information", margin, 199);
+    doc.text("Powered by Syed Muhammad Humza Arif", pageWidth - margin, 199, { align: "right" });
+    doc.text("Page " + page + " of " + pageCount, pageWidth / 2, 199, { align: "center" });
   }
 
-  return doc.output(
-    "blob"
-  );
-
+  return doc.output("blob");
+}
+function getDocumentsChecklistItems() {
+  return Array.from(document.querySelectorAll("#documentsChecklist .document-text")).map((el, i) => ({ number: i + 1, text: el.textContent.trim() }));
 }
 
-
-/* =========================================================
-   DOCUMENT CHECKLIST
-   ========================================================= */
-
-function getDocumentsChecklistItems(){
-
-  return Array.from(
-    document.querySelectorAll(
-      "#documentsChecklist .document-text"
-    )
-  ).map(
-    (el,i)=>({
-
-      number:i+1,
-
-      text:
-        el.textContent.trim()
-
-    })
-  );
-
-}
-
-let documentsChecklistPDFBlob =
-  null;
-
-let documentsChecklistPDFFile =
-  null;
-
-function renderDocumentsChecklistPreview(
-  items
-){
-
-  const box =
-    document.getElementById(
-      "documentsPreviewList"
-    );
-
-  if(!box) return;
-
-  box.innerHTML =
-    items.map(
-      item => `
-
-        <div
-          class="documents-preview-item"
-        >
-
-          <span
-            class="documents-preview-num"
-          >
-            ${item.number}.
-          </span>
-
-          <span>
-            ${escapeHtml(item.text)}
-          </span>
-
-          <span
-            class="documents-preview-boxmark"
-            aria-hidden="true">
-          </span>
-
-        </div>
-
-      `
-    ).join("");
-
-}
-
-async function buildDocumentsChecklistPDF(){
-
-  if(
-    !window.jspdf ||
-    !window.jspdf.jsPDF
-  ){
-
-    throw new Error(
-      "PDF library is not available."
-    );
-
-  }
-
-  const {jsPDF} =
-    window.jspdf;
-
-  const doc =
-    new jsPDF({
-
-      orientation:"portrait",
-      unit:"mm",
-      format:"a4"
-
+async function shareDocumentsChecklist() {
+  try {
+    if (!window.jspdf || !window.jspdf.jsPDF) throw new Error("PDF library is not available.");
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 15;
+    const items = getDocumentsChecklistItems();
+    doc.setFillColor(7,92,174); doc.rect(0,0,pageWidth,25,"F");
+    doc.setTextColor(255,255,255); doc.setFont("helvetica","bold"); doc.setFontSize(17); doc.text("Islamic Personal Finance",pageWidth/2,11,{align:"center"});
+    doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.text("Documents Checklist",pageWidth/2,18,{align:"center"});
+    let y=34;
+    doc.setTextColor(23,50,79); doc.setFontSize(10);
+    items.forEach(item=>{
+      const lines=doc.splitTextToSize(item.text,pageWidth-margin*2-22);
+      const rowH=Math.max(10,lines.length*5+5);
+      if(y+rowH>280){doc.addPage();y=18;}
+      doc.setFont("helvetica","bold"); doc.text(item.number+".",margin,y+5);
+      doc.setFont("helvetica","normal"); doc.text(lines,margin+9,y+5);
+      doc.setDrawColor(20,20,20); doc.rect(pageWidth-margin-7,y+1,6,6);
+      y+=rowH;
     });
-
-  const pageWidth =
-    doc.internal.pageSize.getWidth();
-
-  const pageHeight =
-    doc.internal.pageSize.getHeight();
-
-  const margin = 15;
-
-  const items =
-    getDocumentsChecklistItems();
-
-  doc.setFillColor(
-    7,92,174
-  );
-
-  doc.rect(
-    0,
-    0,
-    pageWidth,
-    25,
-    "F"
-  );
-
-  doc.setTextColor(
-    255,255,255
-  );
-
-  doc.setFont(
-    "helvetica",
-    "bold"
-  );
-
-  doc.setFontSize(17);
-
-  doc.text(
-    "Islamic Personal Finance",
-    pageWidth/2,
-    11,
-    {
-      align:"center"
-    }
-  );
-
-  doc.setFont(
-    "helvetica",
-    "normal"
-  );
-
-  doc.setFontSize(9);
-
-  doc.text(
-    "Documents Checklist",
-    pageWidth/2,
-    18,
-    {
-      align:"center"
-    }
-  );
-
-  let y = 34;
-
-  doc.setTextColor(
-    23,50,79
-  );
-
-  doc.setFontSize(10);
-
-  items.forEach(
-    item => {
-
-      const lines =
-        doc.splitTextToSize(
-          item.text,
-          pageWidth -
-          margin*2 -
-          22
-        );
-
-      const rowH =
-        Math.max(
-          10,
-          lines.length*5+5
-        );
-
-      if(
-        y + rowH >
-        pageHeight - 25
-      ){
-
-        doc.addPage();
-
-        y = 18;
-
-      }
-
-      doc.setFont(
-        "helvetica",
-        "bold"
-      );
-
-      doc.text(
-        item.number + ".",
-        margin,
-        y+5
-      );
-
-      doc.setFont(
-        "helvetica",
-        "normal"
-      );
-
-      doc.text(
-        lines,
-        margin+9,
-        y+5
-      );
-
-      doc.setDrawColor(
-        20,20,20
-      );
-
-      doc.rect(
-        pageWidth-margin-7,
-        y+1,
-        6,
-        6
-      );
-
-      y += rowH;
-
-    }
-  );
-
-  if(
-    y+15 >
-    pageHeight-10
-  ){
-
-    doc.addPage();
-
-    y=18;
-
-  }
-
-  doc.setFontSize(8);
-
-  doc.setTextColor(
-    105,125,143
-  );
-
-  doc.text(
-    "Checklist boxes are intentionally left blank for printing and manual use.",
-    margin,
-    y+8
-  );
-
-  doc.text(
-    "Powered by Syed Muhammad Humza Arif",
-    pageWidth/2,
-    pageHeight-8,
-    {
-      align:"center"
-    }
-  );
-
-  return doc.output(
-    "blob"
-  );
-
-}
-
-async function openDocumentsChecklistPreview(){
-
-  const modal =
-    document.getElementById(
-      "documentsPreviewModal"
-    );
-
-  const list =
-    document.getElementById(
-      "documentsPreviewList"
-    );
-
-  const shareBtn =
-    document.getElementById(
-      "documentsShareBtn"
-    );
-
-  if(
-    !modal ||
-    !list ||
-    !shareBtn
-  ){
-
-    return;
-
-  }
-
-  const items =
-    getDocumentsChecklistItems();
-
-  renderDocumentsChecklistPreview(
-    items
-  );
-
-  modal.classList.add("show");
-
-  shareBtn.disabled = true;
-
-  shareBtn.textContent =
-    "Preparing PDF...";
-
-  try{
-
-    documentsChecklistPDFBlob =
-      await buildDocumentsChecklistPDF();
-
-    documentsChecklistPDFFile =
-      new File(
-        [
-          documentsChecklistPDFBlob
-        ],
-        "Documents-Checklist.pdf",
-        {
-          type:"application/pdf"
-        }
-      );
-
-    shareBtn.disabled =
-      false;
-
-    shareBtn.textContent =
-      "Share PDF";
-
-  }catch(error){
-
-    console.error(error);
-
-    shareBtn.disabled =
-      true;
-
-    shareBtn.textContent =
-      "PDF could not be generated";
-
-    alert(
-      "PDF could not be generated. Please try again."
-    );
-
-  }
-
-}
-
-async function shareGeneratedChecklistPDF(){
-
-  if(
-    !documentsChecklistPDFBlob ||
-    !documentsChecklistPDFFile
-  ){
-
-    return;
-
-  }
-
-  try{
-
-    /* Native Android first */
-
-    if(
-      await sharePdfWithNativeAndroid(
-        documentsChecklistPDFBlob,
-        "Documents-Checklist.pdf",
-        "application/pdf"
-      )
-    ){
-
+    doc.setFontSize(8); doc.setTextColor(105,125,143); doc.text("Checklist boxes are intentionally left blank for printing and manual use.",margin,y+8);
+    doc.text("Powered by Syed Muhammad Humza Arif",pageWidth/2,289,{align:"center"});
+    const blob=doc.output("blob");
+    const file=new File([blob],"Documents-Checklist.pdf",{type:"application/pdf"});
+    if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
+      await navigator.share({title:"Documents Checklist",text:"Islamic Personal Finance - Documents Checklist",files:[file]});
       return;
-
     }
-
-    /* Browser fallback */
-
-    if(navigator.share){
-
-      if(
-        !navigator.canShare ||
-        navigator.canShare({
-          files:[
-            documentsChecklistPDFFile
-          ]
-        })
-      ){
-
-        await navigator.share({
-
-          title:
-            "Documents Checklist",
-
-          text:
-            "Islamic Personal Finance - Documents Checklist",
-
-          files:[
-            documentsChecklistPDFFile
-          ]
-
-        });
-
-        return;
-
-      }
-
-    }
-
-    const url =
-      URL.createObjectURL(
-        documentsChecklistPDFBlob
-      );
-
-    const link =
-      document.createElement(
-        "a"
-      );
-
-    link.href = url;
-
-    link.download =
-      "Documents-Checklist.pdf";
-
-    document.body.appendChild(
-      link
-    );
-
-    link.click();
-
-    link.remove();
-
-    setTimeout(
-      () =>
-        URL.revokeObjectURL(url),
-      3000
-    );
-
-    alert(
-      "PDF saved. You can share it from your Downloads folder."
-    );
-
-  }catch(error){
-
-    if(
-      error &&
-      error.name === "AbortError"
-    ){
-
-      return;
-
-    }
-
-    console.error(error);
-
-    alert(
-      "PDF could not be shared. Please try again."
-    );
-
+    const url=URL.createObjectURL(blob); const link=document.createElement("a"); link.href=url; link.download="Documents-Checklist.pdf"; document.body.appendChild(link); link.click(); link.remove(); setTimeout(()=>URL.revokeObjectURL(url),2000);
+    alert("PDF generated. You can now share the downloaded PDF on WhatsApp.");
+  } catch(error) {
+    if(error && error.name === "AbortError") return;
+    console.error(error); alert("PDF could not be generated. Please try again.");
   }
-
 }
 
-
-/* =========================================================
-   NATIVE ANDROID PRINT + BROWSER FALLBACK
-   ========================================================= */
-
-async function printReport(){
-
-  if(
-    installmentValue <= 0 ||
-    !document.getElementById(
-      "amortBody"
-    ).children.length
-  ){
-
-    alert(
-      "Please calculate the installment first."
-    );
-
-    return;
-
-  }
-
-  const customerName =
-    document.getElementById(
-      "customerName"
-    ).value.trim();
-
-  const customerCNIC =
-    document.getElementById(
-      "customerCNIC"
-    ).value.trim();
-
-  if(!customerName){
-
-    alert(
-      "Please enter the customer's name."
-    );
-
-    document
-      .getElementById(
-        "customerName"
-      )
-      .focus();
-
-    return;
-
-  }
-
-  if(!customerCNIC){
-
-    alert(
-      "Please enter the customer's CNIC."
-    );
-
-    document
-      .getElementById(
-        "customerCNIC"
-      )
-      .focus();
-
-    return;
-
-  }
-
-  try{
-
-    const summary =
-      document.querySelector(
-        "#amortizationTab .summary-grid"
-      ).outerHTML;
-
-    const schedule =
-      document.querySelector(
-        "#amortizationTab .amort-table"
-      ).outerHTML;
-
-    const printedAt =
-      new Date().toLocaleString();
-
-
-    /* ==========================================
-       NATIVE ANDROID PRINT
-       ========================================== */
-
-    if(
-      window.Android &&
-      typeof window.Android.printHtml ===
-      "function"
-    ){
-
-      const reportHtml = `
-
-<!doctype html>
-
-<html lang="en">
-
-<head>
-
-<meta charset="utf-8">
-
-<style>
-
-*{
-  box-sizing:border-box;
-}
-
-body{
-  font-family:Arial,sans-serif;
-  color:#17324f;
-  margin:0;
-  padding:15px;
-  font-size:10px;
-  background:#ffffff;
-}
-
-.report{
-  width:100%;
-}
-
-.report-header{
-  background:#075cae;
-  color:#ffffff;
-  padding:14px;
-  text-align:center;
-}
-
-.brand-mark{
-  width:30px;
-  height:30px;
-  margin:0 auto 6px;
-  border-radius:8px;
-  background:rgba(255,255,255,.15);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:16px;
-  font-weight:bold;
-}
-
-h1{
-  font-size:17px;
-  margin:0 0 4px;
-}
-
-.subtitle{
-  font-size:8px;
-}
-
-.report-content{
-  padding:12px 0;
-}
-
-.customer{
-  background:#f7fbff;
-  border:1px solid #dce8f2;
-  border-radius:8px;
-  padding:9px;
-  margin-bottom:12px;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-}
-
-.customer b{
-  display:block;
-  color:#6d8296;
-  font-size:7px;
-  margin-bottom:3px;
-}
-
-.customer span{
-  font-size:9px;
-  font-weight:bold;
-  color:#173b60;
-}
-
-h2{
-  font-size:10px;
-  color:#173b60;
-  margin:10px 0 6px;
-  padding-left:6px;
-  border-left:3px solid #075cae;
-}
-
-.summary-grid{
-  display:grid;
-  grid-template-columns:
-    repeat(4,minmax(0,1fr));
-  gap:5px;
-}
-
-.summary-item{
-  background:#f5f9fc;
-  border:1px solid #e0eaf1;
-  padding:6px;
-  border-radius:6px;
-}
-
-.summary-label{
-  font-size:6.5px;
-  color:#788b9d;
-  margin-bottom:3px;
-}
-
-.summary-value{
-  font-size:8px;
-  font-weight:bold;
-  color:#173b60;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:7px;
-}
-
-th{
-  background:#edf6fd;
-  color:#41617d;
-  padding:5px 3px;
-  border:1px solid #dce8f2;
-  font-weight:bold;
-  text-align:right;
-}
-
-td{
-  padding:4px 3px;
-  border:1px solid #edf2f6;
-  color:#536c83;
-  text-align:right;
-}
-
-th:first-child,
-td:first-child{
-  text-align:center;
-}
-
-.customer,
-.summary-item,
-table,
-tr{
-  break-inside:avoid;
-  page-break-inside:avoid;
-}
-
-.footer{
-  margin-top:10px;
-  padding-top:6px;
-  border-top:1px solid #dce8f2;
-  display:flex;
-  justify-content:space-between;
-  font-size:6.5px;
-  color:#718293;
-}
-
-@page{
-  size:A4 landscape;
-  margin:7mm;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<div class="report">
-
-<header class="report-header">
-
-<div class="brand-mark">
-☪
-</div>
-
-<h1>
-Islamic Personal Finance
-</h1>
-
-<div class="subtitle">
-Amortization / Monthly Repayment Schedule
-</div>
-
-</header>
-
-<main class="report-content">
-
-<div class="customer">
-
-<div>
-<b>Customer Name</b>
-<span>
-${escapePrintText(customerName)}
-</span>
-</div>
-
-<div>
-<b>CNIC Number</b>
-<span>
-${escapePrintText(customerCNIC)}
-</span>
-</div>
-
-<div>
-<b>Report Generated</b>
-<span>
-${escapePrintText(printedAt)}
-</span>
-</div>
-
-<div>
-<b>Monthly Installment</b>
-<span>
-${escapePrintText(
-  document.getElementById(
-    "reportInstallment"
-  ).textContent
-)}
-</span>
-</div>
-
-</div>
-
-<h2>
-Finance Summary
-</h2>
-
-${summary}
-
-<h2>
-Monthly Repayment Schedule
-</h2>
-
-${schedule}
-
-<div class="footer">
-
-<span>
-Confidential customer finance information
-</span>
-
-<span>
-Powered by Syed Muhammad Humza Arif
-</span>
-
-</div>
-
-</main>
-
-</div>
-
-</body>
-
-</html>
-`;
-
-      /*
-
-        Native MainActivity.java receives
-        the complete HTML and opens the
-        real Android PrintManager dialog.
-
-      */
-
-      window.Android.printHtml(
-        reportHtml,
-        "Amortization Sheet - " +
-        customerName
-      );
-
-      return;
-
-    }
-
-
-    /* ==========================================
-       BROWSER FALLBACK PRINT
-       ========================================== */
-
-    const reportWindow =
-      window.open(
-        "",
-        "_blank"
-      );
-
-    if(!reportWindow){
-
-      alert(
-        "Print window was blocked. Please allow pop-ups for this page and try again."
-      );
-
-      return;
-
-    }
-
-    reportWindow.document.open();
-
-    reportWindow.document.write(`
-
-<!doctype html>
-
-<html lang="en">
-
-<head>
-
-<meta charset="utf-8">
-
-<meta
-name="viewport"
-content="width=device-width,initial-scale=1">
-
-<title>
-Amortization Sheet -
-${escapePrintText(customerName)}
-</title>
-
-<style>
-
-*{
-  box-sizing:border-box;
-}
-
-body{
-  font-family:Arial,sans-serif;
-  color:#17324f;
-  margin:22px;
-  font-size:11px;
-  line-height:1.45;
-}
-
-.report{
-  max-width:1200px;
-  margin:0 auto;
-}
-
-.report-header{
-  background:#075cae;
-  color:white;
-  padding:18px;
-  text-align:center;
-}
-
-h1{
-  font-size:20px;
-  margin:0 0 5px;
-}
-
-.subtitle{
-  font-size:10px;
-}
-
-.customer{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  padding:12px;
-  border:1px solid #dce8f2;
-  margin:15px 0;
-}
-
-.customer b{
-  display:block;
-  color:#6d8296;
-  font-size:9px;
-  margin-bottom:4px;
-}
-
-.summary-grid{
-  display:grid;
-  grid-template-columns:
-    repeat(4,1fr);
-  gap:7px;
-}
-
-.summary-item{
-  padding:8px;
-  border:1px solid #dce8f2;
-  background:#f5f9fc;
-}
-
-.summary-label{
-  font-size:8px;
-  color:#788b9d;
-}
-
-.summary-value{
-  font-size:10px;
-  font-weight:bold;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:8px;
-  margin-top:8px;
-}
-
-th{
-  background:#edf6fd;
-}
-
-th,
-td{
-  border:1px solid #dce8f2;
-  padding:5px;
-  text-align:right;
-}
-
-th:first-child,
-td:first-child{
-  text-align:center;
-}
-
-@page{
-  size:A4 landscape;
-  margin:8mm;
-}
-
-@media print{
-
-  body{
-    margin:0;
-    -webkit-print-color-adjust:exact;
-    print-color-adjust:exact;
-  }
-
-  .report{
-    max-width:none;
-  }
-
-  thead{
-    display:table-header-group;
-  }
-
-  tr{
-    break-inside:avoid;
-    page-break-inside:avoid;
-  }
-
-}
-
-</style>
-
-</head>
-
-<body>
-
-<div class="report">
-
-<header class="report-header">
-
-<h1>
-Islamic Personal Finance
-</h1>
-
-<div class="subtitle">
-Amortization / Monthly Repayment Schedule
-</div>
-
-</header>
-
-<div class="customer">
-
-<div>
-
-<b>
-Customer Name
-</b>
-
-${escapePrintText(customerName)}
-
-</div>
-
-<div>
-
-<b>
-CNIC Number
-</b>
-
-${escapePrintText(customerCNIC)}
-
-</div>
-
-<div>
-
-<b>
-Report Generated
-</b>
-
-${escapePrintText(printedAt)}
-
-</div>
-
-<div>
-
-<b>
-Monthly Installment
-</b>
-
-${escapePrintText(
-  document.getElementById(
-    "reportInstallment"
-  ).textContent
-)}
-
-</div>
-
-</div>
-
-<h3>
-Finance Summary
-</h3>
-
-${summary}
-
-<h3>
-Monthly Repayment Schedule
-</h3>
-
-${schedule}
-
-</div>
-
-<script>
-
-window.addEventListener(
-  "load",
-  function(){
-
-    setTimeout(
-      function(){
-
-        window.print();
-
-      },
-      350
-    );
-
-  }
-);
-
-<\/script>
-
-</body>
-
-</html>
-
-`);
-
-    reportWindow.document.close();
-
-  }catch(error){
-
-    console.error(
-      "Print error:",
-      error
-    );
-
-    alert(
-      "Print could not be started. Please try again."
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   GENERATE AMORTIZATION TABLE
-   ========================================================= */
-
-function generateAmortization(
-  principal,
-  annualRate,
-  months,
-  payment,
-  kibor,
-  spread
-){
-
-  const monthlyRate =
-    annualRate / 100 / 12;
-
-  let balance =
-    principal;
-
-  let totalPrincipal =
-    0;
-
-  let totalProfit =
-    0;
-
-  const body =
-    document.getElementById(
-      "amortBody"
-    );
-
-  body.innerHTML =
-    "";
-
-  for(
-    let month=1;
-    month<=months;
-    month++
-  ){
-
-    const opening =
-      balance;
-
-    const profit =
-      opening * monthlyRate;
-
-    let principalPart =
-      payment - profit;
-
-    if(month === months){
-
-      principalPart =
-        opening;
-
-    }
-
-    const actualPayment =
-      principalPart + profit;
-
-    let closing =
-      opening - principalPart;
-
-    if(
-      Math.abs(closing) < .01
-    ){
-
-      closing=0;
-
-    }
-
-    totalPrincipal +=
-      principalPart;
-
-    totalProfit +=
-      profit;
-
-    const row =
-      document.createElement(
-        "tr"
-      );
-
-    row.innerHTML = `
-
-      <td>
-        <strong>
-          ${month}
-        </strong>
-      </td>
-
-      <td>
-        ${pkr(opening)}
-      </td>
-
-      <td>
-        ${pkr(actualPayment)}
-      </td>
-
-      <td>
-        ${pkr(principalPart)}
-      </td>
-
-      <td>
-        ${pkr(profit)}
-      </td>
-
-      <td>
-        ${pkr(closing)}
-      </td>
-
-    `;
-
+function generateAmortization(principal, annualRate, months, payment, kibor, spread) {
+  const monthlyRate = annualRate / 100 / 12;
+  let balance = principal;
+  let totalPrincipal = 0;
+  let totalProfit = 0;
+  const body = document.getElementById("amortBody");
+  body.innerHTML = "";
+
+  for (let month = 1; month <= months; month++) {
+    const opening = balance;
+    const profit = opening * monthlyRate;
+    let principalPart = payment - profit;
+    if (month === months) principalPart = opening;
+    const actualPayment = principalPart + profit;
+    let closing = opening - principalPart;
+    if (Math.abs(closing) < 0.01) closing = 0;
+
+    totalPrincipal += principalPart;
+    totalProfit += profit;
+
+    const row = document.createElement("tr");
+    row.innerHTML = `<td><strong>${month}</strong></td><td>${pkr(opening)}</td><td>${pkr(actualPayment)}</td><td>${pkr(principalPart)}</td><td>${pkr(profit)}</td><td>${pkr(closing)}</td>`;
     body.appendChild(row);
-
-    balance =
-      closing;
-
+    balance = closing;
   }
 
-  document.getElementById(
-    "reportAmount"
-  ).textContent =
-    pkr(principal);
-
-  document.getElementById(
-    "reportRate"
-  ).textContent =
-    annualRate.toFixed(2) +
-    "%";
-
-  document.getElementById(
-    "reportTenure"
-  ).textContent =
-    months +
-    " Months";
-
-  document.getElementById(
-    "reportInstallment"
-  ).textContent =
-    pkr(payment);
-
-  document.getElementById(
-    "reportPrincipal"
-  ).textContent =
-    pkr(totalPrincipal);
-
-  document.getElementById(
-    "reportProfit"
-  ).textContent =
-    pkr(totalProfit);
-
-  document.getElementById(
-    "reportTotal"
-  ).textContent =
-    pkr(
-      totalPrincipal +
-      totalProfit
-    );
-
-  document.getElementById(
-    "reportBreakup"
-  ).textContent =
-    kibor.toFixed(2) +
-    "% + " +
-    spread.toFixed(2) +
-    "%";
-
-  document
-    .getElementById(
-      "amortBtn"
-    )
-    .classList.remove(
-      "locked"
-    );
-
+  document.getElementById("reportAmount").textContent = pkr(principal);
+  document.getElementById("reportRate").textContent = annualRate.toFixed(2) + "%";
+  document.getElementById("reportTenure").textContent = months + " Months";
+  document.getElementById("reportInstallment").textContent = pkr(payment);
+  document.getElementById("reportPrincipal").textContent = pkr(totalPrincipal);
+  document.getElementById("reportProfit").textContent = pkr(totalProfit);
+  document.getElementById("reportTotal").textContent = pkr(totalPrincipal + totalProfit);
+  document.getElementById("reportBreakup").textContent = kibor.toFixed(2) + "% + " + spread.toFixed(2) + "%";
+  document.getElementById("amortBtn").classList.remove("locked");
+}
+function openAmortization() {
+  if (installmentValue <= 0) return;
+  const nameInput = document.getElementById("customerName");
+  const cnicInput = document.getElementById("customerCNIC");
+  if (!nameInput.value.trim() || !/^\d{5}-?\d{7}-?\d$/.test(cnicInput.value.replace(/\s/g, ""))) {
+    document.getElementById("customerNameModal").value = nameInput.value;
+    document.getElementById("customerCNICModal").value = cnicInput.value;
+    document.getElementById("customerDetailsModal").classList.add("show");
+    setTimeout(() => (!nameInput.value.trim() ? document.getElementById("customerNameModal") : document.getElementById("customerCNICModal")).focus(), 50);
+    return;
+  }
+  openTab("amortizationTab", document.getElementById("amortBtn"));
 }
 
+function continueToAmortization() {
+  const nameInput = document.getElementById("customerName");
+  const cnicInput = document.getElementById("customerCNIC");
+  const name = nameInput.value.trim();
+  const digits = cnicInput.value.replace(/\D/g, "");
+  if (!name) { alert("Please enter the customer's name."); nameInput.focus(); return; }
+  if (digits.length !== 13) { alert("Please enter a valid 13-digit CNIC number."); cnicInput.focus(); return; }
+  closeModal("customerDetailsModal");
+  openTab("amortizationTab", document.getElementById("amortBtn"));
+}
+function openTab(tabId, button) {
+  if (tabId === "dbrTab" &&
+      (numberValue(document.getElementById("income").value) <= 0 || installmentValue <= 0)) return;
+  if (tabId === "amortizationTab" && installmentValue <= 0) return;
 
-/* =========================================================
-   CUSTOMER / TABS
-   ========================================================= */
+  document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
 
-function openAmortization(){
-
-  if(
-    installmentValue <= 0
-  ){
-
-    return;
-
-  }
-
-  const nameInput =
-    document.getElementById(
-      "customerName"
-    );
-
-  const cnicInput =
-    document.getElementById(
-      "customerCNIC"
-    );
-
-  if(
-    !nameInput.value.trim() ||
-    !/^\d{5}-?\d{7}-?\d$/.test(
-      cnicInput.value.replace(
-        /\s/g,
-        ""
-      )
-    )
-  ){
-
-    document.getElementById(
-      "customerNameModal"
-    ).value =
-      nameInput.value;
-
-    document.getElementById(
-      "customerCNICModal"
-    ).value =
-      cnicInput.value;
-
-    document
-      .getElementById(
-        "customerDetailsModal"
-      )
-      .classList.add(
-        "show"
-      );
-
-    setTimeout(
-      () => {
-
-        (
-          !nameInput.value.trim()
-            ? document.getElementById(
-                "customerNameModal"
-              )
-            : document.getElementById(
-                "customerCNICModal"
-              )
-        ).focus();
-
-      },
-      50
-    );
-
-    return;
-
-  }
-
-  openTab(
-    "amortizationTab",
-    document.getElementById(
-      "amortBtn"
-    )
-  );
-
+  const selected = document.getElementById(tabId);
+  if (!selected || !button) return;
+  selected.classList.add("active");
+  button.classList.add("active");
+  if (tabId === "dbrTab") updateDBR();
+}
+function showLimit(max) {
+  document.getElementById("popupLimit").textContent = pkr(max);
+  document.getElementById("limitModal").classList.add("show");
 }
 
-function continueToAmortization(){
-
-  const nameInput =
-    document.getElementById(
-      "customerName"
-    );
-
-  const cnicInput =
-    document.getElementById(
-      "customerCNIC"
-    );
-
-  const name =
-    nameInput.value.trim();
-
-  const digits =
-    cnicInput.value.replace(
-      /\D/g,
-      ""
-    );
-
-  if(!name){
-
-    alert(
-      "Please enter the customer's name."
-    );
-
-    nameInput.focus();
-
-    return;
-
-  }
-
-  if(digits.length !== 13){
-
-    alert(
-      "Please enter a valid 13-digit CNIC number."
-    );
-
-    cnicInput.focus();
-
-    return;
-
-  }
-
-  closeModal(
-    "customerDetailsModal"
-  );
-
-  openTab(
-    "amortizationTab",
-    document.getElementById(
-      "amortBtn"
-    )
-  );
-
-}
-
-function openTab(
-  tabId,
-  button
-){
-
-  if(
-    tabId === "dbrTab" &&
-    (
-      numberValue(
-        document.getElementById(
-          "income"
-        ).value
-      ) <= 0 ||
-      installmentValue <= 0
-    )
-  ){
-
-    return;
-
-  }
-
-  if(
-    tabId === "amortizationTab" &&
-    installmentValue <= 0
-  ){
-
-    return;
-
-  }
-
-  document
-    .querySelectorAll(
-      ".tab-content"
-    )
-    .forEach(
-      tab =>
-        tab.classList.remove(
-          "active"
-        )
-    );
-
-  document
-    .querySelectorAll(
-      ".tab"
-    )
-    .forEach(
-      tab =>
-        tab.classList.remove(
-          "active"
-        )
-    );
-
-  const selected =
-    document.getElementById(
-      tabId
-    );
-
-  if(
-    !selected ||
-    !button
-  ){
-
-    return;
-
-  }
-
-  selected.classList.add(
-    "active"
-  );
-
-  button.classList.add(
-    "active"
-  );
-
-  if(
-    tabId === "dbrTab"
-  ){
-
-    updateDBR();
-
-  }
-
-  if(
-    tabId === "documentsTab"
-  ){
-
-    openDocumentsChecklistPreview();
-
-  }
-
-}
-
-function showLimit(max){
-
-  document.getElementById(
-    "popupLimit"
-  ).textContent =
-    pkr(max);
-
-  document
-    .getElementById(
-      "limitModal"
-    )
-    .classList.add(
-      "show"
-    );
-
-}
-
-function syncCustomerDetailsAndOpen(){
-
-  document.getElementById(
-    "customerName"
-  ).value =
-    document.getElementById(
-      "customerNameModal"
-    ).value.trim();
-
-  document.getElementById(
-    "customerCNIC"
-  ).value =
-    document.getElementById(
-      "customerCNICModal"
-    ).value;
-
+function syncCustomerDetailsAndOpen() {
+  document.getElementById("customerName").value = document.getElementById("customerNameModal").value.trim();
+  document.getElementById("customerCNIC").value = document.getElementById("customerCNICModal").value;
   continueToAmortization();
-
 }
-
-function closeModal(id){
-
-  document
-    .getElementById(id)
-    .classList.remove(
-      "show"
-    );
-
+function closeModal(id) {
+  document.getElementById(id).classList.remove("show");
 }
-
-document
-  .querySelectorAll(".modal")
-  .forEach(
-    modal => {
-
-      modal.addEventListener(
-        "click",
-        function(event){
-
-          if(
-            event.target === modal
-          ){
-
-            modal.classList.remove(
-              "show"
-            );
-
-          }
-
-        }
-      );
-
-    }
-  );
-
-
-/* =========================================================
-   INITIALIZE
-   ========================================================= */
+document.querySelectorAll(".modal").forEach(modal => {
+  modal.addEventListener("click", function(event) {
+    if (event.target === modal) modal.classList.remove("show");
+  });
+});
 
 updateMultiple();
 updateLimit();
 updateRate();
 updateDBR();
 updateDBRStatus();
-
 </script>
-
 </body>
 </html>
