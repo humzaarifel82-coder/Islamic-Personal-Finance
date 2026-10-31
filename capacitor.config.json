@@ -1,0 +1,9 @@
+{
+  "appId": "com.humzaarif.islamicfinance",
+  "appName": "Islamic Personal Finance",
+  "webDir": "www",
+  "backgroundColor": "#075cae",
+  "android": {
+    "backgroundColor": "#075cae"
+  }
+}
