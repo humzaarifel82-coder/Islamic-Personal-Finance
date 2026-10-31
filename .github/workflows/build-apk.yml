@@ -40,25 +40,85 @@ jobs:
         run: npx @capacitor/assets generate --android
         continue-on-error: true
 
+      # ==========================================
+      # APPLY NATIVE PDF SHARING FIX
+      # ==========================================
       - name: Apply native PDF sharing fix
+        shell: bash
         run: |
-          echo "Applying native Android sharing configuration..."
+          set -e
 
-          # Create required directories
+          echo "Applying native Android PDF sharing..."
+
+          # Java directory
           mkdir -p android/app/src/main/java/com/humzaarif/islamicfinance
+
+          # XML directory
           mkdir -p android/app/src/main/res/xml
 
-          # Copy native sharing files if present in repository
-          if [ -f "android-patch/MainActivity.java" ]; then
-            cp android-patch/MainActivity.java \
+          # Copy MainActivity
+          if [ -f "android-patch/app/src/main/java/com/humzaarif/islamicfinance/MainActivity.java" ]; then
+            cp android-patch/app/src/main/java/com/humzaarif/islamicfinance/MainActivity.java \
               android/app/src/main/java/com/humzaarif/islamicfinance/MainActivity.java
+            echo "MainActivity.java copied."
+          else
+            echo "ERROR: MainActivity.java not found!"
+            exit 1
           fi
 
-          if [ -f "android-patch/file_paths.xml" ]; then
-            cp android-patch/file_paths.xml \
+          # Copy FileProvider paths
+          if [ -f "android-patch/app/src/main/res/xml/file_paths.xml" ]; then
+            cp android-patch/app/src/main/res/xml/file_paths.xml \
               android/app/src/main/res/xml/file_paths.xml
+            echo "file_paths.xml copied."
+          else
+            echo "ERROR: file_paths.xml not found!"
+            exit 1
           fi
 
+          # ==========================================
+          # Add FileProvider to AndroidManifest
+          # ==========================================
+
+          MANIFEST="android/app/src/main/AndroidManifest.xml"
+
+          if ! grep -q "androidx.core.content.FileProvider" "$MANIFEST"; then
+
+            python3 - <<'PY'
+          from pathlib import Path
+
+          manifest = Path("android/app/src/main/AndroidManifest.xml")
+          text = manifest.read_text()
+
+          provider = '''
+              <provider
+                  android:name="androidx.core.content.FileProvider"
+                  android:authorities="${applicationId}.fileprovider"
+                  android:exported="false"
+                  android:grantUriPermissions="true">
+                  <meta-data
+                      android:name="android.support.FILE_PROVIDER_PATHS"
+                      android:resource="@xml/file_paths" />
+              </provider>
+          '''
+
+          if "</application>" in text:
+              text = text.replace("</application>", provider + "\n    </application>")
+              manifest.write_text(text)
+              print("FileProvider added to AndroidManifest.xml")
+          else:
+              raise SystemExit("ERROR: </application> not found")
+          PY
+
+          else
+            echo "FileProvider already exists."
+          fi
+
+          echo "Native PDF sharing fix applied successfully."
+
+      # ==========================================
+      # BUILD APK
+      # ==========================================
       - name: Grant execute permission to gradlew
         run: chmod +x android/gradlew
 
@@ -66,6 +126,9 @@ jobs:
         working-directory: android
         run: ./gradlew assembleDebug
 
+      # ==========================================
+      # UPLOAD APK
+      # ==========================================
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
