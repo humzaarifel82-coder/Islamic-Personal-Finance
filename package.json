@@ -7,8 +7,16 @@
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0 --port 3000"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@bcyesil/capacitor-plugin-printer": "^0.0.6",
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/filesystem": "^6.0.3",
+    "@capacitor/share": "^6.0.3"
+  },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^6.1.2",
     "vite": "^6.0.7"
   }
 }

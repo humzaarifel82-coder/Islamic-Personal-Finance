@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>Islamic Personal Finance</title>
+<meta name="description" content="Installment &amp; DBR Calculator for Islamic Personal Finance">
+<meta property="og:title" content="Islamic Personal Finance">
+<meta property="og:description" content="Installment &amp; DBR Calculator for Islamic Personal Finance">
+<link rel="icon" type="image/png" href="/resources/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -11,7 +15,7 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;width:100%;min-height:100%}
 body{font-family:"Inter",Arial,sans-serif;background:#eef6fd;color:#17324f;font-size:14px}
-.app{width:100%;max-width:520px;min-height:100vh;margin:auto;background:#f7fbff;position:relative}
+.app{width:100%;max-width:540px;min-height:100vh;margin:auto;background:#f7fbff;position:relative}
 .header{padding:20px 18px 17px;background:linear-gradient(135deg,#075cae,#0b78d0);color:white}
 .header-row{display:flex;align-items:center;gap:13px}
 .logo{width:43px;height:43px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.20);font-size:20px;font-weight:800}
@@ -20,7 +24,7 @@ body{font-family:"Inter",Arial,sans-serif;background:#eef6fd;color:#17324f;font-
 .tabs{width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:white;border-bottom:1px solid #dce8f2;position:sticky;top:0;z-index:50}
 .tab{height:64px;border:0;border-right:1px solid #edf2f6;background:white;color:#8191a2;font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative;cursor:pointer}
 .tab:last-child{border-right:0}
-.tabs.has-other-emi{grid-template-columns:repeat(5,minmax(0,1fr))}.tab-icon{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#f1f6fa;font-size:13px}
+.tab-icon{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#f1f6fa;font-size:13px}
 .tab-title{font-size:7px;white-space:nowrap;font-weight:700}
 .tab.active{color:#075cae}
 .tab.active .tab-icon{background:#e5f2ff;color:#075cae}
@@ -30,12 +34,12 @@ body{font-family:"Inter",Arial,sans-serif;background:#eef6fd;color:#17324f;font-
 .tab-content.active{display:block}
 .content{padding:15px}
 .card,.report-card{background:white;border:1px solid #dce8f2;border-radius:14px;padding:17px;margin-bottom:13px;box-shadow:0 5px 18px rgba(38,88,130,.045)}
-.card-title,.report-title{font-size:14px;font-weight:800;color:#173b60;margin-bottom:16px}
+.card-title,.report-title{font-size:14px;font-weight:800;color:#173b60;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
 .form-group{margin-bottom:15px}
 label{display:block;margin-bottom:7px;font-size:10px;font-weight:700;color:#526b84}
 .input-wrap{position:relative}
-input{width:100%;height:46px;border:1px solid #ccdbe7;border-radius:9px;background:#fff;padding:0 12px;font-family:inherit;font-size:14px;font-weight:600;color:#17324f;outline:none;-webkit-appearance:none}
-input:focus{border-color:#4c9fe0;box-shadow:0 0 0 3px rgba(76,159,224,.11)}
+input,select{width:100%;height:46px;border:1px solid #ccdbe7;border-radius:9px;background:#fff;padding:0 12px;font-family:inherit;font-size:14px;font-weight:600;color:#17324f;outline:none;-webkit-appearance:none}
+input:focus,select:focus{border-color:#4c9fe0;box-shadow:0 0 0 3px rgba(76,159,224,.11)}
 input::placeholder{color:#a8b5c1;font-weight:400}
 .currency{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#6b8298;font-size:12px;font-weight:700;pointer-events:none}
 .currency-input{padding-left:34px}
@@ -44,7 +48,8 @@ input::placeholder{color:#a8b5c1;font-weight:400}
 .multiple-top{display:flex;align-items:center;justify-content:space-between}
 .multiple-label{font-size:9px;color:#6b8094;font-weight:600}
 .multiple-value{margin-top:2px;font-size:25px;line-height:1;color:#075cae;font-weight:800}
-.manual-btn{height:32px;padding:0 10px;border:1px solid #acd0ed;border-radius:7px;background:white;color:#075cae;font-family:inherit;font-size:9px;font-weight:700;cursor:pointer}
+.manual-btn{height:34px;padding:0 12px;border:1px solid #acd0ed;border-radius:8px;background:white;color:#075cae;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;transition:all .15s ease}
+.manual-btn:hover{background:#f0f7fd;border-color:#7bb5e5}
 .limit-box{margin-top:12px;padding:14px;border-radius:11px;background:#f0faf7;border:1px solid #c9eadf}
 .limit-label{font-size:9px;font-weight:600;color:#648078}
 .limit-value{margin-top:3px;font-size:21px;font-weight:800;color:#087857}
@@ -53,14 +58,29 @@ input::placeholder{color:#a8b5c1;font-weight:400}
 .max-note strong{color:#075cae}
 .kibor-row{display:flex;gap:7px}
 .kibor-row input{flex:1}
-.sbp-btn{height:46px;padding:0 10px;display:flex;align-items:center;justify-content:center;white-space:nowrap;text-decoration:none;border:1px solid #b9d9f1;border-radius:9px;background:#eff8ff;color:#075cae;font-size:9px;font-weight:700}
+.sbp-btn{height:46px;padding:0 12px;display:flex;align-items:center;justify-content:center;white-space:nowrap;text-decoration:none;border:1px solid #b9d9f1;border-radius:9px;background:#eff8ff;color:#075cae;font-size:10px;font-weight:700}
 .rate-box{margin-top:3px;border-radius:11px;padding:15px;text-align:center;background:linear-gradient(135deg,#edf7ff,#f7fbff);border:1px solid #cce3f5}
 .rate-label{font-size:9px;color:#73879a;font-weight:600}
 .rate-value{margin-top:4px;font-size:27px;font-weight:800;color:#075cae}
-.primary-btn{width:100%;height:47px;margin-top:14px;border:0;border-radius:9px;background:linear-gradient(135deg,#096bc2,#0755a0);color:white;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 6px 14px rgba(7,86,168,.18)}
+.primary-btn{width:100%;height:47px;margin-top:14px;border:0;border-radius:9px;background:linear-gradient(135deg,#096bc2,#0755a0);color:white;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 6px 14px rgba(7,86,168,.18);display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:opacity .15s}
+.primary-btn:hover{opacity:.95}
 .dbr-heading{margin-bottom:14px}
 .dbr-heading h2{margin:0;color:#173b60;font-size:16px;font-weight:800}
-.dbr-heading p{margin:5px 0 0;font-size:9px;line-height:1.5;color:#82909e}
+.dbr-heading p{margin:5px 0 0;font-size:10px;line-height:1.5;color:#82909e}
+
+/* Customer Segment Selector for DBR Threshold */
+.customer-type-selector{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px;background:#eaf2fa;padding:4px;border-radius:11px}
+.type-btn{border:0;border-radius:8px;padding:10px 8px;background:transparent;color:#5c7590;font-family:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all .18s ease}
+.type-btn .type-title{font-size:11px;font-weight:700}
+.type-btn .type-badge{font-size:9px;padding:2px 8px;border-radius:12px;background:rgba(92,117,144,.12);color:inherit;font-weight:800}
+.type-btn.active{background:#fff;color:#075cae;box-shadow:0 3px 10px rgba(7,92,174,.12)}
+.type-btn.active .type-badge{background:#e1f0fe;color:#075cae}
+
+.threshold-card{background:linear-gradient(135deg,#f2f9ff,#e8f3fe);border:1px solid #c8e1f7;border-radius:12px;padding:14px;margin-bottom:12px}
+.threshold-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.threshold-label{font-size:10px;font-weight:700;color:#506a84}
+.threshold-val{font-size:15px;font-weight:800;color:#075cae}
+
 .dbr-card{background:white;border:1px solid #dce8f2;border-radius:13px;padding:15px;margin-bottom:11px}
 .dbr-label{font-size:9px;font-weight:600;color:#7a8a99}
 .dbr-value{margin-top:5px;font-size:19px;font-weight:800;color:#173b60}
@@ -68,39 +88,86 @@ input::placeholder{color:#a8b5c1;font-weight:400}
 .obligation{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#f3f8fc;border:1px solid #dce8f2;border-radius:11px;padding:14px;margin-bottom:11px}
 .obligation-label{font-size:9px;color:#718293;font-weight:600}
 .obligation-value{font-size:19px;font-weight:800;color:#173b60}
-.dbr-result{padding:22px 15px;text-align:center;border-radius:13px;background:linear-gradient(135deg,#edf7ff,#f8fcff);border:1px solid #c9e3f5}
-.dbr-result-label{font-size:9px;font-weight:600;color:#73879a}
-.dbr-result-value{margin-top:3px;font-size:39px;font-weight:800;color:#075cae;letter-spacing:-1px}
+
+.dbr-result{padding:20px 15px;text-align:center;border-radius:13px;background:linear-gradient(135deg,#edf7ff,#f8fcff);border:1px solid #c9e3f5;position:relative;overflow:hidden}
+.dbr-result-label{font-size:10px;font-weight:700;color:#6b8298}
+.dbr-result-value{margin-top:4px;font-size:40px;font-weight:800;color:#075cae;letter-spacing:-1px}
+.dbr-status-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:800;margin-top:10px}
+.dbr-status-pill.status-safe{background:#e7f8f1;color:#087857;border:1px solid #a9e4cf}
+.dbr-status-pill.status-danger{background:#fdeeee;color:#c02626;border:1px solid #f6b5b5}
+
+.dbr-bar-track{width:100%;height:8px;background:#e1ebf3;border-radius:6px;overflow:hidden;margin-top:14px;position:relative}
+.dbr-bar-fill{height:100%;border-radius:6px;background:#075cae;transition:width .4s ease,background-color .3s}
+.dbr-bar-fill.safe{background:#087857}
+.dbr-bar-fill.danger{background:#c02626}
+.dbr-bar-marker{position:absolute;top:0;bottom:0;width:2px;background:#173b60;z-index:2}
+
+/* Amortization Action Buttons */
+.action-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.action-btn{height:40px;border-radius:9px;font-family:inherit;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:all .15s ease}
+.action-btn.btn-preview{background:#eff7ff;color:#075cae;border:1px solid #b7d8f3}
+.action-btn.btn-preview:hover{background:#e1effc;border-color:#74b1e5}
+.action-btn.btn-print{background:#f1f8f5;color:#087857;border:1px solid #b5e4d3}
+.action-btn.btn-print:hover{background:#e2f4ed;border-color:#79d0b3}
+.action-btn.btn-share{background:linear-gradient(135deg,#096bc2,#0755a0);color:#fff;border:0;box-shadow:0 3px 10px rgba(7,86,168,.18)}
+.action-btn.btn-share:hover{opacity:.95}
+
+/* Enhanced Summary Grid */
 .summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.summary-item{background:#f5f9fc;border:1px solid #e0eaf1;border-radius:10px;padding:11px}
-.summary-label{font-size:8px;color:#788b9d;font-weight:600}
-.summary-value{margin-top:4px;font-size:14px;color:#173b60;font-weight:800;overflow-wrap:anywhere}
+.summary-item{background:#f5f9fc;border:1px solid #e0eaf1;border-radius:10px;padding:12px 13px;position:relative}
+.summary-item::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:#075cae;opacity:.6}
+.summary-item:nth-child(4n+1)::before{background:#075cae}
+.summary-item:nth-child(4n+2)::before{background:#087857}
+.summary-item:nth-child(4n+3)::before{background:#e27807}
+.summary-item:nth-child(4n+4)::before{background:#6348a7}
+.summary-label{font-size:9px;color:#788b9d;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.summary-value{margin-top:4px;font-size:15px;color:#173b60;font-weight:800;overflow-wrap:anywhere}
+
+/* Enhanced Table */
 .table-wrap{width:100%;overflow-x:auto;border:1px solid #dce8f2;border-radius:11px;background:white}
-.amort-table{width:100%;min-width:650px;border-collapse:collapse;font-size:9px}
-.amort-table th{background:#edf6fd;color:#41617d;font-weight:800;padding:10px 7px;border-bottom:1px solid #d7e5ef;text-align:right;white-space:nowrap}
+.amort-table{width:100%;min-width:680px;border-collapse:collapse;font-size:10px}
+.amort-table th{background:#edf6fd;color:#284a6b;font-weight:800;padding:11px 9px;border-bottom:2px solid #d0e1ee;text-align:right;white-space:nowrap}
 .amort-table th:first-child,.amort-table td:first-child{text-align:center}
-.amort-table td{padding:9px 7px;border-bottom:1px solid #edf2f6;color:#536c83;text-align:right;white-space:nowrap}
-.amort-table tr:last-child td{border-bottom:0}
+.amort-table td{padding:10px 9px;border-bottom:1px solid #edf2f6;color:#455e75;text-align:right;white-space:nowrap}
+.amort-table tbody tr:nth-child(even){background:#fafcff}
+.amort-table tbody tr:hover{background:#f0f7fe}
+.amort-table tfoot td{background:#edf6fd;color:#173b60;font-weight:800;border-top:2px solid #c9dfef;padding:11px 9px}
 .amort-table td strong{color:#173b60}
-.footer{padding:15px;text-align:center;color:#8a9aaa;font-size:8px;background:#f7fbff}
-.modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(15,38,60,.48);backdrop-filter:blur(3px);padding:18px;align-items:center;justify-content:center}
+
+.footer{padding:15px;text-align:center;color:#8a9aaa;font-size:9px;background:#f7fbff}
+.modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(15,38,60,.55);backdrop-filter:blur(3px);padding:14px;align-items:center;justify-content:center}
 .modal.show{display:flex}
-.modal-box{width:100%;max-width:390px;max-height:90vh;overflow-y:auto;background:white;border-radius:16px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.20)}
+.modal-box{width:100%;max-width:420px;max-height:92vh;overflow-y:auto;background:white;border-radius:16px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.22)}
 .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.modal-head h2{margin:0;font-size:17px;color:#173b60}
-.close{width:30px;height:30px;border:0;border-radius:50%;background:#f0f4f7;color:#687b8d;font-size:18px;cursor:pointer}
+.modal-head h2{margin:0;font-size:17px;color:#173b60;font-weight:800}
+.close{width:32px;height:32px;border:0;border-radius:50%;background:#f0f4f7;color:#687b8d;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.close:hover{background:#e3ebf1;color:#173b60}
 .result-highlight{padding:17px;border-radius:11px;background:#edf8f4;border:1px solid #c8e9dc;text-align:center;margin-bottom:10px}
 .result-label{font-size:9px;color:#6e837c;font-weight:600}
 .result-number{margin-top:5px;font-size:27px;font-weight:800;color:#087857}
 .result-secondary{padding:14px;border-radius:11px;background:#f5f8fb;border:1px solid #dce7ef;text-align:center}
 .result-secondary .result-number{color:#173b60;font-size:19px}
-.modal-message{margin-top:12px;text-align:center;color:#748494;font-size:9px;line-height:1.5}
-@media(max-width:380px){.header{padding:17px 14px}.content{padding:12px}.card,.report-card{padding:14px}.two-column{gap:8px}.sbp-btn{padding:0 7px;font-size:8px}.tab{height:60px}.tab-title{font-size:7px}.tab-icon{width:24px;height:24px}}
-@media(min-width:521px){body{padding:25px 0}.app{min-height:auto;border-radius:18px;overflow:hidden;box-shadow:0 15px 45px rgba(29,76,115,.10)}.header{border-radius:18px 18px 0 0}}
+.modal-message{margin-top:12px;text-align:center;color:#748494;font-size:10px;line-height:1.5}
+
+/* Preview Modal Matching App Theme */
+.preview-modal-box{max-width:720px;width:95vw;padding:0;overflow:hidden;border-radius:18px;background:#f7fbff;display:flex;flex-direction:column;max-height:92vh;border:1px solid #cce3f5;box-shadow:0 25px 70px rgba(7,92,174,.22)}
+.preview-modal-header{padding:12px 16px;background:linear-gradient(135deg,#075cae,#0b78d0);color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.preview-modal-header h2{margin:0;font-size:15px;color:#fff;font-weight:800;display:flex;align-items:center;gap:7px}
+.preview-modal-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.preview-tool-btn{height:30px;padding:0 10px;border-radius:7px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.18);color:#fff;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s ease}
+.preview-tool-btn:hover{background:#fff;color:#075cae}
+.preview-tool-btn.btn-save{background:#ffffff;color:#075cae;border-color:#ffffff}
+.preview-tool-btn.btn-save:hover{background:#e5f2ff}
+.preview-modal-body{padding:16px;overflow-y:auto;background:#f7fbff;flex:1}
+.preview-meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px}
+.preview-meta-card{background:#f5f9fc;border:1px solid #e0eaf1;border-radius:9px;padding:9px 11px}
+.preview-meta-card small{display:block;font-size:8px;font-weight:700;color:#788b9d;text-transform:uppercase}
+.preview-meta-card strong{display:block;font-size:13px;color:#173b60;font-weight:800;margin-top:2px}
 
 .emi-options{display:flex;flex-direction:column;gap:9px}
 .emi-option{display:flex;align-items:center;gap:11px;padding:12px;border:1px solid #dce8f2;border-radius:10px;background:#f8fbfe;cursor:pointer}
-.emi-option:has(input:checked){border-color:#76b4e5;background:#edf7ff}.emi-option input{width:18px;height:18px;flex:0 0 18px;margin:0;accent-color:#075cae}
+.emi-option:has(input:checked){border-color:#76b4e5;background:#edf7ff}
+.emi-option input{width:18px;height:18px;flex:0 0 18px;margin:0;accent-color:#075cae}
 .emi-option span{display:flex;flex-direction:column;gap:3px}
 .emi-option strong{font-size:11px;color:#173b60}
 .emi-option small{font-size:9px;color:#81909e;font-weight:500}
@@ -109,17 +176,36 @@ input::placeholder{color:#a8b5c1;font-weight:400}
 .emi-calculated{margin-top:10px;padding:12px;border-radius:10px;background:#edf7ff;border:1px solid #cce3f5}
 .emi-calculated-label{font-size:9px;color:#73879a;font-weight:700}
 .emi-calculated-value{margin-top:4px;font-size:22px;font-weight:800;color:#075cae}
-.emi-rate-note{font-size:9px;color:#81909e;margin-top:7px;line-height:1.5}
-
 
 .customer-details-card .form-group{margin-bottom:12px}
-.customer-details-card input{width:100%;height:42px;border:1px solid #dce8f2;border-radius:9px;padding:0 12px;font:inherit;font-size:12px;color:#173b60;background:#fbfdff;box-sizing:border-box;outline:none}
-.customer-details-card input:focus{border-color:#76b4e5;box-shadow:0 0 0 3px rgba(7,92,174,.08)}
-.customer-details-card .primary-btn{width:100%;margin-top:3px}
+.customer-details-card input,.customer-details-card select{width:100%;height:42px;border:1px solid #dce8f2;border-radius:9px;padding:0 12px;font:inherit;font-size:12px;color:#173b60;background:#fbfdff;box-sizing:border-box;outline:none}
+.customer-details-card input:focus,.customer-details-card select:focus{border-color:#76b4e5;box-shadow:0 0 0 3px rgba(7,92,174,.08)}
 
+.documents-list{display:flex;flex-direction:column;border:1px solid #dce8f2;border-radius:12px;overflow:hidden;background:#fff;margin-bottom:16px}
+.document-row{display:grid;grid-template-columns:34px 1fr 28px;gap:8px;align-items:center;padding:13px 14px;border-bottom:1px solid #dce8f2;font-size:14px;line-height:1.45}
+.document-row:last-child{border-bottom:0}
+.document-number{font-weight:700;color:#075cae}
+.document-text{color:#17324f}
+.print-checkbox{width:18px;height:18px;border:2px solid #17324f;border-radius:3px;display:block;background:#fff}
 
-.documents-list{display:flex;flex-direction:column;border:1px solid #dce8f2;border-radius:12px;overflow:hidden;background:#fff;margin-bottom:16px}.document-row{display:grid;grid-template-columns:34px 1fr 28px;gap:8px;align-items:center;padding:13px 14px;border-bottom:1px solid #dce8f2;font-size:14px;line-height:1.45}.document-row:last-child{border-bottom:0}.document-number{font-weight:700;color:#075cae}.document-text{color:#17324f}.print-checkbox{width:18px;height:18px;border:2px solid #17324f;border-radius:3px;display:block;background:#fff}
-
+/* Dedicated Print Stylesheet */
+@media print {
+  body{background:#fff;color:#000;padding:0}
+  .app{max-width:100%;box-shadow:none;border-radius:0}
+  .header,.tabs,.customer-details-card,.action-grid,.manual-btn,.sbp-btn,.footer,.modal:not(#amortizationPreviewModal){display:none!important}
+  #incomeTab,#installmentTab,#dbrTab,#documentsTab{display:none!important}
+  #amortizationTab{display:block!important}
+  .report-card{border:1px solid #ccc;box-shadow:none;page-break-inside:avoid;margin-bottom:16px}
+  .amort-table th{background:#eef4fa!important;color:#000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .amort-table td{color:#111!important}
+  .amort-table tr{page-break-inside:avoid}
+  .preview-modal-box{max-width:100%;width:100%;box-shadow:none;max-height:none}
+  .preview-modal-header{display:none!important}
+  .preview-paper{border:none;box-shadow:none;padding:0}
+  #printablePreviewSection{display:block!important}
+}
+@media(max-width:380px){.header{padding:17px 14px}.content{padding:12px}.card,.report-card{padding:14px}.two-column{gap:8px}.sbp-btn{padding:0 7px;font-size:8px}.tab{height:60px}.tab-title{font-size:7px}.tab-icon{width:24px;height:24px}}
+@media(min-width:541px){body{padding:25px 0}.app{min-height:auto;border-radius:18px;overflow:hidden;box-shadow:0 15px 45px rgba(29,76,115,.10)}.header{border-radius:18px 18px 0 0}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
@@ -193,30 +279,84 @@ input::placeholder{color:#a8b5c1;font-weight:400}
 <section id="dbrTab" class="tab-content">
 <div class="content">
   <div class="dbr-heading" style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-    <div><h2>Debt Burden Ratio</h2><p>DBR is calculated using total monthly obligation divided by net monthly income.</p></div>
+    <div><h2>Debt Burden Ratio (DBR)</h2><p>Regulatory DBR benchmark: 35% for Regular Customers, 40% for Bank Staff.</p></div>
     <button class="manual-btn" style="height:auto;min-height:38px;white-space:nowrap" onclick="openOtherEMISelector()">＋ EMI Calculator</button>
   </div>
+
+  <!-- Customer Segment Toggle for DBR -->
+  <div class="customer-type-selector">
+    <button type="button" class="type-btn active" id="typeRegularBtn" onclick="setCustomerType('regular')">
+      <span class="type-title">Regular Customer</span>
+      <span class="type-badge">35% Threshold</span>
+    </button>
+    <button type="button" class="type-btn" id="typeStaffBtn" onclick="setCustomerType('staff')">
+      <span class="type-title">Bank Staff</span>
+      <span class="type-badge">40% Threshold</span>
+    </button>
+  </div>
+
+  <div class="threshold-card">
+    <div class="threshold-row">
+      <div>
+        <span class="threshold-label">REGULATORY THRESHOLD</span>
+        <div style="font-size:11px;color:#173b60;font-weight:700;margin-top:2px" id="thresholdCategoryLabel">Regular Customer Limit (35%)</div>
+      </div>
+      <div style="text-align:right">
+        <span class="threshold-label">MAX PERMISSIBLE OBLIGATION</span>
+        <div class="threshold-val" id="maxAllowableObligation">₨ 0</div>
+      </div>
+    </div>
+  </div>
+
   <div class="dbr-card"><div class="dbr-label">Net Monthly Income</div><div id="dbrIncome" class="dbr-value">₨ 0</div></div>
   <div class="dbr-card"><div class="dbr-label">Main Finance Installment</div><div id="dbrInstallment" class="dbr-value">₨ 0</div></div>
-  <div class="dbr-card"><div class="dbr-label">Total EMI Obligation</div><div id="otherEMITotal" class="dbr-value">₨ 0</div><div class="helper">Total of all selected EMI options.</div></div>
+  <div class="dbr-card"><div class="dbr-label">Total Other EMI Obligations</div><div id="otherEMITotal" class="dbr-value">₨ 0</div><div class="helper">Combined installments of credit cards, personal loans, running finance, etc.</div></div>
   <div id="dbrEMIBreakdown" class="dbr-card" style="display:none"><div class="dbr-label">Selected EMI Breakdown</div><div id="dbrEMIBreakdownItems" style="margin-top:8px"></div></div>
   <div class="obligation"><div class="obligation-label">Total Monthly Obligation</div><div id="totalObligation" class="obligation-value">₨ 0</div></div>
-  <div class="dbr-result"><div class="dbr-result-label">Current DBR</div><div id="dbr" class="dbr-result-value">0.00%</div></div>
+  
+  <div class="dbr-result">
+    <div class="dbr-result-label">CALCULATED DEBT BURDEN RATIO</div>
+    <div id="dbr" class="dbr-result-value">0.00%</div>
+    <div id="dbrStatusPill" class="dbr-status-pill status-safe">✓ Within Limit (Safe)</div>
+    <div class="dbr-bar-track">
+      <div id="dbrBarFill" class="dbr-bar-fill safe" style="width:0%"></div>
+      <div id="dbrBarMarker" class="dbr-bar-marker" style="left:35%" title="Regulatory Limit"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:7px;font-size:9px;color:#788b9d;font-weight:700">
+      <span>0%</span>
+      <span id="dbrMarkerLabel" style="color:#075cae">Threshold: 35%</span>
+      <span>100%</span>
+    </div>
+    <div id="dbrHeadroomNote" style="margin-top:10px;font-size:10px;color:#526b84;font-weight:600">Remaining monthly capacity: ₨ 0</div>
+  </div>
 </div>
 </section>
-
-
 
 <section id="amortizationTab" class="tab-content">
 <div class="content">
   <div class="report-card customer-details-card">
-    <div class="report-title">Customer Details for Printable Sheet</div>
+    <div class="report-title">
+      <span>Customer Details</span>
+      <span id="badgeCategory" style="font-size:10px;padding:3px 9px;border-radius:12px;background:#e5f2ff;color:#075cae;font-weight:700">Regular Customer (35%)</span>
+    </div>
     <div class="form-group"><label for="customerName">Customer Name</label><input id="customerName" type="text" placeholder="Enter customer full name" autocomplete="name"></div>
     <div class="form-group"><label for="customerCNIC">CNIC Number</label><input id="customerCNIC" type="text" inputmode="numeric" maxlength="13" pattern="[0-9]{13}" placeholder="Enter 13-digit CNIC" oninput="this.value=this.value.replace(/\D/g,'').slice(0,13)"></div>
-    <button class="manual-btn" style="width:100%;margin-top:10px" onclick="shareReport()">Share Amortization Sheet</button>
+    <div class="form-group">
+      <label for="customerCategorySelect">Customer Segment / DBR Threshold</label>
+      <select id="customerCategorySelect" onchange="customerCategoryChanged(this.value)">
+        <option value="regular">Regular Customer (35% Max DBR)</option>
+        <option value="staff">Bank Staff (40% Max DBR)</option>
+      </select>
+    </div>
+
+    <button type="button" class="primary-btn" onclick="previewAmortization()" style="margin-top:6px">👁️ Preview Amortization Report</button>
   </div>
+
   <div class="report-card">
-    <div class="report-title">Amortization Report</div>
+    <div class="report-title">
+      <span>Islamic Finance Summary</span>
+      <span style="font-size:9px;color:#075cae;background:#edf7ff;border:1px solid #cfe6f8;padding:3px 8px;border-radius:6px;font-weight:700">Mode of Financing: Tawarruq</span>
+    </div>
     <div class="summary-grid">
       <div class="summary-item"><div class="summary-label">Financing Amount</div><div id="reportAmount" class="summary-value">₨ 0</div></div>
       <div class="summary-item"><div class="summary-label">Total Rate</div><div id="reportRate" class="summary-value">0.00%</div></div>
@@ -228,13 +368,32 @@ input::placeholder{color:#a8b5c1;font-weight:400}
       <div class="summary-item"><div class="summary-label">KIBOR + Spread</div><div id="reportBreakup" class="summary-value">0.00% + 0.00%</div></div>
     </div>
   </div>
-  <div class="report-card">
-    <div class="report-title">Monthly Repayment Schedule</div>
+
+  <div class="report-card" id="printableRepaymentCard">
+    <div class="report-title">
+      <span>Tentative Monthly Repayment Schedule</span>
+    </div>
     <div class="table-wrap">
       <table class="amort-table">
-        <thead><tr><th>Month</th><th>Opening</th><th>Installment</th><th>Principal</th><th>Profit</th><th>Closing</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Opening (₨)</th>
+            <th>Installment (₨)</th>
+            <th>Principal (₨)</th>
+            <th>Profit (₨)</th>
+            <th>Closing (₨)</th>
+          </tr>
+        </thead>
         <tbody id="amortBody"></tbody>
+        <tfoot id="amortFoot"></tfoot>
       </table>
+    </div>
+    <div style="margin-top:14px;padding:12px 14px;background:#fff8ee;border:1px solid #f9dfb8;border-radius:10px;color:#92400e;font-size:11px;line-height:1.55">
+      <div style="font-weight:800;display:flex;align-items:center;gap:6px;margin-bottom:4px">
+        <span>⚠️</span> Important Notice: Tentative Schedule
+      </div>
+      <div>This repayment schedule is purely tentative and indicative. The final repayment schedule will be determined and issued upon financing disbursement based on prevailing KIBOR, disbursement date, and bank's final approval.</div>
     </div>
   </div>
 </div>
@@ -264,11 +423,110 @@ input::placeholder{color:#a8b5c1;font-weight:400}
 <footer class="footer">Powered by Syed Muhammad Humza Arif</footer>
 </div>
 
+<!-- Modal: Amortization Report Preview (Matching App Theme) -->
+<div id="amortizationPreviewModal" class="modal">
+  <div class="preview-modal-box">
+    <div class="preview-modal-header">
+      <h2><span>☪</span> Tentative Amortization Report</h2>
+      <div class="preview-modal-actions">
+        <button type="button" class="preview-tool-btn btn-save" onclick="savePDFToDevice()">⬇ Save to Device</button>
+        <button type="button" class="preview-tool-btn" onclick="sharePDF()">↗ Share PDF</button>
+        <button type="button" class="preview-tool-btn" onclick="triggerPreviewPrint()">🖨 Print</button>
+        <button type="button" class="close" style="width:28px;height:28px;color:#fff;background:rgba(255,255,255,.2)" onclick="closeModal('amortizationPreviewModal')">×</button>
+      </div>
+    </div>
+    <div class="preview-modal-body" id="previewModalBody">
+      <div class="card" style="margin-bottom:12px;padding:15px">
+        <div class="card-title" style="margin-bottom:12px">
+          <span>Customer &amp; Financing Facility</span>
+          <span style="font-size:9px;padding:3px 8px;border-radius:6px;background:#fff8ee;color:#b45309;font-weight:800;border:1px solid #fed7aa">TENTATIVE SCHEDULE</span>
+        </div>
+        <div class="preview-meta-grid">
+          <div class="preview-meta-card">
+            <small>Customer Name</small>
+            <strong id="previewCustomerName">--</strong>
+          </div>
+          <div class="preview-meta-card">
+            <small>CNIC Number</small>
+            <strong id="previewCustomerCNIC">--</strong>
+          </div>
+          <div class="preview-meta-card">
+            <small>Customer Segment</small>
+            <strong id="previewCustomerCategory">Regular Customer (35%)</strong>
+          </div>
+          <div class="preview-meta-card">
+            <small>DBR Benchmark</small>
+            <strong id="previewCustomerDBR" style="font-size:11px">--</strong>
+          </div>
+          <div class="preview-meta-card">
+            <small>Date &amp; Time Generated</small>
+            <strong id="previewTimestamp" style="font-size:11px">--</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:12px;padding:15px">
+        <div class="card-title" style="margin-bottom:12px">
+          <span>Islamic Finance Summary</span>
+          <span style="font-size:9px;color:#075cae;background:#edf7ff;border:1px solid #cfe6f8;padding:3px 8px;border-radius:6px;font-weight:700">Mode of Financing: Tawarruq</span>
+        </div>
+        <div class="summary-grid" id="previewSummaryGrid"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:12px;padding:15px">
+        <div class="card-title" style="margin-bottom:12px">Tentative Monthly Repayment Schedule</div>
+        <div class="table-wrap">
+          <table class="amort-table">
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th>Opening (₨)</th>
+                <th>Installment (₨)</th>
+                <th>Principal (₨)</th>
+                <th>Profit (₨)</th>
+                <th>Closing (₨)</th>
+              </tr>
+            </thead>
+            <tbody id="previewAmortBody"></tbody>
+            <tfoot id="previewAmortFoot"></tfoot>
+          </table>
+        </div>
+
+        <!-- English Important Notice Wording -->
+        <div style="margin-top:14px;padding:12px 14px;background:#fff8ee;border:1px solid #f9dfb8;border-radius:10px;color:#92400e;font-size:11px;line-height:1.55">
+          <div style="font-weight:800;display:flex;align-items:center;gap:6px;margin-bottom:4px">
+            <span>⚠️</span> Important Notice: Tentative Schedule
+          </div>
+          <div>This repayment schedule is purely tentative and indicative. The final repayment schedule will be determined and issued upon financing disbursement based on prevailing KIBOR, disbursement date, and bank's final approval.</div>
+        </div>
+
+        <div style="margin-top:22px;padding-top:16px;border-top:1px dashed #dce8f2;display:flex;justify-content:space-between;gap:20px;font-size:10px;color:#74899e">
+          <div>
+            <div style="font-weight:700;color:#173b60;margin-bottom:28px">Relationship Manager / Prepared By</div>
+            <div style="border-top:1px solid #c4d7e6;width:150px;padding-top:4px">Signature &amp; Stamp</div>
+          </div>
+          <div>
+            <div style="font-weight:700;color:#173b60;margin-bottom:28px">Customer Acknowledgment</div>
+            <div style="border-top:1px solid #c4d7e6;width:150px;padding-top:4px">Customer Signature</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="customerDetailsModal" class="modal"><div class="modal-box">
   <div class="modal-head"><h2>Customer Details</h2><button class="close" onclick="closeModal('customerDetailsModal')">×</button></div>
-  <div class="modal-message" style="margin-bottom:14px">Enter customer details to view the amortization sheet.</div>
+  <div class="modal-message" style="margin-bottom:14px">Enter customer details to view and print the amortization sheet.</div>
   <div class="form-group"><label for="customerNameModal">Customer Name</label><input id="customerNameModal" type="text" placeholder="Enter customer full name" autocomplete="name"></div>
   <div class="form-group"><label for="customerCNICModal">CNIC Number (13 digits)</label><input id="customerCNICModal" type="text" inputmode="numeric" maxlength="13" pattern="[0-9]{13}" placeholder="Enter 13-digit CNIC" oninput="this.value=this.value.replace(/\D/g,'').slice(0,13)"></div>
+  <div class="form-group">
+    <label for="customerCategoryModal">Customer Segment</label>
+    <select id="customerCategoryModal" onchange="customerCategoryChanged(this.value)">
+      <option value="regular">Regular Customer (35% Max DBR)</option>
+      <option value="staff">Bank Staff (40% Max DBR)</option>
+    </select>
+  </div>
   <button class="primary-btn" onclick="syncCustomerDetailsAndOpen()">Continue to Amortization</button>
 </div></div>
 
@@ -310,10 +568,74 @@ input::placeholder{color:#a8b5c1;font-weight:400}
   <button class="primary-btn" onclick="applyManual()">Apply Multiple</button>
 </div></div>
 
+<div id="alertModal" class="modal"><div class="modal-box">
+  <div class="modal-head"><h2>Notice</h2><button class="close" onclick="closeModal('alertModal')">×</button></div>
+  <div id="alertModalMessage" class="modal-message" style="margin-top:8px;font-size:12px;color:#173b60;line-height:1.5"></div>
+  <button class="primary-btn" onclick="closeModal('alertModal')" style="margin-top:16px">OK</button>
+</div></div>
+
 <script>
+// Safe alert for sandboxed iframe environments
+window.alert = function(msg) {
+  const modal = document.getElementById("alertModal");
+  const msgEl = document.getElementById("alertModalMessage");
+  if (modal && msgEl) {
+    msgEl.textContent = msg;
+    modal.classList.add("show");
+  } else {
+    console.warn(msg);
+  }
+};
+
 let multiple = 6;
 let manualMode = false;
 let installmentValue = 0;
+let customerType = 'regular'; // 'regular' (35%) or 'staff' (40%)
+
+function getThreshold() {
+  return customerType === 'staff' ? 40 : 35;
+}
+
+function setCustomerType(type) {
+  customerType = type;
+  const regBtn = document.getElementById("typeRegularBtn");
+  const staffBtn = document.getElementById("typeStaffBtn");
+  if (type === 'staff') {
+    if (staffBtn) staffBtn.classList.add("active");
+    if (regBtn) regBtn.classList.remove("active");
+  } else {
+    if (regBtn) regBtn.classList.add("active");
+    if (staffBtn) staffBtn.classList.remove("active");
+  }
+
+  // Sync with dropdowns & badges
+  const catSelect = document.getElementById("customerCategorySelect");
+  if (catSelect) catSelect.value = type;
+  const catModal = document.getElementById("customerCategoryModal");
+  if (catModal) catModal.value = type;
+  
+  const badge = document.getElementById("badgeCategory");
+  if (badge) {
+    badge.textContent = type === 'staff' ? "Bank Staff (40% Limit)" : "Regular Customer (35% Limit)";
+  }
+
+  const thLabel = document.getElementById("thresholdCategoryLabel");
+  if (thLabel) {
+    thLabel.textContent = type === 'staff' ? "Bank Staff Concession Limit (40%)" : "Regular Customer Standard Limit (35%)";
+  }
+
+  const marker = document.getElementById("dbrBarMarker");
+  const markerLabel = document.getElementById("dbrMarkerLabel");
+  const threshold = getThreshold();
+  if (marker) marker.style.left = threshold + "%";
+  if (markerLabel) markerLabel.textContent = "Threshold: " + threshold + "%";
+
+  updateDBR();
+}
+
+function customerCategoryChanged(val) {
+  setCustomerType(val);
+}
 
 function numberValue(value) {
   return parseFloat(String(value || "").replace(/,/g, "")) || 0;
@@ -552,10 +874,15 @@ function updateDBR() {
   const income = numberValue(document.getElementById("income").value);
   const otherTotal = selectedEMITypes.reduce((sum, type) => sum + getEMIValue(type, appliedEMIValues[type]), 0);
   const total = installmentValue + otherTotal;
+  const threshold = getThreshold(); // 35 or 40
+  const maxAllowable = income * (threshold / 100);
+
   document.getElementById("dbrIncome").textContent = pkr(income);
   document.getElementById("dbrInstallment").textContent = pkr(installmentValue);
   document.getElementById("otherEMITotal").textContent = pkr(otherTotal);
   document.getElementById("totalObligation").textContent = pkr(total);
+  document.getElementById("maxAllowableObligation").textContent = pkr(maxAllowable);
+
   const breakdownCard = document.getElementById("dbrEMIBreakdown");
   const breakdownHost = document.getElementById("dbrEMIBreakdownItems");
   if (selectedEMITypes.length) {
@@ -565,60 +892,264 @@ function updateDBR() {
     breakdownCard.style.display = "none";
     breakdownHost.innerHTML = "";
   }
-  document.getElementById("dbr").textContent = income > 0 ? ((total / income) * 100).toFixed(2) + "%" : "0.00%";
+
+  const dbrRatio = income > 0 ? (total / income) * 100 : 0;
+  document.getElementById("dbr").textContent = dbrRatio.toFixed(2) + "%";
+
+  const statusPill = document.getElementById("dbrStatusPill");
+  const barFill = document.getElementById("dbrBarFill");
+  const headroomNote = document.getElementById("dbrHeadroomNote");
+
+  // Progress Bar width capped at 100%
+  const barWidth = Math.min(100, Math.max(0, dbrRatio));
+  barFill.style.width = barWidth + "%";
+
+  if (dbrRatio <= threshold) {
+    const headroomAmount = maxAllowable - total;
+    statusPill.className = "dbr-status-pill status-safe";
+    statusPill.innerHTML = `✓ Within ${threshold}% Limit (${(threshold - dbrRatio).toFixed(1)}% Headroom)`;
+    barFill.className = "dbr-bar-fill safe";
+    headroomNote.innerHTML = `Remaining allowable monthly obligation: <strong style="color:#087857">${pkr(headroomAmount)}</strong>`;
+  } else {
+    const excessAmount = total - maxAllowable;
+    statusPill.className = "dbr-status-pill status-danger";
+    statusPill.innerHTML = `⚠ Exceeds ${threshold}% Threshold by ${(dbrRatio - threshold).toFixed(1)}%`;
+    barFill.className = "dbr-bar-fill danger";
+    headroomNote.innerHTML = `Exceeds permissible threshold by: <strong style="color:#c02626">${pkr(excessAmount)}</strong>`;
+  }
 }
-function escapePrintText(value) {
-  return String(value || "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-  }[char]));
+
+function generateAmortization(principal, annualRate, months, payment, kibor, spread) {
+  const monthlyRate = annualRate / 100 / 12;
+  let balance = principal;
+  let totalPrincipal = 0;
+  let totalProfit = 0;
+  const body = document.getElementById("amortBody");
+  const foot = document.getElementById("amortFoot");
+  body.innerHTML = "";
+
+  for (let month = 1; month <= months; month++) {
+    const opening = balance;
+    const profit = opening * monthlyRate;
+    let principalPart = payment - profit;
+    if (month === months) principalPart = opening;
+    const actualPayment = principalPart + profit;
+    let closing = opening - principalPart;
+    if (Math.abs(closing) < 0.01) closing = 0;
+
+    totalPrincipal += principalPart;
+    totalProfit += profit;
+
+    const row = document.createElement("tr");
+    row.innerHTML = `<td><strong>${month}</strong></td><td>${pkr(opening)}</td><td><strong style="color:#075cae">${pkr(actualPayment)}</strong></td><td>${pkr(principalPart)}</td><td>${pkr(profit)}</td><td>${pkr(closing)}</td>`;
+    body.appendChild(row);
+    balance = closing;
+  }
+
+  // Footer Totals Row
+  foot.innerHTML = `<tr><td><strong>TOTAL</strong></td><td>--</td><td><strong style="color:#075cae">${pkr(totalPrincipal + totalProfit)}</strong></td><td><strong>${pkr(totalPrincipal)}</strong></td><td><strong>${pkr(totalProfit)}</strong></td><td><strong>₨ 0</strong></td></tr>`;
+
+  document.getElementById("reportAmount").textContent = pkr(principal);
+  document.getElementById("reportRate").textContent = annualRate.toFixed(2) + "%";
+  document.getElementById("reportTenure").textContent = months + " Months";
+  document.getElementById("reportInstallment").textContent = pkr(payment);
+  document.getElementById("reportPrincipal").textContent = pkr(totalPrincipal);
+  document.getElementById("reportProfit").textContent = pkr(totalProfit);
+  document.getElementById("reportTotal").textContent = pkr(totalPrincipal + totalProfit);
+  document.getElementById("reportBreakup").textContent = kibor.toFixed(2) + "% + " + spread.toFixed(2) + "%";
+  document.getElementById("amortBtn").classList.remove("locked");
 }
-async function shareReport() {
+
+function openAmortization() {
+  if (installmentValue <= 0) return;
+  const nameInput = document.getElementById("customerName");
+  const cnicInput = document.getElementById("customerCNIC");
+  if (!nameInput.value.trim() || !/^\d{5}-?\d{7}-?\d$/.test(cnicInput.value.replace(/\s/g, ""))) {
+    document.getElementById("customerNameModal").value = nameInput.value;
+    document.getElementById("customerCNICModal").value = cnicInput.value;
+    document.getElementById("customerCategoryModal").value = customerType;
+    document.getElementById("customerDetailsModal").classList.add("show");
+    setTimeout(() => (!nameInput.value.trim() ? document.getElementById("customerNameModal") : document.getElementById("customerCNICModal")).focus(), 50);
+    return;
+  }
+  openTab("amortizationTab", document.getElementById("amortBtn"));
+}
+
+function continueToAmortization() {
+  const nameInput = document.getElementById("customerName");
+  const cnicInput = document.getElementById("customerCNIC");
+  const name = nameInput.value.trim();
+  const digits = cnicInput.value.replace(/\D/g, "");
+  if (!name) { alert("Please enter the customer's name."); nameInput.focus(); return; }
+  if (digits.length !== 13) { alert("Please enter a valid 13-digit CNIC number."); cnicInput.focus(); return; }
+  closeModal("customerDetailsModal");
+  openTab("amortizationTab", document.getElementById("amortBtn"));
+}
+
+function syncCustomerDetailsAndOpen() {
+  document.getElementById("customerName").value = document.getElementById("customerNameModal").value.trim();
+  document.getElementById("customerCNIC").value = document.getElementById("customerCNICModal").value;
+  setCustomerType(document.getElementById("customerCategoryModal").value);
+  continueToAmortization();
+}
+
+function previewAmortization() {
   if (installmentValue <= 0 || !document.getElementById("amortBody").children.length) {
     alert("Please calculate the installment first.");
     return;
   }
-  const customerName = document.getElementById("customerName").value.trim();
-  const customerCNIC = document.getElementById("customerCNIC").value.trim();
-  if (!customerName) {
-    alert("Please enter the customer's name.");
-    document.getElementById("customerName").focus();
-    return;
-  }
-  if (!/^\d{5}-?\d{7}-?\d$/.test(customerCNIC.replace(/\s/g, ""))) {
-    alert("Please enter a valid 13-digit CNIC number.");
-    document.getElementById("customerCNIC").focus();
-    return;
+  const customerName = document.getElementById("customerName").value.trim() || "Customer";
+  const customerCNIC = document.getElementById("customerCNIC").value.trim() || "--";
+  const threshold = getThreshold();
+  const income = numberValue(document.getElementById("income").value);
+  const otherTotal = selectedEMITypes.reduce((sum, type) => sum + getEMIValue(type, appliedEMIValues[type]), 0);
+  const total = installmentValue + otherTotal;
+  const dbr = income > 0 ? (total / income) * 100 : 0;
+
+  const nameEl = document.getElementById("previewCustomerName");
+  if (nameEl) nameEl.textContent = customerName;
+
+  const cnicEl = document.getElementById("previewCustomerCNIC");
+  if (cnicEl) cnicEl.textContent = customerCNIC;
+
+  const catEl = document.getElementById("previewCustomerCategory");
+  if (catEl) catEl.textContent = customerType === 'staff' ? "Bank Staff (40% Limit)" : "Regular Customer (35% Limit)";
+
+  const dbrEl = document.getElementById("previewCustomerDBR");
+  if (dbrEl) {
+    dbrEl.innerHTML = dbr <= threshold ? 
+      `<span style="color:#087857">✓ ${dbr.toFixed(2)}% (Safe)</span>` : 
+      `<span style="color:#c02626">⚠ ${dbr.toFixed(2)}% (Exceeds)</span>`;
   }
 
+  const timeEl = document.getElementById("previewTimestamp");
+  if (timeEl) timeEl.textContent = new Date().toLocaleString("en-PK", { dateStyle: "medium", timeStyle: "short" });
+
+  // Clone summary items
+  const summaryTarget = document.getElementById("previewSummaryGrid");
+  if (summaryTarget) {
+    summaryTarget.innerHTML = "";
+    const summarySource = document.querySelectorAll("#amortizationTab .summary-item");
+    summarySource.forEach(item => {
+      const clone = item.cloneNode(true);
+      summaryTarget.appendChild(clone);
+    });
+  }
+
+  // Populate preview table
+  const previewBody = document.getElementById("previewAmortBody");
+  const amortBody = document.getElementById("amortBody");
+  if (previewBody && amortBody) {
+    previewBody.innerHTML = amortBody.innerHTML;
+  }
+
+  const previewFoot = document.getElementById("previewAmortFoot");
+  const amortFoot = document.getElementById("amortFoot");
+  if (previewFoot && amortFoot) {
+    previewFoot.innerHTML = amortFoot.innerHTML;
+  }
+
+  const modal = document.getElementById("amortizationPreviewModal");
+  if (modal) modal.classList.add("show");
+}
+
+function printAmortization() {
+  if (installmentValue <= 0 || !document.getElementById("amortBody").children.length) {
+    alert("Please calculate the installment first.");
+    return;
+  }
+  window.print();
+}
+
+function triggerPreviewPrint() {
+  window.print();
+}
+
+function isUserCancel(err) {
+  if (!err) return false;
+  const name = String(err.name || "").toLowerCase();
+  const msg = String(err.message || "").toLowerCase();
+  return (
+    name === "aborterror" ||
+    name === "notallowederror" ||
+    msg.includes("canceled") ||
+    msg.includes("cancelled") ||
+    msg.includes("aborted") ||
+    msg.includes("dismissed")
+  );
+}
+
+function downloadBlob(blob, fileName) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+window.addEventListener("unhandledrejection", function(event) {
+  if (isUserCancel(event.reason)) {
+    event.preventDefault();
+  }
+});
+
+async function savePDFToDevice() {
+  if (installmentValue <= 0 || !document.getElementById("amortBody").children.length) {
+    alert("Please calculate the installment first.");
+    return;
+  }
+  const customerName = document.getElementById("customerName").value.trim() || "Customer";
   try {
     const pdfBlob = await generateAmortizationPDF();
-    const fileName = "Amortization-Sheet-" + customerName.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "") + ".pdf";
-    const file = new File([pdfBlob], fileName, { type: "application/pdf" });
-
-    if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
-      await navigator.share({
-        title: "Amortization Sheet - " + customerName,
-        text: "Islamic Personal Finance - Amortization Sheet",
-        files: [file]
-      });
-      return;
-    }
-
-    const url = URL.createObjectURL(pdfBlob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 2000);
-    alert("PDF generated. WhatsApp sharing is not supported by this browser; the PDF has been saved/downloaded.");
+    const cleanName = customerName.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
+    const fileName = "Tentative-Amortization-" + cleanName + ".pdf";
+    downloadBlob(pdfBlob, fileName);
+    alert("Tentative amortization schedule saved to your device successfully.");
   } catch (error) {
-    console.error(error);
-    if (error && error.name === "AbortError") return;
+    if (isUserCancel(error)) return;
     alert("PDF could not be generated. Please try again.");
   }
 }
+
+async function sharePDF() {
+  if (installmentValue <= 0 || !document.getElementById("amortBody").children.length) {
+    alert("Please calculate the installment first.");
+    return;
+  }
+  const customerName = document.getElementById("customerName").value.trim() || "Customer";
+  try {
+    const pdfBlob = await generateAmortizationPDF();
+    const cleanName = customerName.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "") + ".pdf";
+    const fileName = "Tentative-Amortization-" + cleanName;
+    const file = new File([pdfBlob], fileName, { type: "application/pdf" });
+
+    if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+      try {
+        await navigator.share({
+          title: "Tentative Amortization Schedule - " + customerName,
+          text: "Islamic Personal Finance - Tentative Repayment Schedule (Mode: Tawarruq)",
+          files: [file]
+        });
+        return;
+      } catch (shareErr) {
+        if (isUserCancel(shareErr)) {
+          return;
+        }
+      }
+    }
+
+    downloadBlob(pdfBlob, fileName);
+    alert("PDF downloaded to your device.");
+  } catch (error) {
+    if (isUserCancel(error)) return;
+    alert("PDF could not be generated. Please try again.");
+  }
+}
+
+const shareReport = sharePDF;
 
 async function generateAmortizationPDF() {
   if (!window.jspdf || !window.jspdf.jsPDF) {
@@ -628,9 +1159,10 @@ async function generateAmortizationPDF() {
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
   const customerName = document.getElementById("customerName").value.trim();
   const customerCNIC = document.getElementById("customerCNIC").value.trim();
-  const printedAt = new Date().toLocaleString();
+  const printedAt = new Date().toLocaleString("en-PK");
   const pageWidth = doc.internal.pageSize.getWidth();
   const margin = 9;
+  const threshold = getThreshold();
 
   doc.setFillColor(7, 92, 174);
   doc.rect(0, 0, pageWidth, 22, "F");
@@ -639,34 +1171,36 @@ async function generateAmortizationPDF() {
   doc.setFontSize(16);
   doc.text("Islamic Personal Finance", pageWidth / 2, 9, { align: "center" });
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(8);
-  doc.text("Amortization / Monthly Repayment Schedule", pageWidth / 2, 15, { align: "center" });
+  doc.setFontSize(8.5);
+  doc.text("Mode of Financing: Tawarruq — Tentative Repayment Schedule", pageWidth / 2, 15, { align: "center" });
 
-  let y = 27;
+  // Customer Information Table (Auto-spaced to avoid any text collision)
+  doc.autoTable({
+    startY: 25,
+    margin: { left: margin, right: margin },
+    body: [
+      [
+        { content: "Customer Name:  " + (customerName || "Valued Customer"), styles: { fontStyle: "bold" } },
+        { content: "CNIC:  " + (customerCNIC || "--"), styles: { fontStyle: "bold" } },
+        { content: "Segment:  " + (customerType === 'staff' ? "Bank Staff (40% DBR)" : "Regular Customer (35% DBR)"), styles: { fontStyle: "bold" } },
+        { content: "Generated:  " + printedAt, styles: { fontStyle: "normal", halign: "right" } }
+      ]
+    ],
+    theme: "plain",
+    styles: { font: "helvetica", fontSize: 8, textColor: [23, 59, 96], cellPadding: 1 }
+  });
+
+  let y = doc.lastAutoTable.finalY + 3;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9.5);
   doc.setTextColor(23, 59, 96);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(9);
-  doc.text("Customer Name:", margin, y);
-  doc.setFont("helvetica", "normal");
-  doc.text(customerName, margin + 25, y);
-  doc.setFont("helvetica", "bold");
-  doc.text("CNIC:", 105, y);
-  doc.setFont("helvetica", "normal");
-  doc.text(customerCNIC, 118, y);
-  doc.setFont("helvetica", "bold");
-  doc.text("Generated:", 180, y);
-  doc.setFont("helvetica", "normal");
-  doc.text(printedAt, 199, y);
+  doc.text("Financing Facility Summary (Mode: Tawarruq)", margin, y);
+  y += 2.5;
 
-  y += 7;
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(10);
-  doc.text("Finance Summary", margin, y);
-  y += 3;
-
+  // Clean currency symbols from summary so they don't produce broken characters in PDF Helvetica
   const summaryItems = Array.from(document.querySelectorAll("#amortizationTab .summary-item")).map(item => [
     item.querySelector(".summary-label")?.textContent.trim() || "",
-    item.querySelector(".summary-value")?.textContent.trim() || ""
+    (item.querySelector(".summary-value")?.textContent.trim() || "").replace(/₨/g, "PKR ")
   ]);
   const summaryRows = [];
   for (let i = 0; i < summaryItems.length; i += 4) {
@@ -682,36 +1216,61 @@ async function generateAmortizationPDF() {
     body: summaryRows,
     theme: "grid",
     margin: { left: margin, right: margin },
-    styles: { font: "helvetica", fontSize: 7, cellPadding: 2.2, textColor: [23, 59, 96], valign: "middle" },
+    styles: { font: "helvetica", fontSize: 7.5, cellPadding: 2.2, textColor: [23, 59, 96], valign: "middle" },
     bodyStyles: { fillColor: [245, 249, 252] },
     didParseCell: data => {
       if (data.section === "body") data.cell.styles.fontStyle = "bold";
     }
   });
 
-  y = doc.lastAutoTable.finalY + 5;
+  y = doc.lastAutoTable.finalY + 4;
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(10);
+  doc.setFontSize(9.5);
   doc.setTextColor(23, 59, 96);
-  doc.text("Monthly Repayment Schedule", margin, y);
+  doc.text("Tentative Monthly Repayment Schedule", margin, y);
 
-  const headers = Array.from(document.querySelectorAll("#amortBody tr:first-child td")).length ?
-    ["Month", "Opening", "Installment", "Principal", "Profit", "Closing"] : [];
+  const headers = ["Month", "Opening (PKR)", "Installment (PKR)", "Principal (PKR)", "Profit (PKR)", "Closing (PKR)"];
+  
+  // Format body numbers cleanly without broken currency symbols so they never clip
   const bodyRows = Array.from(document.querySelectorAll("#amortBody tr")).map(row =>
-    Array.from(row.querySelectorAll("td")).map(cell => cell.textContent.trim())
+    Array.from(row.querySelectorAll("td")).map((cell, idx) => {
+      const raw = cell.textContent.trim();
+      if (idx === 0) return raw;
+      return raw.replace(/[₨\s]/g, "");
+    })
   );
+  const footRows = Array.from(document.querySelectorAll("#amortFoot tr")).map(row =>
+    Array.from(row.querySelectorAll("td")).map((cell, idx) => {
+      const raw = cell.textContent.trim();
+      if (idx === 0) return "TOTAL";
+      if (raw === "--") return "--";
+      return raw.replace(/[₨\s]/g, "");
+    })
+  );
+
+  const tableWidth = pageWidth - margin * 2; // 279mm
+  const numColWidth = (tableWidth - 18) / 5; // 52.2mm per number column
 
   doc.autoTable({
     startY: y + 2,
     head: [headers],
     body: bodyRows,
+    foot: footRows,
     theme: "grid",
-    margin: { top: 8, right: margin, bottom: 10, left: margin },
+    margin: { top: 8, right: margin, bottom: 12, left: margin },
     tableWidth: "auto",
-    styles: { font: "helvetica", fontSize: 6.5, cellPadding: 1.7, textColor: [83, 108, 131], lineColor: [220, 232, 242], lineWidth: 0.15, halign: "right" },
-    headStyles: { fillColor: [237, 246, 253], textColor: [65, 97, 125], fontStyle: "bold", halign: "right" },
-    columnStyles: { 0: { halign: "center", cellWidth: 15 } },
-    alternateRowStyles: { fillColor: [247, 251, 255] },
+    styles: { font: "helvetica", fontSize: 7, cellPadding: 1.8, textColor: [60, 80, 100], lineColor: [215, 228, 238], lineWidth: 0.15, halign: "right" },
+    headStyles: { fillColor: [237, 246, 253], textColor: [40, 74, 107], fontStyle: "bold", halign: "right" },
+    footStyles: { fillColor: [230, 242, 252], textColor: [7, 92, 174], fontStyle: "bold", halign: "right" },
+    columnStyles: { 
+      0: { halign: "center", cellWidth: 18 },
+      1: { halign: "right", cellWidth: numColWidth },
+      2: { halign: "right", cellWidth: numColWidth },
+      3: { halign: "right", cellWidth: numColWidth },
+      4: { halign: "right", cellWidth: numColWidth },
+      5: { halign: "right", cellWidth: numColWidth }
+    },
+    alternateRowStyles: { fillColor: [250, 253, 255] },
     rowPageBreak: "avoid",
     showHead: "everyPage"
   });
@@ -722,15 +1281,15 @@ async function generateAmortizationPDF() {
     doc.setDrawColor(220, 232, 242);
     doc.line(margin, 195, pageWidth - margin, 195);
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(6.5);
+    doc.setFontSize(7);
     doc.setTextColor(113, 130, 147);
-    doc.text("Confidential customer finance information", margin, 199);
     doc.text("Powered by Syed Muhammad Humza Arif", pageWidth - margin, 199, { align: "right" });
     doc.text("Page " + page + " of " + pageCount, pageWidth / 2, 199, { align: "center" });
   }
 
   return doc.output("blob");
 }
+
 function getDocumentsChecklistItems() {
   return Array.from(document.querySelectorAll("#documentsChecklist .document-text")).map((el, i) => ({ number: i + 1, text: el.textContent.trim() }));
 }
@@ -761,78 +1320,30 @@ async function shareDocumentsChecklist() {
     doc.text("Powered by Syed Muhammad Humza Arif",pageWidth/2,289,{align:"center"});
     const blob=doc.output("blob");
     const file=new File([blob],"Documents-Checklist.pdf",{type:"application/pdf"});
-    if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
-      await navigator.share({title:"Documents Checklist",text:"Islamic Personal Finance - Documents Checklist",files:[file]});
-      return;
+    
+    if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+      try {
+        await navigator.share({
+          title: "Documents Checklist",
+          text: "Islamic Personal Finance - Documents Checklist",
+          files: [file]
+        });
+        return;
+      } catch (shareErr) {
+        if (isUserCancel(shareErr)) {
+          return;
+        }
+      }
     }
-    const url=URL.createObjectURL(blob); const link=document.createElement("a"); link.href=url; link.download="Documents-Checklist.pdf"; document.body.appendChild(link); link.click(); link.remove(); setTimeout(()=>URL.revokeObjectURL(url),2000);
-    alert("PDF generated. You can now share the downloaded PDF on WhatsApp.");
+
+    downloadBlob(blob, "Documents-Checklist.pdf");
+    alert("PDF generated and downloaded. You can now share the downloaded PDF.");
   } catch(error) {
-    if(error && error.name === "AbortError") return;
-    console.error(error); alert("PDF could not be generated. Please try again.");
+    if (isUserCancel(error)) return;
+    alert("PDF could not be generated. Please try again.");
   }
 }
 
-function generateAmortization(principal, annualRate, months, payment, kibor, spread) {
-  const monthlyRate = annualRate / 100 / 12;
-  let balance = principal;
-  let totalPrincipal = 0;
-  let totalProfit = 0;
-  const body = document.getElementById("amortBody");
-  body.innerHTML = "";
-
-  for (let month = 1; month <= months; month++) {
-    const opening = balance;
-    const profit = opening * monthlyRate;
-    let principalPart = payment - profit;
-    if (month === months) principalPart = opening;
-    const actualPayment = principalPart + profit;
-    let closing = opening - principalPart;
-    if (Math.abs(closing) < 0.01) closing = 0;
-
-    totalPrincipal += principalPart;
-    totalProfit += profit;
-
-    const row = document.createElement("tr");
-    row.innerHTML = `<td><strong>${month}</strong></td><td>${pkr(opening)}</td><td>${pkr(actualPayment)}</td><td>${pkr(principalPart)}</td><td>${pkr(profit)}</td><td>${pkr(closing)}</td>`;
-    body.appendChild(row);
-    balance = closing;
-  }
-
-  document.getElementById("reportAmount").textContent = pkr(principal);
-  document.getElementById("reportRate").textContent = annualRate.toFixed(2) + "%";
-  document.getElementById("reportTenure").textContent = months + " Months";
-  document.getElementById("reportInstallment").textContent = pkr(payment);
-  document.getElementById("reportPrincipal").textContent = pkr(totalPrincipal);
-  document.getElementById("reportProfit").textContent = pkr(totalProfit);
-  document.getElementById("reportTotal").textContent = pkr(totalPrincipal + totalProfit);
-  document.getElementById("reportBreakup").textContent = kibor.toFixed(2) + "% + " + spread.toFixed(2) + "%";
-  document.getElementById("amortBtn").classList.remove("locked");
-}
-function openAmortization() {
-  if (installmentValue <= 0) return;
-  const nameInput = document.getElementById("customerName");
-  const cnicInput = document.getElementById("customerCNIC");
-  if (!nameInput.value.trim() || !/^\d{5}-?\d{7}-?\d$/.test(cnicInput.value.replace(/\s/g, ""))) {
-    document.getElementById("customerNameModal").value = nameInput.value;
-    document.getElementById("customerCNICModal").value = cnicInput.value;
-    document.getElementById("customerDetailsModal").classList.add("show");
-    setTimeout(() => (!nameInput.value.trim() ? document.getElementById("customerNameModal") : document.getElementById("customerCNICModal")).focus(), 50);
-    return;
-  }
-  openTab("amortizationTab", document.getElementById("amortBtn"));
-}
-
-function continueToAmortization() {
-  const nameInput = document.getElementById("customerName");
-  const cnicInput = document.getElementById("customerCNIC");
-  const name = nameInput.value.trim();
-  const digits = cnicInput.value.replace(/\D/g, "");
-  if (!name) { alert("Please enter the customer's name."); nameInput.focus(); return; }
-  if (digits.length !== 13) { alert("Please enter a valid 13-digit CNIC number."); cnicInput.focus(); return; }
-  closeModal("customerDetailsModal");
-  openTab("amortizationTab", document.getElementById("amortBtn"));
-}
 function openTab(tabId, button) {
   if (tabId === "dbrTab" &&
       (numberValue(document.getElementById("income").value) <= 0 || installmentValue <= 0)) return;
@@ -852,11 +1363,6 @@ function showLimit(max) {
   document.getElementById("limitModal").classList.add("show");
 }
 
-function syncCustomerDetailsAndOpen() {
-  document.getElementById("customerName").value = document.getElementById("customerNameModal").value.trim();
-  document.getElementById("customerCNIC").value = document.getElementById("customerCNICModal").value;
-  continueToAmortization();
-}
 function closeModal(id) {
   document.getElementById(id).classList.remove("show");
 }
@@ -869,7 +1375,7 @@ document.querySelectorAll(".modal").forEach(modal => {
 updateMultiple();
 updateLimit();
 updateRate();
-updateDBR();
+setCustomerType('regular');
 updateDBRStatus();
 </script>
 </body>
