@@ -1,0 +1,8 @@
+{
+  "name": "Islamic Personal Finance",
+  "description": "Installment & DBR Calculator for Islamic Personal Finance",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
