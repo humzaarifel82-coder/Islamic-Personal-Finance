@@ -18,6 +18,12 @@ import com.getcapacitor.BridgeActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
+import android.os.Build;
+import android.os.Environment;
+import android.content.ContentValues;
+import android.provider.MediaStore;
+import android.widget.Toast;
 
 public class MainActivity extends BridgeActivity {
 
@@ -130,6 +136,99 @@ public class MainActivity extends BridgeActivity {
 
                 e.printStackTrace();
 
+            }
+        }
+
+        // ============================================================
+        // NATIVE ANDROID SAVE TO DEVICE (DOWNLOADS)
+        // ============================================================
+
+        @JavascriptInterface
+        public void savePdf(
+                String base64,
+                String fileName,
+                String mimeType
+        ) {
+            try {
+                if (fileName == null || fileName.trim().isEmpty()) {
+                    fileName = "Tentative-Amortization-Schedule.pdf";
+                }
+                if (mimeType == null || mimeType.trim().isEmpty()) {
+                    mimeType = "application/pdf";
+                }
+
+                String safeFileName = fileName.replaceAll("[^a-zA-Z0-9._-]", "_");
+                byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
+
+                boolean saved = false;
+
+                // Android 10+ (Q) MediaStore Scoped Storage (No extra dangerous permissions needed)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    ContentValues values = new ContentValues();
+                    values.put(MediaStore.MediaColumns.DISPLAY_NAME, safeFileName);
+                    values.put(MediaStore.MediaColumns.MIME_TYPE, mimeType);
+                    values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
+
+                    Uri uri = getContentResolver().insert(
+                            MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+                            values
+                    );
+
+                    if (uri != null) {
+                        try (OutputStream os = getContentResolver().openOutputStream(uri)) {
+                            if (os != null) {
+                                os.write(bytes);
+                                os.flush();
+                                saved = true;
+                            }
+                        }
+                    }
+                }
+
+                // Fallback for older Android versions
+                if (!saved) {
+                    File downloadsDir = Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_DOWNLOADS
+                    );
+                    if (!downloadsDir.exists()) {
+                        downloadsDir.mkdirs();
+                    }
+                    File outFile = new File(downloadsDir, safeFileName);
+                    try (FileOutputStream fos = new FileOutputStream(outFile)) {
+                        fos.write(bytes);
+                        fos.flush();
+                        saved = true;
+                    }
+                }
+
+                final boolean isSaved = saved;
+                final String finalName = safeFileName;
+                runOnUiThread(() -> {
+                    if (isSaved) {
+                        Toast.makeText(
+                                MainActivity.this,
+                                "PDF saved to Downloads: " + finalName,
+                                Toast.LENGTH_LONG
+                        ).show();
+                    } else {
+                        Toast.makeText(
+                                MainActivity.this,
+                                "Could not save PDF to Downloads",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                final String errMsg = e.getMessage();
+                runOnUiThread(() -> {
+                    Toast.makeText(
+                            MainActivity.this,
+                            "Failed to save file: " + errMsg,
+                            Toast.LENGTH_SHORT
+                    ).show();
+                });
             }
         }
 

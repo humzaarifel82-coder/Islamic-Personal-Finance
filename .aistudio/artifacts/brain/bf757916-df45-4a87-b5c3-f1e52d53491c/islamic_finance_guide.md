@@ -53,3 +53,18 @@ This notice is displayed in the main on-screen report card and in-app preview mo
   - Dedicated **↗ Share PDF** button (triggers native device share sheet/WhatsApp).
   - Dedicated **🖨 Print** button (native clean printing).
   - Relationship Manager endorsement and customer acknowledgment signature blocks.
+
+---
+
+## 5. Mobile Android APK Native Bridge & Performance
+
+### 5.1. Native Android Bridge (`window.Android`)
+The Android APK environment routes media and printing tasks through the native Java interface:
+- **`savePdf(base64, fileName, mimeType)`**: Saves PDFs directly into the public `Downloads` directory using Android `MediaStore` (API 29+) with zero dangerous permission prompts, accompanied by a native Android Toast notification.
+- **`sharePdf(base64, fileName, mimeType)`**: Writes the decoded PDF into secure app cache and launches Android's native Share Sheet via `FileProvider` (`content://com.humzaarif.islamicfinance.fileprovider/...`).
+- **`printHtml(html, title)`**: Dynamically loads formatted printable schedule HTML into a background WebView and invokes Android's `PrintManager` with A4 landscape print adapters.
+
+### 5.2. Mobile Smoothness & Lag-Free Optimizations
+- **Touch Latency**: Enforced `touch-action: manipulation;` across all buttons, tabs, and form controls to remove 300ms tap delay.
+- **GPU Backdrop Elimination**: Replaced high-cost CSS `backdrop-filter: blur(...)` with GPU-accelerated translucent RGBA fills, maintaining 60fps modal transitions.
+- **Input Responsiveness**: Input formatting preserves selection range and cursor coordinates to prevent virtual keyboard jitter and dropped keystrokes on mobile devices.

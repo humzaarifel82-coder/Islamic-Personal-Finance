@@ -13,16 +13,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;width:100%;min-height:100%}
-body{font-family:"Inter",Arial,sans-serif;background:#eef6fd;color:#17324f;font-size:14px}
-.app{width:100%;max-width:540px;min-height:100vh;margin:auto;background:#f7fbff;position:relative}
+html,body{margin:0;padding:0;width:100%;min-height:100%;touch-action:manipulation;-webkit-text-size-adjust:100%}
+body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#eef6fd;color:#17324f;font-size:14px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.app{width:100%;max-width:540px;min-height:100vh;margin:auto;background:#f7fbff;position:relative;-webkit-transform:translateZ(0);transform:translateZ(0);contain:layout style}
+button,input,select,.tab,.action-btn,.primary-btn,.manual-btn,.preview-tool-btn{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .header{padding:20px 18px 17px;background:linear-gradient(135deg,#075cae,#0b78d0);color:white}
 .header-row{display:flex;align-items:center;gap:13px}
 .logo{width:43px;height:43px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.20);font-size:20px;font-weight:800}
 .header h1{margin:0;font-size:18px;line-height:1.25;font-weight:800}
 .header p{margin:4px 0 0;font-size:10px;color:rgba(255,255,255,.76)}
-.tabs{width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:white;border-bottom:1px solid #dce8f2;position:sticky;top:0;z-index:50}
-.tab{height:64px;border:0;border-right:1px solid #edf2f6;background:white;color:#8191a2;font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative;cursor:pointer}
+.tabs{width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:white;border-bottom:1px solid #dce8f2;position:sticky;top:0;z-index:50;-webkit-transform:translateZ(0);transform:translateZ(0)}
+.tab{height:64px;border:0;border-right:1px solid #edf2f6;background:white;color:#8191a2;font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative;cursor:pointer;user-select:none;-webkit-user-select:none}
 .tab:last-child{border-right:0}
 .tab-icon{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#f1f6fa;font-size:13px}
 .tab-title{font-size:7px;white-space:nowrap;font-weight:700}
@@ -135,9 +136,9 @@ input::placeholder{color:#a8b5c1;font-weight:400}
 .amort-table td strong{color:#173b60}
 
 .footer{padding:15px;text-align:center;color:#8a9aaa;font-size:9px;background:#f7fbff}
-.modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(15,38,60,.55);backdrop-filter:blur(3px);padding:14px;align-items:center;justify-content:center}
+.modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(12,32,54,.68);padding:14px;align-items:center;justify-content:center;-webkit-transform:translateZ(0);transform:translateZ(0)}
 .modal.show{display:flex}
-.modal-box{width:100%;max-width:420px;max-height:92vh;overflow-y:auto;background:white;border-radius:16px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.22)}
+.modal-box{width:100%;max-width:420px;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;background:white;border-radius:16px;padding:20px;box-shadow:0 16px 45px rgba(0,0,0,.20);transform:translateZ(0);will-change:transform,opacity}
 .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .modal-head h2{margin:0;font-size:17px;color:#173b60;font-weight:800}
 .close{width:32px;height:32px;border:0;border-radius:50%;background:#f0f4f7;color:#687b8d;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
@@ -648,8 +649,22 @@ function pkr(value) {
   return "₨ " + formatNumber(value);
 }
 function formatInput(input) {
-  const raw = input.value.replace(/[^0-9]/g, "");
-  input.value = raw ? Number(raw).toLocaleString("en-PK") : "";
+  if (!input) return;
+  const oldVal = input.value;
+  const raw = oldVal.replace(/[^0-9]/g, "");
+  if (!raw) {
+    input.value = "";
+    return;
+  }
+  const formatted = Number(raw).toLocaleString("en-PK");
+  if (formatted === oldVal) return;
+  const start = input.selectionStart || 0;
+  const oldDiff = oldVal.length - start;
+  input.value = formatted;
+  const newPos = Math.max(0, formatted.length - oldDiff);
+  try {
+    input.setSelectionRange(newPos, newPos);
+  } catch (e) {}
 }
 function incomeChanged(input) {
   formatInput(input);
@@ -1053,15 +1068,123 @@ function previewAmortization() {
   if (modal) modal.classList.add("show");
 }
 
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const dataUrl = reader.result;
+      const base64 = String(dataUrl || "").replace(/^data:.*?;base64,/, '');
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+function getPrintableAmortizationHtml() {
+  const customerName = document.getElementById("customerName")?.value.trim() || "Valued Customer";
+  const customerCNIC = document.getElementById("customerCNIC")?.value.trim() || "--";
+  const printedAt = new Date().toLocaleString("en-PK");
+  const segment = customerType === 'staff' ? "Bank Staff (40% DBR Limit)" : "Regular Customer (35% DBR Limit)";
+  const summaryGridHtml = document.getElementById("reportSummaryGrid")?.innerHTML || "";
+  const amortBodyHtml = document.getElementById("amortBody")?.innerHTML || "";
+  const amortFootHtml = document.getElementById("amortFoot")?.innerHTML || "";
+
+  return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Tentative Repayment Schedule - ${customerName}</title>
+<style>
+@page { size: landscape; margin: 8mm; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 11px; color: #17324f; margin: 0; padding: 10px; background: #fff; }
+.header { text-align: center; background: #075cae; color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 12px; }
+.header h1 { margin: 0; font-size: 17px; font-weight: 800; }
+.header p { margin: 4px 0 0; font-size: 10px; opacity: 0.95; }
+.meta-grid { display: flex; justify-content: space-between; font-size: 10.5px; font-weight: 600; padding: 8px 12px; background: #f2f7fc; border: 1px solid #dce8f2; border-radius: 8px; margin-bottom: 12px; }
+.sec-title { font-weight: 800; font-size: 11.5px; margin-bottom: 7px; color: #173b60; }
+.summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-bottom: 14px; }
+.summary-item { background: #f5f9fc; border: 1px solid #dce8f2; border-radius: 7px; padding: 7px 10px; }
+.summary-label { font-size: 8px; color: #788b9d; font-weight: 700; text-transform: uppercase; }
+.summary-value { font-size: 12px; color: #173b60; font-weight: 800; margin-top: 3px; }
+table { width: 100%; border-collapse: collapse; font-size: 9.5px; margin-top: 6px; }
+th { background: #edf6fd; color: #284a6b; font-weight: 800; padding: 7px; border: 1px solid #d7e5ef; text-align: right; }
+th:first-child { text-align: center; }
+td { padding: 6px 7px; border: 1px solid #e2edf5; text-align: right; color: #3c5064; }
+td:first-child { text-align: center; font-weight: bold; }
+tfoot td { background: #e6f2fc; color: #075cae; font-weight: 800; border-top: 2px solid #b7d6ee; }
+.signatures { margin-top: 26px; display: flex; justify-content: space-between; font-size: 10px; color: #526b84; page-break-inside: avoid; }
+.sig-box { width: 200px; }
+.sig-line { width: 100%; border-top: 1px solid #9bb5cc; margin-top: 30px; padding-top: 4px; }
+.footer { margin-top: 16px; border-top: 1px solid #dce8f2; padding-top: 8px; display: flex; justify-content: space-between; font-size: 8.5px; color: #8a9cb0; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Islamic Personal Finance</h1>
+  <p>Mode of Financing: Tawarruq — Tentative Repayment Schedule</p>
+</div>
+<div class="meta-grid">
+  <div>Customer: <strong>${customerName}</strong></div>
+  <div>CNIC: <strong>${customerCNIC}</strong></div>
+  <div>Segment: <strong>${segment}</strong></div>
+  <div>Generated: <strong>${printedAt}</strong></div>
+</div>
+<div class="sec-title">Financing Facility Summary (Mode: Tawarruq)</div>
+<div class="summary-grid">${summaryGridHtml}</div>
+<div class="sec-title">Tentative Monthly Repayment Schedule</div>
+<table>
+  <thead>
+    <tr>
+      <th>Month</th>
+      <th>Opening (PKR)</th>
+      <th>Installment (PKR)</th>
+      <th>Principal (PKR)</th>
+      <th>Profit (PKR)</th>
+      <th>Closing (PKR)</th>
+    </tr>
+  </thead>
+  <tbody>${amortBodyHtml}</tbody>
+  <tfoot>${amortFootHtml}</tfoot>
+</table>
+<div class="signatures">
+  <div class="sig-box">
+    <div style="font-weight:700;color:#173b60">Relationship Manager / Prepared By</div>
+    <div class="sig-line">Signature &amp; Stamp</div>
+  </div>
+  <div class="sig-box">
+    <div style="font-weight:700;color:#173b60">Customer Acknowledgment</div>
+    <div class="sig-line">Customer Signature</div>
+  </div>
+</div>
+<div class="footer">
+  <div>Islamic Personal Finance - Tawarruq Facility</div>
+  <div>Powered by Syed Muhammad Humza Arif</div>
+</div>
+</body>
+</html>`;
+}
+
 function printAmortization() {
+  triggerPreviewPrint();
+}
+
+function triggerPreviewPrint() {
   if (installmentValue <= 0 || !document.getElementById("amortBody").children.length) {
     alert("Please calculate the installment first.");
     return;
   }
-  window.print();
-}
-
-function triggerPreviewPrint() {
+  // 1. Native Android WebView Print (MainActivity.java)
+  if (window.Android && typeof window.Android.printHtml === "function") {
+    try {
+      const html = getPrintableAmortizationHtml();
+      window.Android.printHtml(html, "Tentative Amortization Schedule");
+      return;
+    } catch (androidErr) {
+      console.warn("Android printHtml error:", androidErr);
+    }
+  }
+  // 2. Browser Print Fallback
   window.print();
 }
 
@@ -1102,14 +1225,48 @@ async function savePDFToDevice() {
     return;
   }
   const customerName = document.getElementById("customerName").value.trim() || "Customer";
+  const cleanName = customerName.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
+  const fileName = "Tentative-Amortization-" + (cleanName || "Customer") + ".pdf";
+
   try {
     const pdfBlob = await generateAmortizationPDF();
-    const cleanName = customerName.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
-    const fileName = "Tentative-Amortization-" + cleanName + ".pdf";
+    const base64 = await blobToBase64(pdfBlob);
+
+    // 1. Native Android Bridge (Direct to Downloads via MediaStore in APK)
+    if (window.Android && typeof window.Android.savePdf === "function") {
+      window.Android.savePdf(base64, fileName, "application/pdf");
+      return;
+    }
+
+    // 2. Capacitor Filesystem Plugin (if running in Capacitor without custom bridge)
+    const Filesystem = window.Capacitor?.Plugins?.Filesystem;
+    if (Filesystem && typeof Filesystem.writeFile === "function") {
+      try {
+        await Filesystem.writeFile({
+          path: fileName,
+          data: base64,
+          directory: 'DOCUMENTS',
+          recursive: true
+        });
+        alert("PDF saved to your Documents folder: " + fileName);
+        return;
+      } catch (fsErr) {
+        console.warn("Capacitor Filesystem fallback:", fsErr);
+      }
+    }
+
+    // 3. Native Android Share fallback (allows saving to device via File Manager / Drive)
+    if (window.Android && typeof window.Android.sharePdf === "function") {
+      window.Android.sharePdf(base64, fileName, "application/pdf");
+      return;
+    }
+
+    // 4. Standard Browser Download
     downloadBlob(pdfBlob, fileName);
-    alert("Tentative amortization schedule saved to your device successfully.");
+    alert("Tentative amortization schedule saved to your device.");
   } catch (error) {
     if (isUserCancel(error)) return;
+    console.error("Save error:", error);
     alert("PDF could not be generated. Please try again.");
   }
 }
@@ -1120,12 +1277,21 @@ async function sharePDF() {
     return;
   }
   const customerName = document.getElementById("customerName").value.trim() || "Customer";
+  const cleanName = customerName.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "") || "Customer";
+  const fileName = "Tentative-Amortization-" + cleanName + ".pdf";
+
   try {
     const pdfBlob = await generateAmortizationPDF();
-    const cleanName = customerName.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "") + ".pdf";
-    const fileName = "Tentative-Amortization-" + cleanName;
-    const file = new File([pdfBlob], fileName, { type: "application/pdf" });
+    const base64 = await blobToBase64(pdfBlob);
 
+    // 1. Native Android Bridge (MainActivity.java with secure FileProvider)
+    if (window.Android && typeof window.Android.sharePdf === "function") {
+      window.Android.sharePdf(base64, fileName, "application/pdf");
+      return;
+    }
+
+    // 2. Web Share API with File
+    const file = new File([pdfBlob], fileName, { type: "application/pdf" });
     if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
       try {
         await navigator.share({
@@ -1135,17 +1301,17 @@ async function sharePDF() {
         });
         return;
       } catch (shareErr) {
-        if (isUserCancel(shareErr)) {
-          return;
-        }
+        if (isUserCancel(shareErr)) return;
       }
     }
 
+    // 3. Fallback to direct download
     downloadBlob(pdfBlob, fileName);
     alert("PDF downloaded to your device.");
   } catch (error) {
     if (isUserCancel(error)) return;
-    alert("PDF could not be generated. Please try again.");
+    console.error("Share error:", error);
+    alert("PDF could not be shared. Please try again.");
   }
 }
 
@@ -1319,8 +1485,14 @@ async function shareDocumentsChecklist() {
     doc.setFontSize(8); doc.setTextColor(105,125,143); doc.text("Checklist boxes are intentionally left blank for printing and manual use.",margin,y+8);
     doc.text("Powered by Syed Muhammad Humza Arif",pageWidth/2,289,{align:"center"});
     const blob=doc.output("blob");
+    const base64 = await blobToBase64(blob);
+
+    if (window.Android && typeof window.Android.sharePdf === "function") {
+      window.Android.sharePdf(base64, "Documents-Checklist.pdf", "application/pdf");
+      return;
+    }
+
     const file=new File([blob],"Documents-Checklist.pdf",{type:"application/pdf"});
-    
     if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
       try {
         await navigator.share({
@@ -1337,7 +1509,7 @@ async function shareDocumentsChecklist() {
     }
 
     downloadBlob(blob, "Documents-Checklist.pdf");
-    alert("PDF generated and downloaded. You can now share the downloaded PDF.");
+    alert("Documents Checklist saved to your device.");
   } catch(error) {
     if (isUserCancel(error)) return;
     alert("PDF could not be generated. Please try again.");
