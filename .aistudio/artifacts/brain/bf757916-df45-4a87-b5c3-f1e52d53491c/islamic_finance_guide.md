@@ -49,10 +49,9 @@ This notice is displayed in the main on-screen report card and in-app preview mo
 - **Main Amortization Tab**: Streamlined to a single, focused action button: **👁️ Preview Amortization Report**. Outer quick-print and share buttons have been removed to eliminate clutter.
 - **Inside Preview Modal (Popup)**:
   - Formatted in the exact application card theme with clean typography and badges.
-  - Dedicated **⬇ Save to Device** button (downloads vector PDF file directly to user's phone/PC).
-  - Dedicated **↗ Share PDF** button (triggers native device share sheet/WhatsApp).
-  - Dedicated **🖨 Print** button (native clean printing).
+  - Dedicated **↗ Share PDF** button (triggers native device share sheet/WhatsApp, Capacitor plugin, or Web Share).
   - Relationship Manager endorsement and customer acknowledgment signature blocks.
+  - Streamlined header with Print and Save buttons removed for a focused, clutter-free mobile experience.
 
 ---
 

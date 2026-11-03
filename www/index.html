@@ -155,10 +155,10 @@ input::placeholder{color:#a8b5c1;font-weight:400}
 .preview-modal-header{padding:12px 16px;background:linear-gradient(135deg,#075cae,#0b78d0);color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .preview-modal-header h2{margin:0;font-size:15px;color:#fff;font-weight:800;display:flex;align-items:center;gap:7px}
 .preview-modal-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.preview-tool-btn{height:30px;padding:0 10px;border-radius:7px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.18);color:#fff;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s ease}
+.preview-tool-btn{height:32px;padding:0 12px;border-radius:8px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.18);color:#fff;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s ease}
 .preview-tool-btn:hover{background:#fff;color:#075cae}
-.preview-tool-btn.btn-save{background:#ffffff;color:#075cae;border-color:#ffffff}
-.preview-tool-btn.btn-save:hover{background:#e5f2ff}
+.preview-tool-btn.btn-share-active{background:#ffffff;color:#075cae;border-color:#ffffff;font-weight:800;box-shadow:0 3px 10px rgba(0,0,0,.14)}
+.preview-tool-btn.btn-share-active:hover{background:#e8f3fe}
 .preview-modal-body{padding:16px;overflow-y:auto;background:#f7fbff;flex:1}
 .preview-meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px}
 .preview-meta-card{background:#f5f9fc;border:1px solid #e0eaf1;border-radius:9px;padding:9px 11px}
@@ -416,7 +416,7 @@ input::placeholder{color:#a8b5c1;font-weight:400}
       <div class="document-row"><span class="document-number">8.</span><span class="document-text">Previous two years experience letter, if current employment is less then 2 years.</span><span class="print-checkbox" aria-hidden="true"></span></div>
       <div class="document-row"><span class="document-number">9.</span><span class="document-text">Verified SS card.</span><span class="print-checkbox" aria-hidden="true"></span></div>
     </div>
-    <button class="manual-btn" style="width:100%;margin-top:10px" onclick="shareDocumentsChecklist()">Share Documents Checklist PDF</button>
+    <button class="primary-btn" style="width:100%;margin-top:12px" onclick="shareDocumentsChecklist()">↗ Share Documents Checklist PDF</button>
   </div>
 </div>
 </section>
@@ -430,10 +430,8 @@ input::placeholder{color:#a8b5c1;font-weight:400}
     <div class="preview-modal-header">
       <h2><span>☪</span> Tentative Amortization Report</h2>
       <div class="preview-modal-actions">
-        <button type="button" class="preview-tool-btn btn-save" onclick="savePDFToDevice()">⬇ Save to Device</button>
-        <button type="button" class="preview-tool-btn" onclick="sharePDF()">↗ Share PDF</button>
-        <button type="button" class="preview-tool-btn" onclick="triggerPreviewPrint()">🖨 Print</button>
-        <button type="button" class="close" style="width:28px;height:28px;color:#fff;background:rgba(255,255,255,.2)" onclick="closeModal('amortizationPreviewModal')">×</button>
+        <button type="button" class="preview-tool-btn btn-share-active" onclick="sharePDF()">↗ Share PDF</button>
+        <button type="button" class="close" style="width:30px;height:30px;color:#fff;background:rgba(255,255,255,.2);font-size:18px" onclick="closeModal('amortizationPreviewModal')">×</button>
       </div>
     </div>
     <div class="preview-modal-body" id="previewModalBody">
@@ -1290,24 +1288,48 @@ async function sharePDF() {
       return;
     }
 
-    // 2. Web Share API with File
-    const file = new File([pdfBlob], fileName, { type: "application/pdf" });
-    if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+    // 2. Capacitor Filesystem + Share Plugin (Capacitor native fallback)
+    const Filesystem = window.Capacitor?.Plugins?.Filesystem;
+    const Share = window.Capacitor?.Plugins?.Share;
+    if (Filesystem && Share) {
       try {
-        await navigator.share({
+        const fileResult = await Filesystem.writeFile({
+          path: fileName,
+          data: base64,
+          directory: 'CACHE'
+        });
+        await Share.share({
           title: "Tentative Amortization Schedule - " + customerName,
           text: "Islamic Personal Finance - Tentative Repayment Schedule (Mode: Tawarruq)",
-          files: [file]
+          url: fileResult.uri
         });
         return;
+      } catch (capErr) {
+        if (isUserCancel(capErr)) return;
+        console.warn("Capacitor share fallback:", capErr);
+      }
+    }
+
+    // 3. Web Share API with File
+    if (navigator.share) {
+      try {
+        const file = new File([pdfBlob], fileName, { type: "application/pdf" });
+        if (!navigator.canShare || navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            title: "Tentative Amortization Schedule - " + customerName,
+            text: "Islamic Personal Finance - Tentative Repayment Schedule (Mode: Tawarruq)",
+            files: [file]
+          });
+          return;
+        }
       } catch (shareErr) {
         if (isUserCancel(shareErr)) return;
       }
     }
 
-    // 3. Fallback to direct download
+    // 4. Fallback to direct download
     downloadBlob(pdfBlob, fileName);
-    alert("PDF downloaded to your device.");
+    alert("PDF ready and downloaded. You can now share it via WhatsApp or any app.");
   } catch (error) {
     if (isUserCancel(error)) return;
     console.error("Share error:", error);
@@ -1492,15 +1514,38 @@ async function shareDocumentsChecklist() {
       return;
     }
 
-    const file=new File([blob],"Documents-Checklist.pdf",{type:"application/pdf"});
-    if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+    // Capacitor Filesystem + Share Plugin fallback
+    const Filesystem = window.Capacitor?.Plugins?.Filesystem;
+    const Share = window.Capacitor?.Plugins?.Share;
+    if (Filesystem && Share) {
       try {
-        await navigator.share({
+        const fileResult = await Filesystem.writeFile({
+          path: "Documents-Checklist.pdf",
+          data: base64,
+          directory: 'CACHE'
+        });
+        await Share.share({
           title: "Documents Checklist",
           text: "Islamic Personal Finance - Documents Checklist",
-          files: [file]
+          url: fileResult.uri
         });
         return;
+      } catch (capErr) {
+        if (isUserCancel(capErr)) return;
+      }
+    }
+
+    if (navigator.share) {
+      try {
+        const file = new File([blob], "Documents-Checklist.pdf", { type: "application/pdf" });
+        if (!navigator.canShare || navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            title: "Documents Checklist",
+            text: "Islamic Personal Finance - Documents Checklist",
+            files: [file]
+          });
+          return;
+        }
       } catch (shareErr) {
         if (isUserCancel(shareErr)) {
           return;
@@ -1509,7 +1554,7 @@ async function shareDocumentsChecklist() {
     }
 
     downloadBlob(blob, "Documents-Checklist.pdf");
-    alert("Documents Checklist saved to your device.");
+    alert("Documents Checklist ready and downloaded. You can now share it via WhatsApp or any app.");
   } catch(error) {
     if (isUserCancel(error)) return;
     alert("PDF could not be generated. Please try again.");

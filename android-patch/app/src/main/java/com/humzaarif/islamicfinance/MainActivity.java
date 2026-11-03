@@ -2,6 +2,7 @@ package com.humzaarif.islamicfinance;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.ClipData;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
@@ -105,37 +106,31 @@ public class MainActivity extends BridgeActivity {
                         file
                 );
 
-                // Android native Share Sheet
-                Intent intent =
-                        new Intent(Intent.ACTION_SEND);
-
+                // Android native Share Sheet with ClipData permission
+                Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType(mimeType);
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
+                intent.setClipData(ClipData.newRawUri("", uri));
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                intent.putExtra(
-                        Intent.EXTRA_STREAM,
-                        uri
-                );
+                Intent chooser = Intent.createChooser(intent, "Share PDF");
+                chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                intent.addFlags(
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION
-                );
-
-                intent.addFlags(
-                        Intent.FLAG_ACTIVITY_NEW_TASK
-                );
-
-                Intent chooser =
-                        Intent.createChooser(
-                                intent,
-                                "Share PDF"
-                        );
-
-                startActivity(chooser);
+                runOnUiThread(() -> {
+                    try {
+                        startActivity(chooser);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(MainActivity.this, "Unable to share file: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
 
             } catch (Exception e) {
-
                 e.printStackTrace();
-
+                runOnUiThread(() -> {
+                    Toast.makeText(MainActivity.this, "Share error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
             }
         }
 
