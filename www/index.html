@@ -22,15 +22,15 @@ button,input,select,.tab,.action-btn,.primary-btn,.manual-btn,.preview-tool-btn{
 .logo{width:43px;height:43px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.20);font-size:20px;font-weight:800}
 .header h1{margin:0;font-size:18px;line-height:1.25;font-weight:800}
 .header p{margin:4px 0 0;font-size:10px;color:rgba(255,255,255,.76)}
-.tabs{width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:white;border-bottom:1px solid #dce8f2;position:sticky;top:0;z-index:50;-webkit-transform:translateZ(0);transform:translateZ(0)}
-.tab{height:64px;border:0;border-right:1px solid #edf2f6;background:white;color:#8191a2;font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative;cursor:pointer;user-select:none;-webkit-user-select:none}
+.tabs{width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:white;border-bottom:1px solid #dce8f2;position:sticky;top:0;z-index:50;-webkit-transform:translateZ(0);transform:translateZ(0)}
+.tab{height:60px;border:0;border-right:1px solid #edf2f6;background:white;color:#788b9d;font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative;cursor:pointer;user-select:none;-webkit-user-select:none;padding:0 2px}
 .tab:last-child{border-right:0}
 .tab-icon{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#f1f6fa;font-size:13px}
-.tab-title{font-size:7px;white-space:nowrap;font-weight:700}
+.tab-title{font-size:9.5px;white-space:nowrap;font-weight:700;letter-spacing:.1px}
 .tab.active{color:#075cae}
 .tab.active .tab-icon{background:#e5f2ff;color:#075cae}
-.tab.active::after{content:"";position:absolute;bottom:0;left:12px;right:12px;height:3px;border-radius:3px 3px 0 0;background:#075cae}
-.tab.locked{opacity:.38}
+.tab.active::after{content:"";position:absolute;bottom:0;left:10px;right:10px;height:3px;border-radius:3px 3px 0 0;background:#075cae}
+.tab.locked{opacity:.42}
 .tab-content{display:none;width:100%}
 .tab-content.active{display:block}
 .content{padding:15px}
@@ -134,8 +134,25 @@ input::placeholder{color:#a8b5c1;font-weight:400}
 .amort-table tbody tr:hover{background:#f0f7fe}
 .amort-table tfoot td{background:#edf6fd;color:#173b60;font-weight:800;border-top:2px solid #c9dfef;padding:11px 9px}
 .amort-table td strong{color:#173b60}
+/* Summary Tab Styles */
+.summary-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;background:#f5f9fd;border:1px solid #d9e7f2;border-radius:10px;padding:12px;margin-bottom:14px}
+.summary-meta-item{font-size:10px}
+.summary-meta-label{color:#6e859b;font-weight:600;font-size:9px;text-transform:uppercase;letter-spacing:.3px}
+.summary-meta-val{color:#173b60;font-weight:700;margin-top:2px;font-size:11px}
+.summary-section{margin-bottom:14px;border-top:1px dashed #dce8f2;padding-top:12px}
+.summary-section-title{font-size:11px;font-weight:800;color:#075cae;margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.summary-data-table{width:100%;border-collapse:collapse;font-size:11px}
+.summary-data-table tr{border-bottom:1px solid #edf2f6}
+.summary-data-table tr:last-child{border-bottom:0}
+.summary-data-table td{padding:7px 4px;vertical-align:middle}
+.summary-data-table td:first-child{color:#576f87;font-weight:600;text-align:left;width:55%}
+.summary-data-table td:last-child{color:#173b60;font-weight:700;text-align:right;width:45%;white-space:nowrap}
+.summary-disclaimer{background:#fdfbe8;border:1px solid #f1e4a3;border-radius:9px;padding:11px;font-size:9.5px;line-height:1.45;color:#705812;margin-top:12px}
+.summary-actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
 
-.footer{padding:15px;text-align:center;color:#8a9aaa;font-size:9px;background:#f7fbff}
+.footer{padding:18px 15px 24px;text-align:center;background:#f7fbff}
+.watermark-badge{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:6px 16px;border-radius:20px;background:#ffffff;border:1px solid #d4e2ee;color:#2c4b6c;font-size:11px;font-weight:600;letter-spacing:.3px;box-shadow:0 1px 3px rgba(15,44,77,.06);user-select:none}
+.watermark-badge .watermark-symbol{color:#075cae;font-size:12px;font-weight:700;opacity:.9}
 .modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(12,32,54,.68);padding:14px;align-items:center;justify-content:center;-webkit-transform:translateZ(0);transform:translateZ(0)}
 .modal.show{display:flex}
 .modal-box{width:100%;max-width:420px;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;background:white;border-radius:16px;padding:20px;box-shadow:0 16px 45px rgba(0,0,0,.20);transform:translateZ(0);will-change:transform,opacity}
@@ -223,9 +240,8 @@ input::placeholder{color:#a8b5c1;font-weight:400}
 <nav class="tabs">
   <button class="tab active" id="incomeBtn" onclick="openTab('incomeTab',this)"><div class="tab-icon">◉</div><div class="tab-title">Income</div></button>
   <button class="tab" id="installmentBtn" onclick="openTab('installmentTab',this)"><div class="tab-icon">▣</div><div class="tab-title">Installment</div></button>
-  <button class="tab locked" id="dbrBtn" onclick="openDBR()"><div class="tab-icon">▥</div><div class="tab-title">DBR</div></button>
-  <button class="tab locked" id="amortBtn" onclick="openAmortization()"><div class="tab-icon">▤</div><div class="tab-title">Amortization</div></button>
-  <button class="tab" id="documentsBtn" onclick="openTab('documentsTab',this)"><div class="tab-icon">☷</div><div class="tab-title">Documents Checklist</div></button>
+  <button class="tab locked" id="dbrBtn" onclick="openDBR()"><div class="tab-icon">▥</div><div class="tab-title">DBR Calc</div></button>
+  <button class="tab" id="summaryBtn" onclick="handleSummaryTabClick(this)"><div class="tab-icon">📋</div><div class="tab-title">Summary</div></button>
 </nav>
 
 <section id="incomeTab" class="tab-content active">
@@ -333,200 +349,58 @@ input::placeholder{color:#a8b5c1;font-weight:400}
 </div>
 </section>
 
-<section id="amortizationTab" class="tab-content">
+<section id="summaryTab" class="tab-content">
 <div class="content">
-  <div class="report-card customer-details-card">
-    <div class="report-title">
-      <span>Customer Details</span>
-      <span id="badgeCategory" style="font-size:10px;padding:3px 9px;border-radius:12px;background:#e5f2ff;color:#075cae;font-weight:700">Regular Customer (35%)</span>
-    </div>
-    <div class="form-group"><label for="customerName">Customer Name</label><input id="customerName" type="text" placeholder="Enter customer full name" autocomplete="name"></div>
-    <div class="form-group"><label for="customerCNIC">CNIC Number</label><input id="customerCNIC" type="text" inputmode="numeric" maxlength="13" pattern="[0-9]{13}" placeholder="Enter 13-digit CNIC" oninput="this.value=this.value.replace(/\D/g,'').slice(0,13)"></div>
-    <div class="form-group">
-      <label for="customerCategorySelect">Customer Segment / DBR Threshold</label>
-      <select id="customerCategorySelect" onchange="customerCategoryChanged(this.value)">
-        <option value="regular">Regular Customer (35% Max DBR)</option>
-        <option value="staff">Bank Staff (40% Max DBR)</option>
-      </select>
-    </div>
-
-    <button type="button" class="primary-btn" onclick="previewAmortization()" style="margin-top:6px">👁️ Preview Amortization Report</button>
-  </div>
-
-  <div class="report-card">
-    <div class="report-title">
-      <span>Islamic Finance Summary</span>
-      <span style="font-size:9px;color:#075cae;background:#edf7ff;border:1px solid #cfe6f8;padding:3px 8px;border-radius:6px;font-weight:700">Mode of Financing: Tawarruq</span>
-    </div>
-    <div class="summary-grid">
-      <div class="summary-item"><div class="summary-label">Financing Amount</div><div id="reportAmount" class="summary-value">₨ 0</div></div>
-      <div class="summary-item"><div class="summary-label">Total Rate</div><div id="reportRate" class="summary-value">0.00%</div></div>
-      <div class="summary-item"><div class="summary-label">Tenure</div><div id="reportTenure" class="summary-value">0 Months</div></div>
-      <div class="summary-item"><div class="summary-label">Monthly Installment</div><div id="reportInstallment" class="summary-value">₨ 0</div></div>
-      <div class="summary-item"><div class="summary-label">Total Principal</div><div id="reportPrincipal" class="summary-value">₨ 0</div></div>
-      <div class="summary-item"><div class="summary-label">Total Profit</div><div id="reportProfit" class="summary-value">₨ 0</div></div>
-      <div class="summary-item"><div class="summary-label">Total Payable</div><div id="reportTotal" class="summary-value">₨ 0</div></div>
-      <div class="summary-item"><div class="summary-label">KIBOR + Spread</div><div id="reportBreakup" class="summary-value">0.00% + 0.00%</div></div>
-    </div>
-  </div>
-
-  <div class="report-card" id="printableRepaymentCard">
-    <div class="report-title">
-      <span>Tentative Monthly Repayment Schedule</span>
-    </div>
-    <div class="table-wrap">
-      <table class="amort-table">
-        <thead>
-          <tr>
-            <th>Month</th>
-            <th>Opening (₨)</th>
-            <th>Installment (₨)</th>
-            <th>Principal (₨)</th>
-            <th>Profit (₨)</th>
-            <th>Closing (₨)</th>
-          </tr>
-        </thead>
-        <tbody id="amortBody"></tbody>
-        <tfoot id="amortFoot"></tfoot>
-      </table>
-    </div>
-    <div style="margin-top:14px;padding:12px 14px;background:#fff8ee;border:1px solid #f9dfb8;border-radius:10px;color:#92400e;font-size:11px;line-height:1.55">
-      <div style="font-weight:800;display:flex;align-items:center;gap:6px;margin-bottom:4px">
-        <span>⚠️</span> Important Notice: Tentative Schedule
+  <!-- Customer Profile Summary Strip with Edit Button -->
+  <div class="card" style="padding:13px 15px;margin-bottom:12px;background:#f5f9fd;border-color:#d4e3ef">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+      <div>
+        <div style="font-size:9px;color:#6b8298;font-weight:700;text-transform:uppercase;letter-spacing:.3px">Assessed Customer</div>
+        <div id="summaryCardCustomerName" style="font-size:14px;color:#173b60;font-weight:800;margin-top:2px">Not Provided</div>
+        <div style="font-size:10px;color:#526b84;margin-top:2px">CNIC: <span id="summaryCardCustomerCNIC" style="font-weight:700;color:#173b60">—</span> • <span id="summaryCardCustomerType" style="color:#075cae;font-weight:700">Regular Customer (35%)</span></div>
       </div>
-      <div>This repayment schedule is purely tentative and indicative. The final repayment schedule will be determined and issued upon financing disbursement based on prevailing KIBOR, disbursement date, and bank's final approval.</div>
+      <button type="button" class="manual-btn" onclick="openCustomerDetailsModal()" style="height:32px;font-size:9.5px;padding:0 10px;white-space:nowrap">
+        ✏️ Edit Details
+      </button>
     </div>
+  </div>
+
+  <!-- Consolidated Summary Report Card -->
+  <div class="report-card" id="summaryReportContainer">
+    <!-- Populated dynamically by updateSummaryReport() -->
   </div>
 </div>
 </section>
 
-<section id="documentsTab" class="tab-content">
-<div class="content">
-  <div class="report-card checklist-card">
-    <div class="report-title">Documents Checklist</div>
-    <div class="helper" style="margin-bottom:14px">Required documents for processing. The checkboxes are for printed checklist use only.</div>
-    <div id="documentsChecklist" class="documents-list">
-      <div class="document-row"><span class="document-number">1.</span><span class="document-text">Clear copy of CNIC with Original seen.</span><span class="print-checkbox" aria-hidden="true"></span></div>
-      <div class="document-row"><span class="document-number">2.</span><span class="document-text">Two photographs</span><span class="print-checkbox" aria-hidden="true"></span></div>
-      <div class="document-row"><span class="document-number">3.</span><span class="document-text">Application form duly filled and signed by customer along with RSM endorsement</span><span class="print-checkbox" aria-hidden="true"></span></div>
-      <div class="document-row"><span class="document-number">4.</span><span class="document-text">KYC along with RSM endorsement</span><span class="print-checkbox" aria-hidden="true"></span></div>
-      <div class="document-row"><span class="document-number">5.</span><span class="document-text">Last 3 months Salary slip. (Last 6 months Salary slip in case of variable salary)</span><span class="print-checkbox" aria-hidden="true"></span></div>
-      <div class="document-row"><span class="document-number">6.</span><span class="document-text">Employment letter with Date of joining &amp; Employment status.</span><span class="print-checkbox" aria-hidden="true"></span></div>
-      <div class="document-row"><span class="document-number">7.</span><span class="document-text">Last 6 months Bank statement with salary reflection.</span><span class="print-checkbox" aria-hidden="true"></span></div>
-      <div class="document-row"><span class="document-number">8.</span><span class="document-text">Previous two years experience letter, if current employment is less then 2 years.</span><span class="print-checkbox" aria-hidden="true"></span></div>
-      <div class="document-row"><span class="document-number">9.</span><span class="document-text">Verified SS card.</span><span class="print-checkbox" aria-hidden="true"></span></div>
-    </div>
-    <button class="primary-btn" style="width:100%;margin-top:12px" onclick="shareDocumentsChecklist()">↗ Share Documents Checklist PDF</button>
+<footer class="footer">
+  <div class="watermark-badge">
+    <span class="watermark-symbol">☪</span>
+    <span>Powered by Syed Muhammad Humza Arif</span>
   </div>
-</div>
-</section>
-
-<footer class="footer">Powered by Syed Muhammad Humza Arif</footer>
-</div>
-
-<!-- Modal: Amortization Report Preview (Matching App Theme) -->
-<div id="amortizationPreviewModal" class="modal">
-  <div class="preview-modal-box">
-    <div class="preview-modal-header">
-      <h2><span>☪</span> Tentative Amortization Report</h2>
-      <div class="preview-modal-actions">
-        <button type="button" class="preview-tool-btn btn-share-active" onclick="sharePDF()">↗ Share PDF</button>
-        <button type="button" class="close" style="width:30px;height:30px;color:#fff;background:rgba(255,255,255,.2);font-size:18px" onclick="closeModal('amortizationPreviewModal')">×</button>
-      </div>
-    </div>
-    <div class="preview-modal-body" id="previewModalBody">
-      <div class="card" style="margin-bottom:12px;padding:15px">
-        <div class="card-title" style="margin-bottom:12px">
-          <span>Customer &amp; Financing Facility</span>
-          <span style="font-size:9px;padding:3px 8px;border-radius:6px;background:#fff8ee;color:#b45309;font-weight:800;border:1px solid #fed7aa">TENTATIVE SCHEDULE</span>
-        </div>
-        <div class="preview-meta-grid">
-          <div class="preview-meta-card">
-            <small>Customer Name</small>
-            <strong id="previewCustomerName">--</strong>
-          </div>
-          <div class="preview-meta-card">
-            <small>CNIC Number</small>
-            <strong id="previewCustomerCNIC">--</strong>
-          </div>
-          <div class="preview-meta-card">
-            <small>Customer Segment</small>
-            <strong id="previewCustomerCategory">Regular Customer (35%)</strong>
-          </div>
-          <div class="preview-meta-card">
-            <small>DBR Benchmark</small>
-            <strong id="previewCustomerDBR" style="font-size:11px">--</strong>
-          </div>
-          <div class="preview-meta-card">
-            <small>Date &amp; Time Generated</small>
-            <strong id="previewTimestamp" style="font-size:11px">--</strong>
-          </div>
-        </div>
-      </div>
-
-      <div class="card" style="margin-bottom:12px;padding:15px">
-        <div class="card-title" style="margin-bottom:12px">
-          <span>Islamic Finance Summary</span>
-          <span style="font-size:9px;color:#075cae;background:#edf7ff;border:1px solid #cfe6f8;padding:3px 8px;border-radius:6px;font-weight:700">Mode of Financing: Tawarruq</span>
-        </div>
-        <div class="summary-grid" id="previewSummaryGrid"></div>
-      </div>
-
-      <div class="card" style="margin-bottom:12px;padding:15px">
-        <div class="card-title" style="margin-bottom:12px">Tentative Monthly Repayment Schedule</div>
-        <div class="table-wrap">
-          <table class="amort-table">
-            <thead>
-              <tr>
-                <th>Month</th>
-                <th>Opening (₨)</th>
-                <th>Installment (₨)</th>
-                <th>Principal (₨)</th>
-                <th>Profit (₨)</th>
-                <th>Closing (₨)</th>
-              </tr>
-            </thead>
-            <tbody id="previewAmortBody"></tbody>
-            <tfoot id="previewAmortFoot"></tfoot>
-          </table>
-        </div>
-
-        <!-- English Important Notice Wording -->
-        <div style="margin-top:14px;padding:12px 14px;background:#fff8ee;border:1px solid #f9dfb8;border-radius:10px;color:#92400e;font-size:11px;line-height:1.55">
-          <div style="font-weight:800;display:flex;align-items:center;gap:6px;margin-bottom:4px">
-            <span>⚠️</span> Important Notice: Tentative Schedule
-          </div>
-          <div>This repayment schedule is purely tentative and indicative. The final repayment schedule will be determined and issued upon financing disbursement based on prevailing KIBOR, disbursement date, and bank's final approval.</div>
-        </div>
-
-        <div style="margin-top:22px;padding-top:16px;border-top:1px dashed #dce8f2;display:flex;justify-content:space-between;gap:20px;font-size:10px;color:#74899e">
-          <div>
-            <div style="font-weight:700;color:#173b60;margin-bottom:28px">Relationship Manager / Prepared By</div>
-            <div style="border-top:1px solid #c4d7e6;width:150px;padding-top:4px">Signature &amp; Stamp</div>
-          </div>
-          <div>
-            <div style="font-weight:700;color:#173b60;margin-bottom:28px">Customer Acknowledgment</div>
-            <div style="border-top:1px solid #c4d7e6;width:150px;padding-top:4px">Customer Signature</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+</footer>
 </div>
 
 <div id="customerDetailsModal" class="modal"><div class="modal-box">
-  <div class="modal-head"><h2>Customer Details</h2><button class="close" onclick="closeModal('customerDetailsModal')">×</button></div>
-  <div class="modal-message" style="margin-bottom:14px">Enter customer details to view and print the amortization sheet.</div>
-  <div class="form-group"><label for="customerNameModal">Customer Name</label><input id="customerNameModal" type="text" placeholder="Enter customer full name" autocomplete="name"></div>
-  <div class="form-group"><label for="customerCNICModal">CNIC Number (13 digits)</label><input id="customerCNICModal" type="text" inputmode="numeric" maxlength="13" pattern="[0-9]{13}" placeholder="Enter 13-digit CNIC" oninput="this.value=this.value.replace(/\D/g,'').slice(0,13)"></div>
-  <div class="form-group">
-    <label for="customerCategoryModal">Customer Segment</label>
-    <select id="customerCategoryModal" onchange="customerCategoryChanged(this.value)">
-      <option value="regular">Regular Customer (35% Max DBR)</option>
-      <option value="staff">Bank Staff (40% Max DBR)</option>
-    </select>
+  <div class="modal-head"><h2>Customer Information</h2><button class="close" onclick="closeModal('customerDetailsModal')">×</button></div>
+  <div class="modal-message" style="margin-bottom:14px;text-align:left">Please enter customer details to generate the official Financial Assessment Summary Sheet.</div>
+  <div class="form-group" style="margin-bottom:12px">
+    <label>Customer Full Name *</label>
+    <input id="modalCustomerName" type="text" placeholder="e.g. Muhammad Ali Khan" autocomplete="off">
   </div>
-  <button class="primary-btn" onclick="syncCustomerDetailsAndOpen()">Continue to Amortization</button>
+  <div class="form-group" style="margin-bottom:12px">
+    <label>Customer CNIC Number *</label>
+    <input id="modalCustomerCNIC" type="text" inputmode="numeric" placeholder="42101-1234567-1" maxlength="15" oninput="formatCNICInput(this)" autocomplete="off">
+  </div>
+  <div class="form-group" style="margin-bottom:16px">
+    <label>Customer Classification / Segment</label>
+    <div class="customer-type-toggle">
+      <button type="button" class="type-btn active" id="modalTypeRegularBtn" onclick="setCustomerType('regular')">Regular Customer (35% DBR)</button>
+      <button type="button" class="type-btn" id="modalTypeStaffBtn" onclick="setCustomerType('staff')">Bank Staff (40% DBR)</button>
+    </div>
+  </div>
+  <button class="primary-btn" onclick="saveCustomerDetailsAndShowSummary()" style="background:#075cae;font-size:13px;font-weight:800;height:44px">
+    Generate Summary Report ➔
+  </button>
 </div></div>
 
 <div id="otherEMISelectorModal" class="modal"><div class="modal-box">
@@ -550,7 +424,10 @@ input::placeholder{color:#a8b5c1;font-weight:400}
   <div class="result-highlight"><div class="result-label">Monthly Installment</div><div id="resultInstallment" class="result-number">₨ 0</div></div>
   <div class="result-secondary"><div class="result-label">Total Payable</div><div id="resultTotal" class="result-number">₨ 0</div></div>
   <div class="modal-message">The calculated installment is based on the financing amount, total rate and selected tenure.</div>
-  <button class="primary-btn" onclick="closeModal('resultModal')">Close</button>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px">
+    <button class="manual-btn" style="height:44px;font-size:11px" onclick="closeModal('resultModal')">Close</button>
+    <button class="primary-btn" style="margin-top:0;height:44px;font-size:11px" onclick="closeModal('resultModal');openDBR()">Go to DBR ➔</button>
+  </div>
 </div></div>
 
 <div id="limitModal" class="modal"><div class="modal-box">
@@ -599,12 +476,18 @@ function setCustomerType(type) {
   customerType = type;
   const regBtn = document.getElementById("typeRegularBtn");
   const staffBtn = document.getElementById("typeStaffBtn");
+  const mRegBtn = document.getElementById("modalTypeRegularBtn");
+  const mStaffBtn = document.getElementById("modalTypeStaffBtn");
   if (type === 'staff') {
     if (staffBtn) staffBtn.classList.add("active");
     if (regBtn) regBtn.classList.remove("active");
+    if (mStaffBtn) mStaffBtn.classList.add("active");
+    if (mRegBtn) mRegBtn.classList.remove("active");
   } else {
     if (regBtn) regBtn.classList.add("active");
     if (staffBtn) staffBtn.classList.remove("active");
+    if (mRegBtn) mRegBtn.classList.add("active");
+    if (mStaffBtn) mStaffBtn.classList.remove("active");
   }
 
   // Sync with dropdowns & badges
@@ -630,6 +513,7 @@ function setCustomerType(type) {
   if (markerLabel) markerLabel.textContent = "Threshold: " + threshold + "%";
 
   updateDBR();
+  updateSummaryReport();
 }
 
 function customerCategoryChanged(val) {
@@ -777,10 +661,10 @@ function calculateInstallment() {
   document.getElementById("resultInstallment").textContent = pkr(installment);
   document.getElementById("resultTotal").textContent = pkr(totalPayable);
 
-  generateAmortization(amount, totalRate, tenure, installment, kibor, spread);
   document.getElementById("resultModal").classList.add("show");
   updateDBR();
   updateDBRStatus();
+  updateSummaryReport();
 }
 function updateDBRStatus() {
   const income = numberValue(document.getElementById("income").value);
@@ -932,639 +816,9 @@ function updateDBR() {
   }
 }
 
-function generateAmortization(principal, annualRate, months, payment, kibor, spread) {
-  const monthlyRate = annualRate / 100 / 12;
-  let balance = principal;
-  let totalPrincipal = 0;
-  let totalProfit = 0;
-  const body = document.getElementById("amortBody");
-  const foot = document.getElementById("amortFoot");
-  body.innerHTML = "";
-
-  for (let month = 1; month <= months; month++) {
-    const opening = balance;
-    const profit = opening * monthlyRate;
-    let principalPart = payment - profit;
-    if (month === months) principalPart = opening;
-    const actualPayment = principalPart + profit;
-    let closing = opening - principalPart;
-    if (Math.abs(closing) < 0.01) closing = 0;
-
-    totalPrincipal += principalPart;
-    totalProfit += profit;
-
-    const row = document.createElement("tr");
-    row.innerHTML = `<td><strong>${month}</strong></td><td>${pkr(opening)}</td><td><strong style="color:#075cae">${pkr(actualPayment)}</strong></td><td>${pkr(principalPart)}</td><td>${pkr(profit)}</td><td>${pkr(closing)}</td>`;
-    body.appendChild(row);
-    balance = closing;
-  }
-
-  // Footer Totals Row
-  foot.innerHTML = `<tr><td><strong>TOTAL</strong></td><td>--</td><td><strong style="color:#075cae">${pkr(totalPrincipal + totalProfit)}</strong></td><td><strong>${pkr(totalPrincipal)}</strong></td><td><strong>${pkr(totalProfit)}</strong></td><td><strong>₨ 0</strong></td></tr>`;
-
-  document.getElementById("reportAmount").textContent = pkr(principal);
-  document.getElementById("reportRate").textContent = annualRate.toFixed(2) + "%";
-  document.getElementById("reportTenure").textContent = months + " Months";
-  document.getElementById("reportInstallment").textContent = pkr(payment);
-  document.getElementById("reportPrincipal").textContent = pkr(totalPrincipal);
-  document.getElementById("reportProfit").textContent = pkr(totalProfit);
-  document.getElementById("reportTotal").textContent = pkr(totalPrincipal + totalProfit);
-  document.getElementById("reportBreakup").textContent = kibor.toFixed(2) + "% + " + spread.toFixed(2) + "%";
-  document.getElementById("amortBtn").classList.remove("locked");
-}
-
-function openAmortization() {
-  if (installmentValue <= 0) return;
-  const nameInput = document.getElementById("customerName");
-  const cnicInput = document.getElementById("customerCNIC");
-  if (!nameInput.value.trim() || !/^\d{5}-?\d{7}-?\d$/.test(cnicInput.value.replace(/\s/g, ""))) {
-    document.getElementById("customerNameModal").value = nameInput.value;
-    document.getElementById("customerCNICModal").value = cnicInput.value;
-    document.getElementById("customerCategoryModal").value = customerType;
-    document.getElementById("customerDetailsModal").classList.add("show");
-    setTimeout(() => (!nameInput.value.trim() ? document.getElementById("customerNameModal") : document.getElementById("customerCNICModal")).focus(), 50);
-    return;
-  }
-  openTab("amortizationTab", document.getElementById("amortBtn"));
-}
-
-function continueToAmortization() {
-  const nameInput = document.getElementById("customerName");
-  const cnicInput = document.getElementById("customerCNIC");
-  const name = nameInput.value.trim();
-  const digits = cnicInput.value.replace(/\D/g, "");
-  if (!name) { alert("Please enter the customer's name."); nameInput.focus(); return; }
-  if (digits.length !== 13) { alert("Please enter a valid 13-digit CNIC number."); cnicInput.focus(); return; }
-  closeModal("customerDetailsModal");
-  openTab("amortizationTab", document.getElementById("amortBtn"));
-}
-
-function syncCustomerDetailsAndOpen() {
-  document.getElementById("customerName").value = document.getElementById("customerNameModal").value.trim();
-  document.getElementById("customerCNIC").value = document.getElementById("customerCNICModal").value;
-  setCustomerType(document.getElementById("customerCategoryModal").value);
-  continueToAmortization();
-}
-
-function previewAmortization() {
-  if (installmentValue <= 0 || !document.getElementById("amortBody").children.length) {
-    alert("Please calculate the installment first.");
-    return;
-  }
-  const customerName = document.getElementById("customerName").value.trim() || "Customer";
-  const customerCNIC = document.getElementById("customerCNIC").value.trim() || "--";
-  const threshold = getThreshold();
-  const income = numberValue(document.getElementById("income").value);
-  const otherTotal = selectedEMITypes.reduce((sum, type) => sum + getEMIValue(type, appliedEMIValues[type]), 0);
-  const total = installmentValue + otherTotal;
-  const dbr = income > 0 ? (total / income) * 100 : 0;
-
-  const nameEl = document.getElementById("previewCustomerName");
-  if (nameEl) nameEl.textContent = customerName;
-
-  const cnicEl = document.getElementById("previewCustomerCNIC");
-  if (cnicEl) cnicEl.textContent = customerCNIC;
-
-  const catEl = document.getElementById("previewCustomerCategory");
-  if (catEl) catEl.textContent = customerType === 'staff' ? "Bank Staff (40% Limit)" : "Regular Customer (35% Limit)";
-
-  const dbrEl = document.getElementById("previewCustomerDBR");
-  if (dbrEl) {
-    dbrEl.innerHTML = dbr <= threshold ? 
-      `<span style="color:#087857">✓ ${dbr.toFixed(2)}% (Safe)</span>` : 
-      `<span style="color:#c02626">⚠ ${dbr.toFixed(2)}% (Exceeds)</span>`;
-  }
-
-  const timeEl = document.getElementById("previewTimestamp");
-  if (timeEl) timeEl.textContent = new Date().toLocaleString("en-PK", { dateStyle: "medium", timeStyle: "short" });
-
-  // Clone summary items
-  const summaryTarget = document.getElementById("previewSummaryGrid");
-  if (summaryTarget) {
-    summaryTarget.innerHTML = "";
-    const summarySource = document.querySelectorAll("#amortizationTab .summary-item");
-    summarySource.forEach(item => {
-      const clone = item.cloneNode(true);
-      summaryTarget.appendChild(clone);
-    });
-  }
-
-  // Populate preview table
-  const previewBody = document.getElementById("previewAmortBody");
-  const amortBody = document.getElementById("amortBody");
-  if (previewBody && amortBody) {
-    previewBody.innerHTML = amortBody.innerHTML;
-  }
-
-  const previewFoot = document.getElementById("previewAmortFoot");
-  const amortFoot = document.getElementById("amortFoot");
-  if (previewFoot && amortFoot) {
-    previewFoot.innerHTML = amortFoot.innerHTML;
-  }
-
-  const modal = document.getElementById("amortizationPreviewModal");
-  if (modal) modal.classList.add("show");
-}
-
-function blobToBase64(blob) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const dataUrl = reader.result;
-      const base64 = String(dataUrl || "").replace(/^data:.*?;base64,/, '');
-      resolve(base64);
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
-}
-
-function getPrintableAmortizationHtml() {
-  const customerName = document.getElementById("customerName")?.value.trim() || "Valued Customer";
-  const customerCNIC = document.getElementById("customerCNIC")?.value.trim() || "--";
-  const printedAt = new Date().toLocaleString("en-PK");
-  const segment = customerType === 'staff' ? "Bank Staff (40% DBR Limit)" : "Regular Customer (35% DBR Limit)";
-  const summaryGridHtml = document.getElementById("reportSummaryGrid")?.innerHTML || "";
-  const amortBodyHtml = document.getElementById("amortBody")?.innerHTML || "";
-  const amortFootHtml = document.getElementById("amortFoot")?.innerHTML || "";
-
-  return `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Tentative Repayment Schedule - ${customerName}</title>
-<style>
-@page { size: landscape; margin: 8mm; }
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 11px; color: #17324f; margin: 0; padding: 10px; background: #fff; }
-.header { text-align: center; background: #075cae; color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 12px; }
-.header h1 { margin: 0; font-size: 17px; font-weight: 800; }
-.header p { margin: 4px 0 0; font-size: 10px; opacity: 0.95; }
-.meta-grid { display: flex; justify-content: space-between; font-size: 10.5px; font-weight: 600; padding: 8px 12px; background: #f2f7fc; border: 1px solid #dce8f2; border-radius: 8px; margin-bottom: 12px; }
-.sec-title { font-weight: 800; font-size: 11.5px; margin-bottom: 7px; color: #173b60; }
-.summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-bottom: 14px; }
-.summary-item { background: #f5f9fc; border: 1px solid #dce8f2; border-radius: 7px; padding: 7px 10px; }
-.summary-label { font-size: 8px; color: #788b9d; font-weight: 700; text-transform: uppercase; }
-.summary-value { font-size: 12px; color: #173b60; font-weight: 800; margin-top: 3px; }
-table { width: 100%; border-collapse: collapse; font-size: 9.5px; margin-top: 6px; }
-th { background: #edf6fd; color: #284a6b; font-weight: 800; padding: 7px; border: 1px solid #d7e5ef; text-align: right; }
-th:first-child { text-align: center; }
-td { padding: 6px 7px; border: 1px solid #e2edf5; text-align: right; color: #3c5064; }
-td:first-child { text-align: center; font-weight: bold; }
-tfoot td { background: #e6f2fc; color: #075cae; font-weight: 800; border-top: 2px solid #b7d6ee; }
-.signatures { margin-top: 26px; display: flex; justify-content: space-between; font-size: 10px; color: #526b84; page-break-inside: avoid; }
-.sig-box { width: 200px; }
-.sig-line { width: 100%; border-top: 1px solid #9bb5cc; margin-top: 30px; padding-top: 4px; }
-.footer { margin-top: 16px; border-top: 1px solid #dce8f2; padding-top: 8px; display: flex; justify-content: space-between; font-size: 8.5px; color: #8a9cb0; }
-</style>
-</head>
-<body>
-<div class="header">
-  <h1>Islamic Personal Finance</h1>
-  <p>Mode of Financing: Tawarruq — Tentative Repayment Schedule</p>
-</div>
-<div class="meta-grid">
-  <div>Customer: <strong>${customerName}</strong></div>
-  <div>CNIC: <strong>${customerCNIC}</strong></div>
-  <div>Segment: <strong>${segment}</strong></div>
-  <div>Generated: <strong>${printedAt}</strong></div>
-</div>
-<div class="sec-title">Financing Facility Summary (Mode: Tawarruq)</div>
-<div class="summary-grid">${summaryGridHtml}</div>
-<div class="sec-title">Tentative Monthly Repayment Schedule</div>
-<table>
-  <thead>
-    <tr>
-      <th>Month</th>
-      <th>Opening (PKR)</th>
-      <th>Installment (PKR)</th>
-      <th>Principal (PKR)</th>
-      <th>Profit (PKR)</th>
-      <th>Closing (PKR)</th>
-    </tr>
-  </thead>
-  <tbody>${amortBodyHtml}</tbody>
-  <tfoot>${amortFootHtml}</tfoot>
-</table>
-<div class="signatures">
-  <div class="sig-box">
-    <div style="font-weight:700;color:#173b60">Relationship Manager / Prepared By</div>
-    <div class="sig-line">Signature &amp; Stamp</div>
-  </div>
-  <div class="sig-box">
-    <div style="font-weight:700;color:#173b60">Customer Acknowledgment</div>
-    <div class="sig-line">Customer Signature</div>
-  </div>
-</div>
-<div class="footer">
-  <div>Islamic Personal Finance - Tawarruq Facility</div>
-  <div>Powered by Syed Muhammad Humza Arif</div>
-</div>
-</body>
-</html>`;
-}
-
-function printAmortization() {
-  triggerPreviewPrint();
-}
-
-function triggerPreviewPrint() {
-  if (installmentValue <= 0 || !document.getElementById("amortBody").children.length) {
-    alert("Please calculate the installment first.");
-    return;
-  }
-  // 1. Native Android WebView Print (MainActivity.java)
-  if (window.Android && typeof window.Android.printHtml === "function") {
-    try {
-      const html = getPrintableAmortizationHtml();
-      window.Android.printHtml(html, "Tentative Amortization Schedule");
-      return;
-    } catch (androidErr) {
-      console.warn("Android printHtml error:", androidErr);
-    }
-  }
-  // 2. Browser Print Fallback
-  window.print();
-}
-
-function isUserCancel(err) {
-  if (!err) return false;
-  const name = String(err.name || "").toLowerCase();
-  const msg = String(err.message || "").toLowerCase();
-  return (
-    name === "aborterror" ||
-    name === "notallowederror" ||
-    msg.includes("canceled") ||
-    msg.includes("cancelled") ||
-    msg.includes("aborted") ||
-    msg.includes("dismissed")
-  );
-}
-
-function downloadBlob(blob, fileName) {
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = fileName;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 2000);
-}
-
-window.addEventListener("unhandledrejection", function(event) {
-  if (isUserCancel(event.reason)) {
-    event.preventDefault();
-  }
-});
-
-async function savePDFToDevice() {
-  if (installmentValue <= 0 || !document.getElementById("amortBody").children.length) {
-    alert("Please calculate the installment first.");
-    return;
-  }
-  const customerName = document.getElementById("customerName").value.trim() || "Customer";
-  const cleanName = customerName.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
-  const fileName = "Tentative-Amortization-" + (cleanName || "Customer") + ".pdf";
-
-  try {
-    const pdfBlob = await generateAmortizationPDF();
-    const base64 = await blobToBase64(pdfBlob);
-
-    // 1. Native Android Bridge (Direct to Downloads via MediaStore in APK)
-    if (window.Android && typeof window.Android.savePdf === "function") {
-      window.Android.savePdf(base64, fileName, "application/pdf");
-      return;
-    }
-
-    // 2. Capacitor Filesystem Plugin (if running in Capacitor without custom bridge)
-    const Filesystem = window.Capacitor?.Plugins?.Filesystem;
-    if (Filesystem && typeof Filesystem.writeFile === "function") {
-      try {
-        await Filesystem.writeFile({
-          path: fileName,
-          data: base64,
-          directory: 'DOCUMENTS',
-          recursive: true
-        });
-        alert("PDF saved to your Documents folder: " + fileName);
-        return;
-      } catch (fsErr) {
-        console.warn("Capacitor Filesystem fallback:", fsErr);
-      }
-    }
-
-    // 3. Native Android Share fallback (allows saving to device via File Manager / Drive)
-    if (window.Android && typeof window.Android.sharePdf === "function") {
-      window.Android.sharePdf(base64, fileName, "application/pdf");
-      return;
-    }
-
-    // 4. Standard Browser Download
-    downloadBlob(pdfBlob, fileName);
-    alert("Tentative amortization schedule saved to your device.");
-  } catch (error) {
-    if (isUserCancel(error)) return;
-    console.error("Save error:", error);
-    alert("PDF could not be generated. Please try again.");
-  }
-}
-
-async function sharePDF() {
-  if (installmentValue <= 0 || !document.getElementById("amortBody").children.length) {
-    alert("Please calculate the installment first.");
-    return;
-  }
-  const customerName = document.getElementById("customerName").value.trim() || "Customer";
-  const cleanName = customerName.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "") || "Customer";
-  const fileName = "Tentative-Amortization-" + cleanName + ".pdf";
-
-  try {
-    const pdfBlob = await generateAmortizationPDF();
-    const base64 = await blobToBase64(pdfBlob);
-
-    // 1. Native Android Bridge (MainActivity.java with secure FileProvider)
-    if (window.Android && typeof window.Android.sharePdf === "function") {
-      window.Android.sharePdf(base64, fileName, "application/pdf");
-      return;
-    }
-
-    // 2. Capacitor Filesystem + Share Plugin (Capacitor native fallback)
-    const Filesystem = window.Capacitor?.Plugins?.Filesystem;
-    const Share = window.Capacitor?.Plugins?.Share;
-    if (Filesystem && Share) {
-      try {
-        const fileResult = await Filesystem.writeFile({
-          path: fileName,
-          data: base64,
-          directory: 'CACHE'
-        });
-        await Share.share({
-          title: "Tentative Amortization Schedule - " + customerName,
-          text: "Islamic Personal Finance - Tentative Repayment Schedule (Mode: Tawarruq)",
-          url: fileResult.uri
-        });
-        return;
-      } catch (capErr) {
-        if (isUserCancel(capErr)) return;
-        console.warn("Capacitor share fallback:", capErr);
-      }
-    }
-
-    // 3. Web Share API with File
-    if (navigator.share) {
-      try {
-        const file = new File([pdfBlob], fileName, { type: "application/pdf" });
-        if (!navigator.canShare || navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            title: "Tentative Amortization Schedule - " + customerName,
-            text: "Islamic Personal Finance - Tentative Repayment Schedule (Mode: Tawarruq)",
-            files: [file]
-          });
-          return;
-        }
-      } catch (shareErr) {
-        if (isUserCancel(shareErr)) return;
-      }
-    }
-
-    // 4. Fallback to direct download
-    downloadBlob(pdfBlob, fileName);
-    alert("PDF ready and downloaded. You can now share it via WhatsApp or any app.");
-  } catch (error) {
-    if (isUserCancel(error)) return;
-    console.error("Share error:", error);
-    alert("PDF could not be shared. Please try again.");
-  }
-}
-
-const shareReport = sharePDF;
-
-async function generateAmortizationPDF() {
-  if (!window.jspdf || !window.jspdf.jsPDF) {
-    throw new Error("PDF library is not available.");
-  }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
-  const customerName = document.getElementById("customerName").value.trim();
-  const customerCNIC = document.getElementById("customerCNIC").value.trim();
-  const printedAt = new Date().toLocaleString("en-PK");
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const margin = 9;
-  const threshold = getThreshold();
-
-  doc.setFillColor(7, 92, 174);
-  doc.rect(0, 0, pageWidth, 22, "F");
-  doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(16);
-  doc.text("Islamic Personal Finance", pageWidth / 2, 9, { align: "center" });
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(8.5);
-  doc.text("Mode of Financing: Tawarruq — Tentative Repayment Schedule", pageWidth / 2, 15, { align: "center" });
-
-  // Customer Information Table (Auto-spaced to avoid any text collision)
-  doc.autoTable({
-    startY: 25,
-    margin: { left: margin, right: margin },
-    body: [
-      [
-        { content: "Customer Name:  " + (customerName || "Valued Customer"), styles: { fontStyle: "bold" } },
-        { content: "CNIC:  " + (customerCNIC || "--"), styles: { fontStyle: "bold" } },
-        { content: "Segment:  " + (customerType === 'staff' ? "Bank Staff (40% DBR)" : "Regular Customer (35% DBR)"), styles: { fontStyle: "bold" } },
-        { content: "Generated:  " + printedAt, styles: { fontStyle: "normal", halign: "right" } }
-      ]
-    ],
-    theme: "plain",
-    styles: { font: "helvetica", fontSize: 8, textColor: [23, 59, 96], cellPadding: 1 }
-  });
-
-  let y = doc.lastAutoTable.finalY + 3;
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(9.5);
-  doc.setTextColor(23, 59, 96);
-  doc.text("Financing Facility Summary (Mode: Tawarruq)", margin, y);
-  y += 2.5;
-
-  // Clean currency symbols from summary so they don't produce broken characters in PDF Helvetica
-  const summaryItems = Array.from(document.querySelectorAll("#amortizationTab .summary-item")).map(item => [
-    item.querySelector(".summary-label")?.textContent.trim() || "",
-    (item.querySelector(".summary-value")?.textContent.trim() || "").replace(/₨/g, "PKR ")
-  ]);
-  const summaryRows = [];
-  for (let i = 0; i < summaryItems.length; i += 4) {
-    const row = [];
-    for (let j = 0; j < 4; j++) {
-      const item = summaryItems[i + j] || ["", ""];
-      row.push(item[0] + "\n" + item[1]);
-    }
-    summaryRows.push(row);
-  }
-  doc.autoTable({
-    startY: y,
-    body: summaryRows,
-    theme: "grid",
-    margin: { left: margin, right: margin },
-    styles: { font: "helvetica", fontSize: 7.5, cellPadding: 2.2, textColor: [23, 59, 96], valign: "middle" },
-    bodyStyles: { fillColor: [245, 249, 252] },
-    didParseCell: data => {
-      if (data.section === "body") data.cell.styles.fontStyle = "bold";
-    }
-  });
-
-  y = doc.lastAutoTable.finalY + 4;
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(9.5);
-  doc.setTextColor(23, 59, 96);
-  doc.text("Tentative Monthly Repayment Schedule", margin, y);
-
-  const headers = ["Month", "Opening (PKR)", "Installment (PKR)", "Principal (PKR)", "Profit (PKR)", "Closing (PKR)"];
-  
-  // Format body numbers cleanly without broken currency symbols so they never clip
-  const bodyRows = Array.from(document.querySelectorAll("#amortBody tr")).map(row =>
-    Array.from(row.querySelectorAll("td")).map((cell, idx) => {
-      const raw = cell.textContent.trim();
-      if (idx === 0) return raw;
-      return raw.replace(/[₨\s]/g, "");
-    })
-  );
-  const footRows = Array.from(document.querySelectorAll("#amortFoot tr")).map(row =>
-    Array.from(row.querySelectorAll("td")).map((cell, idx) => {
-      const raw = cell.textContent.trim();
-      if (idx === 0) return "TOTAL";
-      if (raw === "--") return "--";
-      return raw.replace(/[₨\s]/g, "");
-    })
-  );
-
-  const tableWidth = pageWidth - margin * 2; // 279mm
-  const numColWidth = (tableWidth - 18) / 5; // 52.2mm per number column
-
-  doc.autoTable({
-    startY: y + 2,
-    head: [headers],
-    body: bodyRows,
-    foot: footRows,
-    theme: "grid",
-    margin: { top: 8, right: margin, bottom: 12, left: margin },
-    tableWidth: "auto",
-    styles: { font: "helvetica", fontSize: 7, cellPadding: 1.8, textColor: [60, 80, 100], lineColor: [215, 228, 238], lineWidth: 0.15, halign: "right" },
-    headStyles: { fillColor: [237, 246, 253], textColor: [40, 74, 107], fontStyle: "bold", halign: "right" },
-    footStyles: { fillColor: [230, 242, 252], textColor: [7, 92, 174], fontStyle: "bold", halign: "right" },
-    columnStyles: { 
-      0: { halign: "center", cellWidth: 18 },
-      1: { halign: "right", cellWidth: numColWidth },
-      2: { halign: "right", cellWidth: numColWidth },
-      3: { halign: "right", cellWidth: numColWidth },
-      4: { halign: "right", cellWidth: numColWidth },
-      5: { halign: "right", cellWidth: numColWidth }
-    },
-    alternateRowStyles: { fillColor: [250, 253, 255] },
-    rowPageBreak: "avoid",
-    showHead: "everyPage"
-  });
-
-  const pageCount = doc.getNumberOfPages();
-  for (let page = 1; page <= pageCount; page++) {
-    doc.setPage(page);
-    doc.setDrawColor(220, 232, 242);
-    doc.line(margin, 195, pageWidth - margin, 195);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7);
-    doc.setTextColor(113, 130, 147);
-    doc.text("Powered by Syed Muhammad Humza Arif", pageWidth - margin, 199, { align: "right" });
-    doc.text("Page " + page + " of " + pageCount, pageWidth / 2, 199, { align: "center" });
-  }
-
-  return doc.output("blob");
-}
-
-function getDocumentsChecklistItems() {
-  return Array.from(document.querySelectorAll("#documentsChecklist .document-text")).map((el, i) => ({ number: i + 1, text: el.textContent.trim() }));
-}
-
-async function shareDocumentsChecklist() {
-  try {
-    if (!window.jspdf || !window.jspdf.jsPDF) throw new Error("PDF library is not available.");
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const margin = 15;
-    const items = getDocumentsChecklistItems();
-    doc.setFillColor(7,92,174); doc.rect(0,0,pageWidth,25,"F");
-    doc.setTextColor(255,255,255); doc.setFont("helvetica","bold"); doc.setFontSize(17); doc.text("Islamic Personal Finance",pageWidth/2,11,{align:"center"});
-    doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.text("Documents Checklist",pageWidth/2,18,{align:"center"});
-    let y=34;
-    doc.setTextColor(23,50,79); doc.setFontSize(10);
-    items.forEach(item=>{
-      const lines=doc.splitTextToSize(item.text,pageWidth-margin*2-22);
-      const rowH=Math.max(10,lines.length*5+5);
-      if(y+rowH>280){doc.addPage();y=18;}
-      doc.setFont("helvetica","bold"); doc.text(item.number+".",margin,y+5);
-      doc.setFont("helvetica","normal"); doc.text(lines,margin+9,y+5);
-      doc.setDrawColor(20,20,20); doc.rect(pageWidth-margin-7,y+1,6,6);
-      y+=rowH;
-    });
-    doc.setFontSize(8); doc.setTextColor(105,125,143); doc.text("Checklist boxes are intentionally left blank for printing and manual use.",margin,y+8);
-    doc.text("Powered by Syed Muhammad Humza Arif",pageWidth/2,289,{align:"center"});
-    const blob=doc.output("blob");
-    const base64 = await blobToBase64(blob);
-
-    if (window.Android && typeof window.Android.sharePdf === "function") {
-      window.Android.sharePdf(base64, "Documents-Checklist.pdf", "application/pdf");
-      return;
-    }
-
-    // Capacitor Filesystem + Share Plugin fallback
-    const Filesystem = window.Capacitor?.Plugins?.Filesystem;
-    const Share = window.Capacitor?.Plugins?.Share;
-    if (Filesystem && Share) {
-      try {
-        const fileResult = await Filesystem.writeFile({
-          path: "Documents-Checklist.pdf",
-          data: base64,
-          directory: 'CACHE'
-        });
-        await Share.share({
-          title: "Documents Checklist",
-          text: "Islamic Personal Finance - Documents Checklist",
-          url: fileResult.uri
-        });
-        return;
-      } catch (capErr) {
-        if (isUserCancel(capErr)) return;
-      }
-    }
-
-    if (navigator.share) {
-      try {
-        const file = new File([blob], "Documents-Checklist.pdf", { type: "application/pdf" });
-        if (!navigator.canShare || navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            title: "Documents Checklist",
-            text: "Islamic Personal Finance - Documents Checklist",
-            files: [file]
-          });
-          return;
-        }
-      } catch (shareErr) {
-        if (isUserCancel(shareErr)) {
-          return;
-        }
-      }
-    }
-
-    downloadBlob(blob, "Documents-Checklist.pdf");
-    alert("Documents Checklist ready and downloaded. You can now share it via WhatsApp or any app.");
-  } catch(error) {
-    if (isUserCancel(error)) return;
-    alert("PDF could not be generated. Please try again.");
-  }
-}
-
 function openTab(tabId, button) {
   if (tabId === "dbrTab" &&
       (numberValue(document.getElementById("income").value) <= 0 || installmentValue <= 0)) return;
-  if (tabId === "amortizationTab" && installmentValue <= 0) return;
 
   document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
   document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
@@ -1574,7 +828,522 @@ function openTab(tabId, button) {
   selected.classList.add("active");
   button.classList.add("active");
   if (tabId === "dbrTab") updateDBR();
+  if (tabId === "summaryTab") updateSummaryReport();
 }
+
+function formatCNICInput(input) {
+  if (!input) return;
+  let val = input.value.replace(/[^0-9]/g, '');
+  if (val.length > 13) val = val.substring(0, 13);
+  let formatted = '';
+  if (val.length > 5) {
+    formatted += val.substring(0, 5) + '-';
+    if (val.length > 12) {
+      formatted += val.substring(5, 12) + '-' + val.substring(12, 13);
+    } else {
+      formatted += val.substring(5);
+    }
+  } else {
+    formatted = val;
+  }
+  input.value = formatted;
+}
+
+let customerDetailsEntered = false;
+
+function handleSummaryTabClick(button) {
+  const nameVal = (document.getElementById("modalCustomerName")?.value || "").trim();
+  const cnicVal = (document.getElementById("modalCustomerCNIC")?.value || "").trim();
+
+  // If customer details not entered yet, prompt popup first!
+  if (!customerDetailsEntered || !nameVal || !cnicVal) {
+    openCustomerDetailsModal();
+    return;
+  }
+  openTab('summaryTab', button);
+}
+
+function openCustomerDetailsModal() {
+  document.getElementById("customerDetailsModal").classList.add("show");
+  setTimeout(() => {
+    const input = document.getElementById("modalCustomerName");
+    if (input) input.focus();
+  }, 120);
+}
+
+function saveCustomerDetailsAndShowSummary() {
+  const nameInput = document.getElementById("modalCustomerName");
+  const cnicInput = document.getElementById("modalCustomerCNIC");
+  const name = nameInput ? nameInput.value.trim() : "";
+  const cnic = cnicInput ? cnicInput.value.trim() : "";
+
+  if (!name) {
+    alert("Please enter Customer Full Name.");
+    if (nameInput) nameInput.focus();
+    return;
+  }
+  if (!cnic || cnic.replace(/[^0-9]/g, "").length < 13) {
+    alert("Please enter a valid 13-digit CNIC Number.");
+    if (cnicInput) cnicInput.focus();
+    return;
+  }
+
+  customerDetailsEntered = true;
+  closeModal("customerDetailsModal");
+  openTab('summaryTab', document.getElementById("summaryBtn"));
+  updateSummaryReport();
+}
+
+function pdfCurrency(val) {
+  if (!isFinite(val)) return "PKR 0";
+  return "PKR " + Math.round(val).toLocaleString("en-US");
+}
+
+function updateSummaryReport() {
+  const container = document.getElementById("summaryReportContainer");
+  if (!container) return;
+
+  const modalName = (document.getElementById("modalCustomerName")?.value || "").trim();
+  const modalCNIC = (document.getElementById("modalCustomerCNIC")?.value || "").trim();
+  const custName = modalName || "Valued Customer";
+  const custCNIC = modalCNIC || "Pending Verification";
+
+  const cardName = document.getElementById("summaryCardCustomerName");
+  const cardCNIC = document.getElementById("summaryCardCustomerCNIC");
+  const cardType = document.getElementById("summaryCardCustomerType");
+  if (cardName) cardName.textContent = custName;
+  if (cardCNIC) cardCNIC.textContent = custCNIC;
+  if (cardType) cardType.textContent = customerType === 'staff' ? "Bank Staff (40%)" : "Regular Customer (35%)";
+
+  const income = numberValue(document.getElementById("income") ? document.getElementById("income").value : 0);
+  const amount = numberValue(document.getElementById("amount") ? document.getElementById("amount").value : 0);
+  const tenure = parseInt(document.getElementById("tenure") ? document.getElementById("tenure").value : 0, 10) || 0;
+  const kibor = parseFloat(document.getElementById("kibor") ? document.getElementById("kibor").value : 0) || 0;
+  const spread = parseFloat(document.getElementById("spread") ? document.getElementById("spread").value : 0) || 0;
+  const totalRate = kibor + spread;
+
+  let installment = installmentValue;
+  if (installment <= 0 && amount > 0 && tenure > 0 && totalRate > 0) {
+    installment = PMT(amount, totalRate, tenure);
+  }
+  const totalPayable = installment > 0 && tenure > 0 ? installment * tenure : 0;
+  const totalProfit = totalPayable > amount ? totalPayable - amount : 0;
+
+  const threshold = getThreshold();
+  const otherTotal = selectedEMITypes.reduce((sum, type) => sum + getEMIValue(type, appliedEMIValues[type]), 0);
+  const totalObligations = installment + otherTotal;
+  const maxAllowable = income * (threshold / 100);
+  const dbrRatio = income > 0 ? (totalObligations / income) * 100 : 0;
+  const isWithinDBR = dbrRatio <= threshold;
+  const headroom = maxAllowable - totalObligations;
+
+  const today = new Date();
+  const dateStr = today.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+  const catText = customerType === 'staff' ? "Bank Staff (40% Ceiling)" : "Regular Customer (35% Ceiling)";
+
+  if (income <= 0 || installment <= 0) {
+    container.innerHTML = `
+      <div class="report-title">
+        <span>Executive Assessment Summary</span>
+        <span class="report-badge" style="background:#e8f4fd;color:#075cae;border:1px solid #c9e2f8">Tawarruq</span>
+      </div>
+      <div class="summary-meta-grid">
+        <div class="summary-meta-item">
+          <div class="summary-meta-label">Customer Name</div>
+          <div class="summary-meta-val">${custName}</div>
+        </div>
+        <div class="summary-meta-item">
+          <div class="summary-meta-label">CNIC Number</div>
+          <div class="summary-meta-val">${custCNIC}</div>
+        </div>
+        <div class="summary-meta-item">
+          <div class="summary-meta-label">Classification</div>
+          <div class="summary-meta-val">${catText}</div>
+        </div>
+        <div class="summary-meta-item">
+          <div class="summary-meta-label">Date</div>
+          <div class="summary-meta-val">${dateStr}</div>
+        </div>
+      </div>
+      <div style="background:#edf7ff;border:1px solid #cfe5f8;border-radius:10px;padding:16px;text-align:center;color:#245888;font-size:11px;line-height:1.5">
+        <div style="font-size:22px;margin-bottom:6px">📋</div>
+        <strong>Awaiting Income &amp; Installment Details</strong><br>
+        Please enter Net Monthly Income in <strong>Income</strong> tab and calculate installment in <strong>Installment</strong> tab to generate the full financial assessment summary.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="report-title">
+      <span>Executive Assessment Summary</span>
+      <span class="report-badge" style="background:#e8f4fd;color:#075cae;border:1px solid #c9e2f8">Tawarruq Finance</span>
+    </div>
+
+    <!-- Customer Meta Card -->
+    <div class="summary-meta-grid">
+      <div class="summary-meta-item">
+        <div class="summary-meta-label">Customer Name</div>
+        <div class="summary-meta-val">${custName}</div>
+      </div>
+      <div class="summary-meta-item">
+        <div class="summary-meta-label">CNIC Number</div>
+        <div class="summary-meta-val">${custCNIC}</div>
+      </div>
+      <div class="summary-meta-item">
+        <div class="summary-meta-label">Classification</div>
+        <div class="summary-meta-val">${catText}</div>
+      </div>
+      <div class="summary-meta-item">
+        <div class="summary-meta-label">Assessment Date</div>
+        <div class="summary-meta-val">${dateStr}</div>
+      </div>
+    </div>
+
+    <!-- 1. Income Assessment -->
+    <div class="summary-section">
+      <div class="summary-section-title"><span>◉</span> 1. Income Assessment</div>
+      <table class="summary-data-table">
+        <tr><td>Net Monthly Income</td><td>${pkr(income)}</td></tr>
+        <tr><td>Applicable Multiple</td><td>${multiple}× ${manualMode ? '(Manual)' : '(Standard)'}</td></tr>
+        <tr><td>Maximum Allowable Financing Limit</td><td style="color:#087857">${pkr(income * multiple)}</td></tr>
+      </table>
+    </div>
+
+    <!-- 2. Financing Terms -->
+    <div class="summary-section">
+      <div class="summary-section-title"><span>▣</span> 2. Financing &amp; Repayment Terms</div>
+      <table class="summary-data-table">
+        <tr><td>Requested Financing Amount</td><td>${pkr(amount)}</td></tr>
+        <tr><td>Financing Tenure</td><td>${tenure} Months</td></tr>
+        <tr><td>Benchmark KIBOR Rate</td><td>${kibor.toFixed(2)}% p.a.</td></tr>
+        <tr><td>Bank Spread Rate</td><td>${spread.toFixed(2)}% p.a.</td></tr>
+        <tr><td>Effective Total Profit Rate</td><td style="color:#075cae">${totalRate.toFixed(2)}% p.a.</td></tr>
+        <tr><td style="font-weight:700;color:#173b60">Monthly Installment (PMT)</td><td style="font-size:13px;color:#087857;font-weight:800">${pkr(installment)}</td></tr>
+        <tr><td>Total Profit Amount</td><td>${pkr(totalProfit)}</td></tr>
+        <tr><td>Total Deferred Sale Price</td><td style="font-weight:800">${pkr(totalPayable)}</td></tr>
+      </table>
+    </div>
+
+    <!-- 3. Debt Burden Evaluation -->
+    <div class="summary-section">
+      <div class="summary-section-title"><span>▥</span> 3. Debt Burden Ratio (DBR) Analysis</div>
+      <table class="summary-data-table">
+        <tr><td>Main Financing Monthly Installment</td><td>${pkr(installment)}</td></tr>
+        <tr>
+          <td>Other Monthly Liabilities</td>
+          <td>${pkr(otherTotal)}${selectedEMITypes.length > 0 ? `<div style="display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px;margin-top:3px">${selectedEMITypes.map(t => `<span style="font-size:8.5px;padding:2px 6px;border-radius:5px;background:#edf2f7;color:#39546f;font-weight:600">${EMI_TYPES[t].title}: ${pkr(getEMIValue(t, appliedEMIValues[t]))}</span>`).join('')}</div>` : ''}</td>
+        </tr>
+        <tr><td style="font-weight:700">Total Monthly Debt Obligations</td><td style="font-weight:800;color:#173b60">${pkr(totalObligations)}</td></tr>
+        <tr><td>Permissible Obligation Ceiling (${threshold}%)</td><td>${pkr(maxAllowable)}</td></tr>
+        <tr>
+          <td style="font-weight:700">Calculated Debt Burden Ratio</td>
+          <td>
+            <span class="dbr-status-pill ${isWithinDBR ? 'status-safe' : 'status-danger'}" style="font-size:9.5px;padding:3px 8px;margin:0;display:inline-block">
+              ${dbrRatio.toFixed(2)}% (${isWithinDBR ? 'Within Limit' : 'Exceeds Ceiling'})
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td>${isWithinDBR ? 'Remaining Allowable Headroom' : 'Excess Over Permissible Ceiling'}</td>
+          <td style="color:${isWithinDBR ? '#087857' : '#c02626'};font-weight:800">${pkr(Math.abs(headroom))}</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Tentative Notice -->
+    <div class="summary-disclaimer">
+      <strong>Tentative &amp; Indicative Assessment:</strong> This summary is prepared based on customer-provided declarations for Shariah-compliant Personal Financing (Tawarruq). The final repayment terms, benchmark KIBOR, and disbursement remain subject to formal credit approval and verification.
+    </div>
+
+    <!-- Single Prominent Share Button -->
+    <div style="margin-top:16px">
+      <button class="primary-btn" onclick="shareSummaryAssessmentSheet()" style="background:#075cae;height:48px;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;box-shadow:0 4px 14px rgba(7,92,174,.20)">
+        <span style="font-size:16px">↗</span> Share Assessment Sheet (A4 PDF)
+      </button>
+    </div>
+  `;
+}
+
+function shareSummaryAssessmentSheet() {
+  const modalName = (document.getElementById("modalCustomerName")?.value || "").trim();
+  const modalCNIC = (document.getElementById("modalCustomerCNIC")?.value || "").trim();
+  const custName = modalName || "Valued Customer";
+  const custCNIC = modalCNIC || "Pending Verification";
+
+  const income = numberValue(document.getElementById("income")?.value);
+  const amount = numberValue(document.getElementById("amount")?.value);
+  const tenure = parseInt(document.getElementById("tenure")?.value, 10) || 0;
+  const kibor = parseFloat(document.getElementById("kibor")?.value) || 0;
+  const spread = parseFloat(document.getElementById("spread")?.value) || 0;
+  const totalRate = kibor + spread;
+  const installment = installmentValue || PMT(amount, totalRate, tenure);
+
+  if (income <= 0 || installment <= 0) {
+    alert("Please enter Net Monthly Income and calculate installment first before sharing the assessment sheet.");
+    return;
+  }
+
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    alert("PDF generator is loading. Please try again in a moment.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+
+  const otherTotal = selectedEMITypes.reduce((sum, type) => sum + getEMIValue(type, appliedEMIValues[type]), 0);
+  const totalObligations = installment + otherTotal;
+  const threshold = getThreshold();
+  const maxAllowable = income * (threshold / 100);
+  const dbrRatio = income > 0 ? (totalObligations / income) * 100 : 0;
+  const isWithin = dbrRatio <= threshold;
+  const headroom = maxAllowable - totalObligations;
+  const today = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+
+  // 1. Header Banner
+  doc.setFillColor(7, 92, 174); // #075cae
+  doc.rect(0, 0, 210, 24, "F");
+  
+  // Emerald accent stripe
+  doc.setFillColor(8, 120, 87); // #087857
+  doc.rect(0, 24, 210, 1.5, "F");
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(13);
+  doc.setFont("helvetica", "bold");
+  doc.text("ISLAMIC PERSONAL FINANCE - ASSESSMENT SUMMARY", 14, 11);
+  doc.setFontSize(8.5);
+  doc.setFont("helvetica", "normal");
+  doc.text("Mode of Financing: Tawarruq (Commodity Murabaha) | Tentative Repayment Assessment", 14, 18);
+
+  // 2. Customer Information AutoTable
+  doc.autoTable({
+    startY: 29,
+    head: [[
+      { content: "Customer Name", styles: { halign: "left" } },
+      { content: "CNIC Number", styles: { halign: "center" } },
+      { content: "Customer Classification", styles: { halign: "center" } },
+      { content: "Assessment Date", styles: { halign: "right" } }
+    ]],
+    body: [[
+      { content: custName, styles: { halign: "left", fontStyle: "bold" } },
+      { content: custCNIC, styles: { halign: "center", fontStyle: "bold" } },
+      { content: customerType === 'staff' ? "Bank Staff (40% Ceiling)" : "Regular Customer (35% Ceiling)", styles: { halign: "center", fontStyle: "bold" } },
+      { content: today, styles: { halign: "right", fontStyle: "bold" } }
+    ]],
+    theme: "plain",
+    styles: {
+      fontSize: 8.5,
+      textColor: [23, 59, 96],
+      cellPadding: { top: 2.5, bottom: 2.5, left: 3, right: 3 },
+      lineColor: [217, 231, 242],
+      lineWidth: 0.25,
+      font: "helvetica"
+    },
+    headStyles: {
+      fillColor: [241, 246, 252],
+      textColor: [95, 118, 140],
+      fontSize: 7.5,
+      fontStyle: "bold"
+    },
+    bodyStyles: {
+      fillColor: [255, 255, 255]
+    },
+    columnStyles: {
+      0: { cellWidth: 55 },
+      1: { cellWidth: 42 },
+      2: { cellWidth: 50 },
+      3: { cellWidth: 35 }
+    },
+    margin: { left: 14, right: 14 }
+  });
+
+  // 3. Income Assessment Table
+  doc.autoTable({
+    startY: doc.lastAutoTable.finalY + 4.5,
+    head: [[
+      { content: "1. Income Assessment Parameter", styles: { halign: "left" } },
+      { content: "Financial Figure", styles: { halign: "right" } }
+    ]],
+    body: [
+      ["Net Monthly Income", pdfCurrency(income)],
+      ["Applicable Income Multiple", `${multiple}x ${manualMode ? '(Manual Multiple)' : '(Standard Matrix)'}`],
+      ["Maximum Allowable Financing Limit", pdfCurrency(income * multiple)]
+    ],
+    theme: "grid",
+    headStyles: {
+      fillColor: [7, 92, 174],
+      textColor: 255,
+      fontSize: 8.5,
+      fontStyle: "bold",
+      cellPadding: { top: 3, bottom: 3, left: 3.5, right: 3.5 }
+    },
+    bodyStyles: {
+      textColor: [23, 50, 79],
+      fontSize: 8.5,
+      font: "helvetica",
+      cellPadding: { top: 2.5, bottom: 2.5, left: 3.5, right: 3.5 }
+    },
+    alternateRowStyles: {
+      fillColor: [248, 251, 254]
+    },
+    columnStyles: {
+      0: { cellWidth: 115, halign: "left" },
+      1: { cellWidth: 67, halign: "right", fontStyle: "bold" }
+    },
+    styles: {
+      lineColor: [218, 230, 242],
+      lineWidth: 0.2
+    },
+    margin: { left: 14, right: 14 }
+  });
+
+  // 4. Financing Terms & Repayment Table
+  doc.autoTable({
+    startY: doc.lastAutoTable.finalY + 4.5,
+    head: [[
+      { content: "2. Financing Terms & Repayment Schedule", styles: { halign: "left" } },
+      { content: "Term / Amount", styles: { halign: "right" } }
+    ]],
+    body: [
+      ["Requested Financing Amount", pdfCurrency(amount)],
+      ["Financing Tenure", `${tenure} Months`],
+      ["Benchmark KIBOR Rate", `${kibor.toFixed(2)}% p.a.`],
+      ["Bank Profit Spread Rate", `${spread.toFixed(2)}% p.a.`],
+      ["Effective Total Profit Rate", `${totalRate.toFixed(2)}% p.a.`],
+      ["Monthly Installment (PMT)", pdfCurrency(installment)],
+      ["Total Estimated Profit", pdfCurrency(totalProfit)],
+      ["Total Deferred Selling Price (Principal + Profit)", pdfCurrency(totalPayable)]
+    ],
+    theme: "grid",
+    headStyles: {
+      fillColor: [23, 59, 96],
+      textColor: 255,
+      fontSize: 8.5,
+      fontStyle: "bold",
+      cellPadding: { top: 3, bottom: 3, left: 3.5, right: 3.5 }
+    },
+    bodyStyles: {
+      textColor: [23, 50, 79],
+      fontSize: 8.5,
+      font: "helvetica",
+      cellPadding: { top: 2.5, bottom: 2.5, left: 3.5, right: 3.5 }
+    },
+    alternateRowStyles: {
+      fillColor: [248, 251, 254]
+    },
+    columnStyles: {
+      0: { cellWidth: 115, halign: "left" },
+      1: { cellWidth: 67, halign: "right", fontStyle: "bold" }
+    },
+    styles: {
+      lineColor: [218, 230, 242],
+      lineWidth: 0.2
+    },
+    margin: { left: 14, right: 14 }
+  });
+
+  // 5. Debt Burden Ratio (DBR) Table
+  doc.autoTable({
+    startY: doc.lastAutoTable.finalY + 4.5,
+    head: [[
+      { content: "3. Debt Burden Ratio (DBR) Evaluation", styles: { halign: "left" } },
+      { content: "Assessment Metric", styles: { halign: "right" } }
+    ]],
+    body: [
+      ["Main Financing Monthly Installment", pdfCurrency(installment)],
+      ["Other Monthly Liabilities / EMIs", pdfCurrency(otherTotal)],
+      ["Total Monthly Debt Obligations", pdfCurrency(totalObligations)],
+      [`Permissible Obligation Ceiling (${threshold}%)`, pdfCurrency(maxAllowable)],
+      ["Calculated Debt Burden Ratio (DBR)", `${dbrRatio.toFixed(2)}%`],
+      ["SBP Regulatory Compliance Status", isWithin ? `PASS (Within ${threshold}% Limit)` : `FAIL (Exceeds by ${(dbrRatio - threshold).toFixed(1)}%)`],
+      [isWithin ? "Available Monthly Headroom" : "Excess Over Permissible Limit", pdfCurrency(Math.abs(headroom))]
+    ],
+    theme: "grid",
+    headStyles: {
+      fillColor: [8, 120, 87],
+      textColor: 255,
+      fontSize: 8.5,
+      fontStyle: "bold",
+      cellPadding: { top: 3, bottom: 3, left: 3.5, right: 3.5 }
+    },
+    bodyStyles: {
+      textColor: [23, 50, 79],
+      fontSize: 8.5,
+      font: "helvetica",
+      cellPadding: { top: 2.5, bottom: 2.5, left: 3.5, right: 3.5 }
+    },
+    alternateRowStyles: {
+      fillColor: [248, 251, 254]
+    },
+    columnStyles: {
+      0: { cellWidth: 115, halign: "left" },
+      1: { cellWidth: 67, halign: "right", fontStyle: "bold" }
+    },
+    styles: {
+      lineColor: [218, 230, 242],
+      lineWidth: 0.2
+    },
+    margin: { left: 14, right: 14 }
+  });
+
+  // 6. Disclaimer Note
+  const finalY = doc.lastAutoTable.finalY + 4.5;
+  doc.setFillColor(253, 251, 232);
+  doc.setDrawColor(241, 228, 163);
+  doc.roundedRect(14, finalY, 182, 13, 2, 2, "FD");
+  doc.setTextColor(112, 88, 18);
+  doc.setFontSize(7.5);
+  doc.setFont("helvetica", "normal");
+  doc.text("Important Notice: This assessment summary is indicative and tentative. Final repayment terms, benchmark KIBOR, and financing disbursement remain subject to formal bank approval, documentation verification, and prevailing rates.", 18, finalY + 5.5, { maxWidth: 174 });
+
+  // 7. Signature lines
+  const sigY = finalY + 23;
+  doc.setDrawColor(180, 195, 210);
+  doc.setLineWidth(0.4);
+  doc.line(20, sigY, 82, sigY);
+  doc.line(128, sigY, 190, sigY);
+  doc.setTextColor(100, 120, 140);
+  doc.setFontSize(8);
+  doc.text("Relationship Manager / Officer", 27, sigY + 4.5);
+  doc.text("Customer Acknowledgment", 137, sigY + 4.5);
+
+  const safeName = custName.replace(/[^a-zA-Z0-9]/g, '_');
+  const fileName = `Assessment-Summary-${safeName}.pdf`;
+
+  // 1. Android APK Native Bridge (FileProvider + Share Sheet)
+  if (window.Android && typeof window.Android.sharePdf === 'function') {
+    const pdfDataUri = doc.output('datauristring');
+    const base64Data = pdfDataUri.split(',')[1];
+    window.Android.sharePdf(base64Data, fileName, 'application/pdf');
+    return;
+  }
+
+  // 2. Mobile Browser Web Share API with File
+  try {
+    const pdfBlob = doc.output('blob');
+    const pdfFile = new File([pdfBlob], fileName, { type: 'application/pdf' });
+    if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+      navigator.share({
+        title: "Assessment Summary - " + custName,
+        text: "Financial Assessment Summary Sheet for " + custName + " (CNIC: " + custCNIC + ")",
+        files: [pdfFile]
+      }).catch(err => {
+        if (err.name !== 'AbortError') {
+          doc.save(fileName);
+        }
+      });
+      return;
+    }
+  } catch (e) {
+    console.warn("Web Share files not supported, falling back to download", e);
+  }
+
+  // 3. Fallback for Desktop Browsers
+  doc.save(fileName);
+}
+
 function showLimit(max) {
   document.getElementById("popupLimit").textContent = pkr(max);
   document.getElementById("limitModal").classList.add("show");
@@ -1594,6 +1363,7 @@ updateLimit();
 updateRate();
 setCustomerType('regular');
 updateDBRStatus();
+updateSummaryReport();
 </script>
 </body>
 </html>
