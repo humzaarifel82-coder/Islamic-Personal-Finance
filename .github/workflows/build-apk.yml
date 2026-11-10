@@ -35,6 +35,11 @@ jobs:
             npx cap add android
           fi
 
+      - name: Prepare web assets
+        run: |
+          mkdir -p www
+          cp -f index.html www/index.html
+
       - name: Sync Capacitor
         run: npx cap sync android
 

@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Islamic Personal Finance</title>
+<meta name="description" content="Installment &amp; DBR Calculator for Islamic Personal Finance">
+<meta property="og:title" content="Islamic Personal Finance">
+<meta property="og:description" content="Installment &amp; DBR Calculator for Islamic Personal Finance">
+<link rel="icon" type="image/png" href="/resources/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;width:100%;min-height:100%;touch-action:manipulation;-webkit-text-size-adjust:100%}
+body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#eef6fd;color:#17324f;font-size:14px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.app{width:100%;max-width:540px;min-height:100vh;margin:auto;background:#f7fbff;position:relative;-webkit-transform:translateZ(0);transform:translateZ(0);contain:layout style}
+button,input,select,.tab,.action-btn,.primary-btn,.manual-btn,.preview-tool-btn{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.header{padding:20px 18px 17px;background:linear-gradient(135deg,#075cae,#0b78d0);color:white}
+.header-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.header-logs-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.32);border-radius:9px;color:#fff;font-family:inherit;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap;user-select:none;-webkit-user-select:none;transition:background .15s ease;flex-shrink:0}
+.header-logs-btn:active,.header-logs-btn:hover{background:rgba(255,255,255,.28)}
+.logs-badge{background:#fff;color:#075cae;font-size:9.5px;font-weight:800;padding:1px 5px;border-radius:10px;line-height:1.2}
+.logo{width:43px;height:43px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.20);font-size:20px;font-weight:800}
+.header h1{margin:0;font-size:18px;line-height:1.25;font-weight:800}
+.header p{margin:4px 0 0;font-size:10px;color:rgba(255,255,255,.76)}
+.tabs{width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:white;border-bottom:1px solid #dce8f2;position:sticky;top:0;z-index:50;-webkit-transform:translateZ(0);transform:translateZ(0)}
+.tab{height:60px;border:0;border-right:1px solid #edf2f6;background:white;color:#788b9d;font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative;cursor:pointer;user-select:none;-webkit-user-select:none;padding:0 2px}
+.tab:last-child{border-right:0}
+.tab-icon{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#f1f6fa;font-size:13px}
+.tab-title{font-size:9.5px;white-space:nowrap;font-weight:700;letter-spacing:.1px}
+.tab.active{color:#075cae}
+.tab.active .tab-icon{background:#e5f2ff;color:#075cae}
+.tab.active::after{content:"";position:absolute;bottom:0;left:10px;right:10px;height:3px;border-radius:3px 3px 0 0;background:#075cae}
+.tab.locked{opacity:.42}
+.tab-content{display:none;width:100%}
+.tab-content.active{display:block}
+.content{padding:15px}
+.card,.report-card{background:white;border:1px solid #dce8f2;border-radius:14px;padding:17px;margin-bottom:13px;box-shadow:0 5px 18px rgba(38,88,130,.045)}
+.card-title,.report-title{font-size:14px;font-weight:800;color:#173b60;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.form-group{margin-bottom:15px}
+label{display:block;margin-bottom:7px;font-size:10px;font-weight:700;color:#526b84}
+.input-wrap{position:relative}
+input,select{width:100%;height:46px;border:1px solid #ccdbe7;border-radius:9px;background:#fff;padding:0 12px;font-family:inherit;font-size:14px;font-weight:600;color:#17324f;outline:none;-webkit-appearance:none}
+input:focus,select:focus{border-color:#4c9fe0;box-shadow:0 0 0 3px rgba(76,159,224,.11)}
+input::placeholder{color:#a8b5c1;font-weight:400}
+.currency{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#6b8298;font-size:12px;font-weight:700;pointer-events:none}
+.currency-input{padding-left:34px}
+.two-column{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.multiple-box{background:#edf7ff;border:1px solid #cfe6f8;border-radius:11px;padding:13px;margin-top:3px}
+.multiple-top{display:flex;align-items:center;justify-content:space-between}
+.multiple-label{font-size:9px;color:#6b8094;font-weight:600}
+.multiple-value{margin-top:2px;font-size:25px;line-height:1;color:#075cae;font-weight:800}
+.manual-btn{height:34px;padding:0 12px;border:1px solid #acd0ed;border-radius:8px;background:white;color:#075cae;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;transition:all .15s ease}
+.manual-btn:hover{background:#f0f7fd;border-color:#7bb5e5}
+.limit-box{margin-top:12px;padding:14px;border-radius:11px;background:#f0faf7;border:1px solid #c9eadf}
+.limit-label{font-size:9px;font-weight:600;color:#648078}
+.limit-value{margin-top:3px;font-size:21px;font-weight:800;color:#087857}
+.limit-note{margin-top:5px;font-size:9px;line-height:1.5;color:#71827e}
+.max-note{margin-top:5px;font-size:9px;color:#81909e}
+.max-note strong{color:#075cae}
+.kibor-row{display:flex;gap:7px}
+.kibor-row input{flex:1}
+.sbp-btn{height:46px;padding:0 12px;display:flex;align-items:center;justify-content:center;white-space:nowrap;text-decoration:none;border:1px solid #b9d9f1;border-radius:9px;background:#eff8ff;color:#075cae;font-size:10px;font-weight:700}
+.rate-box{margin-top:3px;border-radius:11px;padding:15px;text-align:center;background:linear-gradient(135deg,#edf7ff,#f7fbff);border:1px solid #cce3f5}
+.rate-label{font-size:9px;color:#73879a;font-weight:600}
+.rate-value{margin-top:4px;font-size:27px;font-weight:800;color:#075cae}
+.primary-btn{width:100%;height:47px;margin-top:14px;border:0;border-radius:9px;background:linear-gradient(135deg,#096bc2,#0755a0);color:white;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 6px 14px rgba(7,86,168,.18);display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:opacity .15s}
+.primary-btn:hover{opacity:.95}
+.dbr-heading{margin-bottom:14px}
+.dbr-heading h2{margin:0;color:#173b60;font-size:16px;font-weight:800}
+.dbr-heading p{margin:5px 0 0;font-size:10px;line-height:1.5;color:#82909e}
+
+/* Customer Segment Selector for DBR Threshold */
+.customer-type-selector{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px;background:#eaf2fa;padding:4px;border-radius:11px}
+.type-btn{border:0;border-radius:8px;padding:10px 8px;background:transparent;color:#5c7590;font-family:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all .18s ease}
+.type-btn .type-title{font-size:11px;font-weight:700}
+.type-btn .type-badge{font-size:9px;padding:2px 8px;border-radius:12px;background:rgba(92,117,144,.12);color:inherit;font-weight:800}
+.type-btn.active{background:#fff;color:#075cae;box-shadow:0 3px 10px rgba(7,92,174,.12)}
+.type-btn.active .type-badge{background:#e1f0fe;color:#075cae}
+
+.threshold-card{background:linear-gradient(135deg,#f2f9ff,#e8f3fe);border:1px solid #c8e1f7;border-radius:12px;padding:14px;margin-bottom:12px}
+.threshold-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.threshold-label{font-size:10px;font-weight:700;color:#506a84}
+.threshold-val{font-size:15px;font-weight:800;color:#075cae}
+
+.dbr-card{background:white;border:1px solid #dce8f2;border-radius:13px;padding:15px;margin-bottom:11px}
+.dbr-label{font-size:9px;font-weight:600;color:#7a8a99}
+.dbr-value{margin-top:5px;font-size:19px;font-weight:800;color:#173b60}
+.helper{margin-top:6px;font-size:9px;line-height:1.5;color:#81909e}
+.obligation{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#f3f8fc;border:1px solid #dce8f2;border-radius:11px;padding:14px;margin-bottom:11px}
+.obligation-label{font-size:9px;color:#718293;font-weight:600}
+.obligation-value{font-size:19px;font-weight:800;color:#173b60}
+
+.dbr-result{padding:20px 15px;text-align:center;border-radius:13px;background:linear-gradient(135deg,#edf7ff,#f8fcff);border:1px solid #c9e3f5;position:relative;overflow:hidden}
+.dbr-result-label{font-size:10px;font-weight:700;color:#6b8298}
+.dbr-result-value{margin-top:4px;font-size:40px;font-weight:800;color:#075cae;letter-spacing:-1px}
+.dbr-status-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:800;margin-top:10px}
+.dbr-status-pill.status-safe{background:#e7f8f1;color:#087857;border:1px solid #a9e4cf}
+.dbr-status-pill.status-danger{background:#fdeeee;color:#c02626;border:1px solid #f6b5b5}
+
+.dbr-bar-track{width:100%;height:8px;background:#e1ebf3;border-radius:6px;overflow:hidden;margin-top:14px;position:relative}
+.dbr-bar-fill{height:100%;border-radius:6px;background:#075cae;transition:width .4s ease,background-color .3s}
+.dbr-bar-fill.safe{background:#087857}
+.dbr-bar-fill.danger{background:#c02626}
+.dbr-bar-marker{position:absolute;top:0;bottom:0;width:2px;background:#173b60;z-index:2}
+
+/* Amortization Action Buttons */
+.action-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.action-btn{height:40px;border-radius:9px;font-family:inherit;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:all .15s ease}
+.action-btn.btn-preview{background:#eff7ff;color:#075cae;border:1px solid #b7d8f3}
+.action-btn.btn-preview:hover{background:#e1effc;border-color:#74b1e5}
+.action-btn.btn-print{background:#f1f8f5;color:#087857;border:1px solid #b5e4d3}
+.action-btn.btn-print:hover{background:#e2f4ed;border-color:#79d0b3}
+.action-btn.btn-share{background:linear-gradient(135deg,#096bc2,#0755a0);color:#fff;border:0;box-shadow:0 3px 10px rgba(7,86,168,.18)}
+.action-btn.btn-share:hover{opacity:.95}
+
+/* Enhanced Summary Grid */
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.summary-item{background:#f5f9fc;border:1px solid #e0eaf1;border-radius:10px;padding:12px 13px;position:relative}
+.summary-item::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:#075cae;opacity:.6}
+.summary-item:nth-child(4n+1)::before{background:#075cae}
+.summary-item:nth-child(4n+2)::before{background:#087857}
+.summary-item:nth-child(4n+3)::before{background:#e27807}
+.summary-item:nth-child(4n+4)::before{background:#6348a7}
+.summary-label{font-size:9px;color:#788b9d;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.summary-value{margin-top:4px;font-size:15px;color:#173b60;font-weight:800;overflow-wrap:anywhere}
+
+/* Enhanced Table */
+.table-wrap{width:100%;overflow-x:auto;border:1px solid #dce8f2;border-radius:11px;background:white}
+.amort-table{width:100%;min-width:680px;border-collapse:collapse;font-size:10px}
+.amort-table th{background:#edf6fd;color:#284a6b;font-weight:800;padding:11px 9px;border-bottom:2px solid #d0e1ee;text-align:right;white-space:nowrap}
+.amort-table th:first-child,.amort-table td:first-child{text-align:center}
+.amort-table td{padding:10px 9px;border-bottom:1px solid #edf2f6;color:#455e75;text-align:right;white-space:nowrap}
+.amort-table tbody tr:nth-child(even){background:#fafcff}
+.amort-table tbody tr:hover{background:#f0f7fe}
+.amort-table tfoot td{background:#edf6fd;color:#173b60;font-weight:800;border-top:2px solid #c9dfef;padding:11px 9px}
+.amort-table td strong{color:#173b60}
+/* Summary Tab Styles */
+.summary-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;background:#f5f9fd;border:1px solid #d9e7f2;border-radius:10px;padding:12px;margin-bottom:14px}
+.summary-meta-item{font-size:10px}
+.summary-meta-label{color:#6e859b;font-weight:600;font-size:9px;text-transform:uppercase;letter-spacing:.3px}
+.summary-meta-val{color:#173b60;font-weight:700;margin-top:2px;font-size:11px}
+.summary-section{margin-bottom:14px;border-top:1px dashed #dce8f2;padding-top:12px}
+.summary-section-title{font-size:11px;font-weight:800;color:#075cae;margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.summary-data-table{width:100%;border-collapse:collapse;font-size:11px}
+.summary-data-table tr{border-bottom:1px solid #edf2f6}
+.summary-data-table tr:last-child{border-bottom:0}
+.summary-data-table td{padding:7px 4px;vertical-align:middle}
+.summary-data-table td:first-child{color:#576f87;font-weight:600;text-align:left;width:55%}
+.summary-data-table td:last-child{color:#173b60;font-weight:700;text-align:right;width:45%;white-space:nowrap}
+.summary-disclaimer{background:#fdfbe8;border:1px solid #f1e4a3;border-radius:9px;padding:11px;font-size:9.5px;line-height:1.45;color:#705812;margin-top:12px}
+.summary-actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+
+.footer{padding:18px 15px 24px;text-align:center;background:#f7fbff}
+.watermark-badge{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:6px 16px;border-radius:20px;background:#ffffff;border:1px solid #d4e2ee;color:#2c4b6c;font-size:11px;font-weight:600;letter-spacing:.3px;box-shadow:0 1px 3px rgba(15,44,77,.06);user-select:none}
+.watermark-badge .watermark-symbol{color:#075cae;font-size:12px;font-weight:700;opacity:.9}
+.modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(12,32,54,.68);padding:14px;align-items:center;justify-content:center;-webkit-transform:translateZ(0);transform:translateZ(0)}
+.modal.show{display:flex}
+.modal-box{width:100%;max-width:420px;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;background:white;border-radius:16px;padding:20px;box-shadow:0 16px 45px rgba(0,0,0,.20);transform:translateZ(0);will-change:transform,opacity}
+.logs-modal-box{width:100%;max-width:480px;max-height:88vh;display:flex;flex-direction:column;background:#fff;border-radius:16px;box-shadow:0 16px 45px rgba(0,0,0,.22);overflow:hidden;padding:0}
+.logs-modal-header{padding:15px 16px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eef4f9;background:#f8fbfe}
+.logs-modal-title{font-size:15px;font-weight:800;color:#173b60;display:flex;align-items:center;gap:7px}
+.logs-modal-tools{padding:10px 16px;display:flex;gap:8px;align-items:center;background:#fff;border-bottom:1px solid #eef4f9}
+.logs-search-input{flex:1;height:36px;border:1px solid #dce8f2;border-radius:8px;padding:0 11px;font-size:12px;color:#173b60;background:#fbfdff;outline:none}
+.logs-search-input:focus{border-color:#76b4e5}
+.logs-clear-btn{height:36px;padding:0 11px;border:1px solid #fed7d7;background:#fff5f5;color:#c53030;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+.logs-clear-btn:hover{background:#fed7d7}
+.logs-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 16px;display:flex;flex-direction:column;gap:10px;min-height:160px;max-height:58vh}
+.log-item-card{background:#fff;border:1px solid #dce8f2;border-radius:12px;padding:12px 13px;box-shadow:0 2px 8px rgba(29,76,115,.04);transition:border-color .15s}
+.log-item-card:hover{border-color:#b8d6f0}
+.log-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
+.log-cust-name{font-size:13px;font-weight:800;color:#173b60}
+.log-date{font-size:10px;color:#8296a8;font-weight:500;white-space:nowrap}
+.log-cnic-row{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:8px;font-size:11px}
+.log-cnic-val{color:#3f5872;font-weight:700;font-family:monospace;letter-spacing:.3px}
+.log-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:#f6f9fc;border-radius:8px;padding:8px 9px;margin-bottom:8px}
+.log-grid-cell{display:flex;flex-direction:column}
+.log-grid-label{font-size:8.5px;color:#74899d;font-weight:600;text-transform:uppercase}
+.log-grid-val{font-size:11px;color:#173b60;font-weight:800;margin-top:2px}
+.log-card-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:7px;border-top:1px dashed #e9f0f6}
+.log-load-btn{padding:5px 12px;border:0;background:#075cae;color:#fff;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer}
+.log-load-btn:hover{background:#064d91}
+.log-del-btn{padding:5px 8px;border:0;background:transparent;color:#9aaec0;font-size:13px;cursor:pointer}
+.log-del-btn:hover{color:#e53e3e}
+.logs-empty{text-align:center;padding:32px 16px;color:#7e93a6}
+.logs-empty-icon{font-size:32px;margin-bottom:8px;opacity:.7}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.modal-head h2{margin:0;font-size:17px;color:#173b60;font-weight:800}
+.close{width:32px;height:32px;border:0;border-radius:50%;background:#f0f4f7;color:#687b8d;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.close:hover{background:#e3ebf1;color:#173b60}
+.result-highlight{padding:17px;border-radius:11px;background:#edf8f4;border:1px solid #c8e9dc;text-align:center;margin-bottom:10px}
+.result-label{font-size:9px;color:#6e837c;font-weight:600}
+.result-number{margin-top:5px;font-size:27px;font-weight:800;color:#087857}
+.result-secondary{padding:14px;border-radius:11px;background:#f5f8fb;border:1px solid #dce7ef;text-align:center}
+.result-secondary .result-number{color:#173b60;font-size:19px}
+.modal-message{margin-top:12px;text-align:center;color:#748494;font-size:10px;line-height:1.5}
+
+/* Preview Modal Matching App Theme */
+.preview-modal-box{max-width:720px;width:95vw;padding:0;overflow:hidden;border-radius:18px;background:#f7fbff;display:flex;flex-direction:column;max-height:92vh;border:1px solid #cce3f5;box-shadow:0 25px 70px rgba(7,92,174,.22)}
+.preview-modal-header{padding:12px 16px;background:linear-gradient(135deg,#075cae,#0b78d0);color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.preview-modal-header h2{margin:0;font-size:15px;color:#fff;font-weight:800;display:flex;align-items:center;gap:7px}
+.preview-modal-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.preview-tool-btn{height:32px;padding:0 12px;border-radius:8px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.18);color:#fff;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s ease}
+.preview-tool-btn:hover{background:#fff;color:#075cae}
+.preview-tool-btn.btn-share-active{background:#ffffff;color:#075cae;border-color:#ffffff;font-weight:800;box-shadow:0 3px 10px rgba(0,0,0,.14)}
+.preview-tool-btn.btn-share-active:hover{background:#e8f3fe}
+.preview-modal-body{padding:16px;overflow-y:auto;background:#f7fbff;flex:1}
+.preview-meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px}
+.preview-meta-card{background:#f5f9fc;border:1px solid #e0eaf1;border-radius:9px;padding:9px 11px}
+.preview-meta-card small{display:block;font-size:8px;font-weight:700;color:#788b9d;text-transform:uppercase}
+.preview-meta-card strong{display:block;font-size:13px;color:#173b60;font-weight:800;margin-top:2px}
+
+.emi-options{display:flex;flex-direction:column;gap:9px}
+.emi-option{display:flex;align-items:center;gap:11px;padding:12px;border:1px solid #dce8f2;border-radius:10px;background:#f8fbfe;cursor:pointer}
+.emi-option:has(input:checked){border-color:#76b4e5;background:#edf7ff}
+.emi-option input{width:18px;height:18px;flex:0 0 18px;margin:0;accent-color:#075cae}
+.emi-option span{display:flex;flex-direction:column;gap:3px}
+.emi-option strong{font-size:11px;color:#173b60}
+.emi-option small{font-size:9px;color:#81909e;font-weight:500}
+.emi-form-card{background:#fff;border:1px solid #dce8f2;border-radius:13px;padding:15px;margin-bottom:12px;box-shadow:0 5px 18px rgba(38,88,130,.045)}
+.emi-form-title{font-size:13px;font-weight:800;color:#173b60;margin-bottom:13px}
+.emi-calculated{margin-top:10px;padding:12px;border-radius:10px;background:#edf7ff;border:1px solid #cce3f5}
+.emi-calculated-label{font-size:9px;color:#73879a;font-weight:700}
+.emi-calculated-value{margin-top:4px;font-size:22px;font-weight:800;color:#075cae}
+
+.customer-details-card .form-group{margin-bottom:12px}
+.customer-details-card input,.customer-details-card select{width:100%;height:42px;border:1px solid #dce8f2;border-radius:9px;padding:0 12px;font:inherit;font-size:12px;color:#173b60;background:#fbfdff;box-sizing:border-box;outline:none}
+.customer-details-card input:focus,.customer-details-card select:focus{border-color:#76b4e5;box-shadow:0 0 0 3px rgba(7,92,174,.08)}
+
+.documents-list{display:flex;flex-direction:column;border:1px solid #dce8f2;border-radius:12px;overflow:hidden;background:#fff;margin-bottom:16px}
+.document-row{display:grid;grid-template-columns:34px 1fr 28px;gap:8px;align-items:center;padding:13px 14px;border-bottom:1px solid #dce8f2;font-size:14px;line-height:1.45}
+.document-row:last-child{border-bottom:0}
+.document-number{font-weight:700;color:#075cae}
+.document-text{color:#17324f}
+.print-checkbox{width:18px;height:18px;border:2px solid #17324f;border-radius:3px;display:block;background:#fff}
+
+/* Dedicated Print Stylesheet */
+@media print {
+  body{background:#fff;color:#000;padding:0}
+  .app{max-width:100%;box-shadow:none;border-radius:0}
+  .header,.tabs,.customer-details-card,.action-grid,.manual-btn,.sbp-btn,.footer,.modal:not(#amortizationPreviewModal){display:none!important}
+  #incomeTab,#installmentTab,#dbrTab,#documentsTab{display:none!important}
+  #amortizationTab{display:block!important}
+  .report-card{border:1px solid #ccc;box-shadow:none;page-break-inside:avoid;margin-bottom:16px}
+  .amort-table th{background:#eef4fa!important;color:#000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .amort-table td{color:#111!important}
+  .amort-table tr{page-break-inside:avoid}
+  .preview-modal-box{max-width:100%;width:100%;box-shadow:none;max-height:none}
+  .preview-modal-header{display:none!important}
+  .preview-paper{border:none;box-shadow:none;padding:0}
+  #printablePreviewSection{display:block!important}
+}
+@media(max-width:380px){.header{padding:17px 14px}.content{padding:12px}.card,.report-card{padding:14px}.two-column{gap:8px}.sbp-btn{padding:0 7px;font-size:8px}.tab{height:60px}.tab-title{font-size:7px}.tab-icon{width:24px;height:24px}}
+@media(min-width:541px){body{padding:25px 0}.app{min-height:auto;border-radius:18px;overflow:hidden;box-shadow:0 15px 45px rgba(29,76,115,.10)}.header{border-radius:18px 18px 0 0}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+<div class="app">
+<header class="header">
+  <div class="header-row">
+    <div style="display:flex;align-items:center;gap:11px;min-width:0">
+      <div class="logo">☪</div>
+      <div style="min-width:0">
+        <h1 style="font-size:17px">Islamic Personal Finance</h1>
+        <p>Installment &amp; DBR Calculator</p>
+      </div>
+    </div>
+    <button type="button" class="header-logs-btn" onclick="openLogsModal()" title="View Assessment Logs">
+      <span>📋</span>
+      <span>Logs</span>
+      <span class="logs-badge" id="headerLogsBadge" style="display:none">0</span>
+    </button>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" id="incomeBtn" onclick="openTab('incomeTab',this)"><div class="tab-icon">◉</div><div class="tab-title">Income</div></button>
+  <button class="tab" id="installmentBtn" onclick="openTab('installmentTab',this)"><div class="tab-icon">▣</div><div class="tab-title">Installment</div></button>
+  <button class="tab locked" id="dbrBtn" onclick="openDBR()"><div class="tab-icon">▥</div><div class="tab-title">DBR Calc</div></button>
+  <button class="tab" id="summaryBtn" onclick="handleSummaryTabClick(this)"><div class="tab-icon">📋</div><div class="tab-title">Summary</div></button>
+</nav>
+
+<section id="incomeTab" class="tab-content active">
+<div class="content">
+<div class="card">
+  <div class="card-title">Income Assessment</div>
+  <div class="form-group">
+    <label>Net Monthly Income</label>
+    <div class="input-wrap"><span class="currency">₨</span><input id="income" class="currency-input" type="text" inputmode="numeric" placeholder="100,000" oninput="incomeChanged(this)"></div>
+  </div>
+  <div class="multiple-box">
+    <div class="multiple-top">
+      <div><div class="multiple-label">Applicable Income Multiple</div><div id="multiple" class="multiple-value">6×</div></div>
+      <button class="manual-btn" onclick="manualMultiple()">Manual Multiple</button>
+    </div>
+  </div>
+  <div class="limit-box">
+    <div class="limit-label">Maximum Allowable Financing</div>
+    <div id="limit" class="limit-value">₨ 0</div>
+    <div class="limit-note">Maximum financing is calculated from net income and applicable multiple.</div>
+  </div>
+</div>
+</div>
+</section>
+
+<section id="installmentTab" class="tab-content">
+<div class="content">
+<div class="card">
+  <div class="card-title">Installment Calculator</div>
+  <div class="form-group">
+    <label>Financing Amount</label>
+    <div class="input-wrap"><span class="currency">₨</span><input id="amount" class="currency-input" type="text" inputmode="numeric" placeholder="1,000,000" oninput="amountChanged(this)"></div>
+    <div class="max-note">Maximum Allowable: <strong id="amountLimit">₨ 0</strong></div>
+  </div>
+  <div class="form-group">
+    <label>1-Year KIBOR (12-Month)</label>
+    <div class="kibor-row">
+      <input id="kibor" type="number" step="0.01" min="0" placeholder="Enter KIBOR" oninput="updateRate()">
+      <a class="sbp-btn" href="https://www.sbp.org.pk/economic-data/kibor-rates" target="_blank" rel="noopener">SBP KIBOR ↗</a>
+    </div>
+  </div>
+  <div class="two-column">
+    <div class="form-group"><label>Spread Rate</label><input id="spread" type="number" step="0.01" min="0" placeholder="3.00" oninput="updateRate()" value="18"></div>
+    <div class="form-group"><label>Tenure (Months)</label><input id="tenure" type="text" inputmode="numeric" maxlength="2" placeholder="6 - 48" oninput="tenureChanged(this)"></div>
+  </div>
+  <div class="rate-box"><div class="rate-label">Total Rate</div><div class="rate-value"><span id="totalRate">0.00</span>%</div></div>
+  <button class="primary-btn" onclick="calculateInstallment()">Calculate Installment</button>
+</div>
+</div>
+</section>
+
+<section id="dbrTab" class="tab-content">
+<div class="content">
+  <div class="dbr-heading" style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+    <div><h2>Debt Burden Ratio (DBR)</h2><p>Regulatory DBR benchmark: 35% for Regular Customers, 40% for Bank Staff.</p></div>
+    <button class="manual-btn" style="height:auto;min-height:38px;white-space:nowrap" onclick="openOtherEMISelector()">＋ EMI Calculator</button>
+  </div>
+
+  <!-- Customer Segment Toggle for DBR -->
+  <div class="customer-type-selector">
+    <button type="button" class="type-btn active" id="typeRegularBtn" onclick="setCustomerType('regular')">
+      <span class="type-title">Regular Customer</span>
+      <span class="type-badge">35% Threshold</span>
+    </button>
+    <button type="button" class="type-btn" id="typeStaffBtn" onclick="setCustomerType('staff')">
+      <span class="type-title">Bank Staff</span>
+      <span class="type-badge">40% Threshold</span>
+    </button>
+  </div>
+
+  <div class="threshold-card">
+    <div class="threshold-row">
+      <div>
+        <span class="threshold-label">REGULATORY THRESHOLD</span>
+        <div style="font-size:11px;color:#173b60;font-weight:700;margin-top:2px" id="thresholdCategoryLabel">Regular Customer Limit (35%)</div>
+      </div>
+      <div style="text-align:right">
+        <span class="threshold-label">MAX PERMISSIBLE OBLIGATION</span>
+        <div class="threshold-val" id="maxAllowableObligation">₨ 0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dbr-card"><div class="dbr-label">Net Monthly Income</div><div id="dbrIncome" class="dbr-value">₨ 0</div></div>
+  <div class="dbr-card"><div class="dbr-label">Main Finance Installment</div><div id="dbrInstallment" class="dbr-value">₨ 0</div></div>
+  <div class="dbr-card"><div class="dbr-label">Total Other EMI Obligations</div><div id="otherEMITotal" class="dbr-value">₨ 0</div><div class="helper">Combined installments of credit cards, personal loans, running finance, etc.</div></div>
+  <div id="dbrEMIBreakdown" class="dbr-card" style="display:none"><div class="dbr-label">Selected EMI Breakdown</div><div id="dbrEMIBreakdownItems" style="margin-top:8px"></div></div>
+  <div class="obligation"><div class="obligation-label">Total Monthly Obligation</div><div id="totalObligation" class="obligation-value">₨ 0</div></div>
+  
+  <div class="dbr-result">
+    <div class="dbr-result-label">CALCULATED DEBT BURDEN RATIO</div>
+    <div id="dbr" class="dbr-result-value">0.00%</div>
+    <div id="dbrStatusPill" class="dbr-status-pill status-safe">✓ Within Limit (Safe)</div>
+    <div class="dbr-bar-track">
+      <div id="dbrBarFill" class="dbr-bar-fill safe" style="width:0%"></div>
+      <div id="dbrBarMarker" class="dbr-bar-marker" style="left:35%" title="Regulatory Limit"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:7px;font-size:9px;color:#788b9d;font-weight:700">
+      <span>0%</span>
+      <span id="dbrMarkerLabel" style="color:#075cae">Threshold: 35%</span>
+      <span>100%</span>
+    </div>
+    <div id="dbrHeadroomNote" style="margin-top:10px;font-size:10px;color:#526b84;font-weight:600">Remaining monthly capacity: ₨ 0</div>
+  </div>
+</div>
+</section>
+
+<section id="summaryTab" class="tab-content">
+<div class="content">
+  <!-- Customer Profile Summary Strip with Edit Button -->
+  <div class="card" style="padding:13px 15px;margin-bottom:12px;background:#f5f9fd;border-color:#d4e3ef">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+      <div>
+        <div style="font-size:9px;color:#6b8298;font-weight:700;text-transform:uppercase;letter-spacing:.3px">Assessed Customer</div>
+        <div id="summaryCardCustomerName" style="font-size:14px;color:#173b60;font-weight:800;margin-top:2px">Not Provided</div>
+        <div style="font-size:10px;color:#526b84;margin-top:2px">CNIC: <span id="summaryCardCustomerCNIC" style="font-weight:700;color:#173b60">—</span> • <span id="summaryCardCustomerType" style="color:#075cae;font-weight:700">Regular Customer (35%)</span></div>
+      </div>
+      <button type="button" class="manual-btn" onclick="openCustomerDetailsModal()" style="height:32px;font-size:9.5px;padding:0 10px;white-space:nowrap">
+        ✏️ Edit Details
+      </button>
+    </div>
+  </div>
+
+  <!-- Consolidated Summary Report Card -->
+  <div class="report-card" id="summaryReportContainer">
+    <!-- Populated dynamically by updateSummaryReport() -->
+  </div>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="watermark-badge">
+    <span class="watermark-symbol">☪</span>
+    <span>Powered by Syed Muhammad Humza Arif</span>
+  </div>
+</footer>
+</div>
+
+<div id="customerDetailsModal" class="modal"><div class="modal-box">
+  <div class="modal-head"><h2>Customer Information</h2><button class="close" onclick="closeModal('customerDetailsModal')">×</button></div>
+  <div class="modal-message" style="margin-bottom:14px;text-align:left">Please enter customer details to generate the official Financial Assessment Summary Sheet.</div>
+  <div class="form-group" style="margin-bottom:12px">
+    <label>Customer Full Name *</label>
+    <input id="modalCustomerName" type="text" placeholder="e.g. Muhammad Ali Khan" autocomplete="off">
+  </div>
+  <div class="form-group" style="margin-bottom:12px">
+    <label>Customer CNIC Number *</label>
+    <input id="modalCustomerCNIC" type="text" inputmode="numeric" placeholder="42101-1234567-1" maxlength="15" oninput="formatCNICInput(this)" autocomplete="off">
+  </div>
+  <div class="form-group" style="margin-bottom:16px">
+    <label>Customer Classification / Segment</label>
+    <div class="customer-type-toggle">
+      <button type="button" class="type-btn active" id="modalTypeRegularBtn" onclick="setCustomerType('regular')">Regular Customer (35% DBR)</button>
+      <button type="button" class="type-btn" id="modalTypeStaffBtn" onclick="setCustomerType('staff')">Bank Staff (40% DBR)</button>
+    </div>
+  </div>
+  <button class="primary-btn" onclick="saveCustomerDetailsAndShowSummary()" style="background:#075cae;font-size:13px;font-weight:800;height:44px">
+    Generate Summary Report ➔
+  </button>
+</div></div>
+
+<!-- Assessment Logs Modal -->
+<div id="logsModal" class="modal"><div class="logs-modal-box">
+  <div class="logs-modal-header">
+    <div class="logs-modal-title">
+      <span style="font-size:16px">📋</span>
+      <span>Assessment Logs (<span id="logsTotalCount">0</span>)</span>
+    </div>
+    <button type="button" class="close" onclick="closeModal('logsModal')">×</button>
+  </div>
+  <div class="logs-modal-tools">
+    <input type="text" id="logsSearchInput" class="logs-search-input" placeholder="🔍 Search by customer name or CNIC..." oninput="filterLogsList(this.value)">
+    <button type="button" class="logs-clear-btn" onclick="clearAllLogs()" title="Clear all recorded assessment logs">Clear All</button>
+  </div>
+  <div class="logs-list" id="logsListContainer">
+    <!-- Populated dynamically -->
+  </div>
+</div></div>
+
+<div id="otherEMISelectorModal" class="modal"><div class="modal-box">
+  <div class="modal-head"><h2>EMI Calculator</h2><button class="close" onclick="closeModal('otherEMISelectorModal')">×</button></div>
+  <div class="modal-message" style="margin-bottom:14px">Select the EMI types you need. Calculation fields for selected types will appear below.</div>
+  <div class="emi-options">
+    <label class="emi-option"><input type="checkbox" value="creditCard" class="emi-option-check"> <span><strong>Credit Card</strong></span></label>
+    <label class="emi-option"><input type="checkbox" value="runningFinance" class="emi-option-check"> <span><strong>Running Finance</strong></span></label>
+    <label class="emi-option"><input type="checkbox" value="personalLoan" class="emi-option-check"> <span><strong>Personal Loan</strong></span></label>
+    <label class="emi-option"><input type="checkbox" value="autoFinance" class="emi-option-check"> <span><strong>Auto Finance Loan</strong></span></label>
+    <label class="emi-option"><input type="checkbox" value="mortgageLoan" class="emi-option-check"> <span><strong>Mortgage Loan</strong></span></label>
+    <label class="emi-option"><input type="checkbox" value="otherEMI" class="emi-option-check"> <span><strong>Other EMI</strong></span></label>
+  </div>
+  <div id="otherEMIPopupForms" style="margin-top:14px"></div>
+  <div class="emi-calculated" style="margin-top:12px"><div class="emi-calculated-label">Total EMI Obligation</div><div class="emi-calculated-value" id="popupEMITotal">₨ 0</div></div>
+  <button class="primary-btn" style="margin-top:14px" onclick="applyOtherEMISelection()">Apply Selected EMIs to DBR</button>
+</div></div>
+
+<div id="resultModal" class="modal"><div class="modal-box">
+  <div class="modal-head"><h2>Installment Result</h2><button class="close" onclick="closeModal('resultModal')">×</button></div>
+  <div class="result-highlight"><div class="result-label">Monthly Installment</div><div id="resultInstallment" class="result-number">₨ 0</div></div>
+  <div class="result-secondary"><div class="result-label">Total Payable</div><div id="resultTotal" class="result-number">₨ 0</div></div>
+  <div class="modal-message">The calculated installment is based on the financing amount, total rate and selected tenure.</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px">
+    <button class="manual-btn" style="height:44px;font-size:11px" onclick="closeModal('resultModal')">Close</button>
+    <button class="primary-btn" style="margin-top:0;height:44px;font-size:11px" onclick="closeModal('resultModal');openDBR()">Go to DBR ➔</button>
+  </div>
+</div></div>
+
+<div id="limitModal" class="modal"><div class="modal-box">
+  <div class="modal-head"><h2>Maximum Limit</h2><button class="close" onclick="closeModal('limitModal')">×</button></div>
+  <div class="result-highlight"><div class="result-label">Maximum Allowable Financing</div><div id="popupLimit" class="result-number">₨ 0</div></div>
+  <div class="modal-message">Financing amount cannot exceed the maximum allowable financing calculated from income and the applicable multiple.</div>
+  <button class="primary-btn" onclick="closeModal('limitModal')">Okay</button>
+</div></div>
+
+<div id="manualModal" class="modal"><div class="modal-box">
+  <div class="modal-head"><h2>Manual Multiple</h2><button class="close" onclick="closeModal('manualModal')">×</button></div>
+  <div class="form-group"><label>Enter Multiple</label><input id="manualValue" type="number" min="0" step="0.01" placeholder="e.g. 7" oninput="manualLimitUpdate()"></div>
+  <div class="limit-box"><div class="limit-label">Maximum Allowable Financing</div><div id="manualLimit" class="limit-value">₨ 0</div></div>
+  <button class="primary-btn" onclick="applyManual()">Apply Multiple</button>
+</div></div>
+
+<div id="alertModal" class="modal"><div class="modal-box">
+  <div class="modal-head"><h2>Notice</h2><button class="close" onclick="closeModal('alertModal')">×</button></div>
+  <div id="alertModalMessage" class="modal-message" style="margin-top:8px;font-size:12px;color:#173b60;line-height:1.5"></div>
+  <button class="primary-btn" onclick="closeModal('alertModal')" style="margin-top:16px">OK</button>
+</div></div>
+
+<script>
+// Safe alert for sandboxed iframe environments
+window.alert = function(msg) {
+  const modal = document.getElementById("alertModal");
+  const msgEl = document.getElementById("alertModalMessage");
+  if (modal && msgEl) {
+    msgEl.textContent = msg;
+    modal.classList.add("show");
+  } else {
+    console.warn(msg);
+  }
+};
+
+let multiple = 6;
+let manualMode = false;
+let installmentValue = 0;
+let customerType = 'regular'; // 'regular' (35%) or 'staff' (40%)
+
+function getThreshold() {
+  return customerType === 'staff' ? 40 : 35;
+}
+
+function setCustomerType(type) {
+  customerType = type;
+  const regBtn = document.getElementById("typeRegularBtn");
+  const staffBtn = document.getElementById("typeStaffBtn");
+  const mRegBtn = document.getElementById("modalTypeRegularBtn");
+  const mStaffBtn = document.getElementById("modalTypeStaffBtn");
+  if (type === 'staff') {
+    if (staffBtn) staffBtn.classList.add("active");
+    if (regBtn) regBtn.classList.remove("active");
+    if (mStaffBtn) mStaffBtn.classList.add("active");
+    if (mRegBtn) mRegBtn.classList.remove("active");
+  } else {
+    if (regBtn) regBtn.classList.add("active");
+    if (staffBtn) staffBtn.classList.remove("active");
+    if (mRegBtn) mRegBtn.classList.add("active");
+    if (mStaffBtn) mStaffBtn.classList.remove("active");
+  }
+
+  // Sync with dropdowns & badges
+  const catSelect = document.getElementById("customerCategorySelect");
+  if (catSelect) catSelect.value = type;
+  const catModal = document.getElementById("customerCategoryModal");
+  if (catModal) catModal.value = type;
+  
+  const badge = document.getElementById("badgeCategory");
+  if (badge) {
+    badge.textContent = type === 'staff' ? "Bank Staff (40% Limit)" : "Regular Customer (35% Limit)";
+  }
+
+  const thLabel = document.getElementById("thresholdCategoryLabel");
+  if (thLabel) {
+    thLabel.textContent = type === 'staff' ? "Bank Staff Concession Limit (40%)" : "Regular Customer Standard Limit (35%)";
+  }
+
+  const marker = document.getElementById("dbrBarMarker");
+  const markerLabel = document.getElementById("dbrMarkerLabel");
+  const threshold = getThreshold();
+  if (marker) marker.style.left = threshold + "%";
+  if (markerLabel) markerLabel.textContent = "Threshold: " + threshold + "%";
+
+  updateDBR();
+  updateSummaryReport();
+}
+
+function customerCategoryChanged(val) {
+  setCustomerType(val);
+}
+
+function numberValue(value) {
+  return parseFloat(String(value || "").replace(/,/g, "")) || 0;
+}
+function formatNumber(value) {
+  if (!isFinite(value)) return "0";
+  return Math.round(value).toLocaleString("en-PK");
+}
+function pkr(value) {
+  return "₨ " + formatNumber(value);
+}
+function formatInput(input) {
+  if (!input) return;
+  const oldVal = input.value;
+  const raw = oldVal.replace(/[^0-9]/g, "");
+  if (!raw) {
+    input.value = "";
+    return;
+  }
+  const formatted = Number(raw).toLocaleString("en-PK");
+  if (formatted === oldVal) return;
+  const start = input.selectionStart || 0;
+  const oldDiff = oldVal.length - start;
+  input.value = formatted;
+  const newPos = Math.max(0, formatted.length - oldDiff);
+  try {
+    input.setSelectionRange(newPos, newPos);
+  } catch (e) {}
+}
+function incomeChanged(input) {
+  formatInput(input);
+  const income = numberValue(input.value);
+  if (!manualMode) multiple = income < 100000 ? 6 : 8;
+  updateMultiple();
+  updateLimit();
+  updateDBR();
+  updateDBRStatus();
+}
+function updateMultiple() {
+  const value = Number(multiple);
+  document.getElementById("multiple").textContent =
+    Number.isInteger(value) ? value + "×" : value.toFixed(2) + "×";
+}
+function updateLimit() {
+  const income = numberValue(document.getElementById("income").value);
+  const limit = income * multiple;
+  document.getElementById("limit").textContent = pkr(limit);
+  document.getElementById("amountLimit").textContent = pkr(limit);
+  forceAmountLimit();
+}
+function amountChanged(input) {
+  const raw = input.value.replace(/[^0-9]/g, "");
+  if (!raw) { input.value = ""; return; }
+  const amount = Number(raw);
+  const income = numberValue(document.getElementById("income").value);
+  const max = income * multiple;
+  if (income > 0 && amount > max) {
+    input.value = Math.floor(max).toLocaleString("en-PK");
+    showLimit(max);
+    return;
+  }
+  input.value = amount.toLocaleString("en-PK");
+}
+function forceAmountLimit() {
+  const input = document.getElementById("amount");
+  if (!input) return;
+  const amount = numberValue(input.value);
+  const income = numberValue(document.getElementById("income").value);
+  if (income <= 0 || amount <= 0) return;
+  const max = income * multiple;
+  if (amount > max) input.value = Math.floor(max).toLocaleString("en-PK");
+}
+function manualMultiple() {
+  const income = numberValue(document.getElementById("income").value);
+  if (income <= 0) { alert("Please enter Net Monthly Income first."); return; }
+  document.getElementById("manualValue").value = manualMode ? multiple : "";
+  manualLimitUpdate();
+  document.getElementById("manualModal").classList.add("show");
+}
+function manualLimitUpdate() {
+  const income = numberValue(document.getElementById("income").value);
+  const value = parseFloat(document.getElementById("manualValue").value);
+  document.getElementById("manualLimit").textContent = pkr(income * (value || 0));
+}
+function applyManual() {
+  const value = parseFloat(document.getElementById("manualValue").value);
+  if (isNaN(value) || value <= 0) { alert("Please enter a valid multiple."); return; }
+  multiple = value;
+  manualMode = true;
+  updateMultiple();
+  updateLimit();
+  closeModal("manualModal");
+}
+function updateRate() {
+  const kibor = parseFloat(document.getElementById("kibor").value) || 0;
+  const spread = parseFloat(document.getElementById("spread").value) || 0;
+  document.getElementById("totalRate").textContent = (kibor + spread).toFixed(2);
+  if (typeof calculateOtherEMIs === "function" && selectedEMITypes.length) calculateOtherEMIs();
+}
+function tenureChanged(input) {
+  input.value = input.value.replace(/[^0-9]/g, "").substring(0, 2);
+}
+function PMT(principal, annualRate, months) {
+  const monthlyRate = annualRate / 100 / 12;
+  if (monthlyRate === 0) return principal / months;
+  const factor = Math.pow(1 + monthlyRate, months);
+  return (principal * monthlyRate * factor) / (factor - 1);
+}
+function calculateInstallment() {
+  const income = numberValue(document.getElementById("income").value);
+  const amount = numberValue(document.getElementById("amount").value);
+  const kibor = parseFloat(document.getElementById("kibor").value);
+  const spread = parseFloat(document.getElementById("spread").value) || 0;
+  const tenure = parseInt(document.getElementById("tenure").value, 10);
+
+  if (income <= 0) {
+    alert("Please enter Net Monthly Income first.");
+    openTab("incomeTab", document.getElementById("incomeBtn"));
+    return;
+  }
+  if (amount <= 0) { alert("Please enter Financing Amount."); return; }
+  const max = income * multiple;
+  if (amount > max) {
+    document.getElementById("amount").value = Math.floor(max).toLocaleString("en-PK");
+    showLimit(max);
+    return;
+  }
+  if (isNaN(kibor) || kibor < 0) { alert("Please enter KIBOR rate."); return; }
+  if (isNaN(spread) || spread < 0) { alert("Please enter a valid Spread Rate."); return; }
+  if (isNaN(tenure) || tenure < 6 || tenure > 48) {
+    alert("Tenure must be between 6 and 48 months.");
+    return;
+  }
+
+  const totalRate = kibor + spread;
+  const installment = PMT(amount, totalRate, tenure);
+  const totalPayable = installment * tenure;
+  installmentValue = installment;
+
+  document.getElementById("resultInstallment").textContent = pkr(installment);
+  document.getElementById("resultTotal").textContent = pkr(totalPayable);
+
+  document.getElementById("resultModal").classList.add("show");
+  updateDBR();
+  updateDBRStatus();
+  updateSummaryReport();
+}
+function updateDBRStatus() {
+  const income = numberValue(document.getElementById("income").value);
+  const button = document.getElementById("dbrBtn");
+  if (income > 0 && installmentValue > 0) button.classList.remove("locked");
+  else button.classList.add("locked");
+}
+function openDBR() {
+  const income = numberValue(document.getElementById("income").value);
+  if (income <= 0 || installmentValue <= 0) return;
+  openTab("dbrTab", document.getElementById("dbrBtn"));
+}
+const EMI_TYPES = {
+  creditCard: { title: "Credit Card", kind: "limit", rateText: "5% of limit" },
+  runningFinance: { title: "Running Finance", kind: "limit", rateText: "5% of limit" },
+  personalLoan: { title: "Personal Loan", kind: "pmt", rateText: "27% fixed annual rate" },
+  autoFinance: { title: "Auto Finance Loan", kind: "pmt", rateText: "KIBOR + 8% annual rate" },
+  mortgageLoan: { title: "Mortgage Loan", kind: "pmt", rateText: "KIBOR + 5% annual rate" },
+  otherEMI: { title: "Other EMI", kind: "manual", rateText: "Manual monthly EMI" }
+};
+let selectedEMITypes = [];
+let emiValues = {};
+let appliedEMIValues = {};
+
+function openOtherEMISelector() {
+  const modal = document.getElementById("otherEMISelectorModal");
+  document.querySelectorAll(".emi-option-check").forEach(check => {
+    check.checked = selectedEMITypes.includes(check.value);
+  });
+  renderOtherEMIPopupForms();
+  modal.classList.add("show");
+}
+function applyOtherEMISelection() {
+  selectedEMITypes = Array.from(document.querySelectorAll(".emi-option-check:checked")).map(el => el.value);
+  appliedEMIValues = {};
+  selectedEMITypes.forEach(type => { appliedEMIValues[type] = {...(emiValues[type] || {})}; });
+  calculateOtherEMIs();
+  closeModal("otherEMISelectorModal");
+}
+function renderOtherEMIPopupForms() {
+  const selected = Array.from(document.querySelectorAll(".emi-option-check:checked")).map(el => el.value);
+  const host = document.getElementById("otherEMIPopupForms");
+  host.innerHTML = "";
+  selected.forEach(type => {
+    if (!emiValues[type]) emiValues[type] = {};
+    const meta = EMI_TYPES[type];
+    const card = document.createElement("div");
+    card.className = "emi-form-card";
+    card.innerHTML = `<div class="emi-form-title">${meta.title}</div><div class="emi-inputs"></div><div class="emi-calculated"><div class="emi-calculated-label">Calculated Monthly EMI</div><div class="emi-calculated-value" id="emiResult_${type}">₨ 0</div></div>`;
+    host.appendChild(card);
+    const inputs = card.querySelector(".emi-inputs");
+    if (type === "creditCard" || type === "runningFinance") {
+      const label = type === "creditCard" ? "Credit Card Limit" : "Running Finance Limit";
+      inputs.innerHTML = `<div class="form-group"><label>${label}</label><div class="input-wrap"><span class="currency">₨</span><input id="emiAmount_${type}" class="currency-input" type="text" inputmode="numeric" placeholder="0"></div></div>`;
+      const input = inputs.querySelector("input");
+      input.value = emiValues[type].amount ? Number(emiValues[type].amount).toLocaleString("en-PK") : "";
+      input.addEventListener("input", () => { formatInput(input); emiValues[type].amount = numberValue(input.value); calculateOtherEMIs(); });
+    } else if (type === "personalLoan" || type === "autoFinance" || type === "mortgageLoan") {
+      const label = type === "personalLoan" ? "Personal Loan Limit / Amount" : (type === "autoFinance" ? "Auto Finance Loan Amount" : "Mortgage Loan Amount");
+      inputs.innerHTML = `<div class="form-group"><label>${label}</label><div class="input-wrap"><span class="currency">₨</span><input id="emiAmount_${type}" class="currency-input" type="text" inputmode="numeric" placeholder="0"></div></div><div class="form-group"><label>Tenure (Months)</label><input id="emiTenure_${type}" type="number" min="1" max="360" step="1" placeholder="e.g. 60"></div>`;
+      const amountInput = inputs.querySelector(`#emiAmount_${type}`);
+      const tenureInput = inputs.querySelector(`#emiTenure_${type}`);
+      amountInput.value = emiValues[type].amount ? Number(emiValues[type].amount).toLocaleString("en-PK") : "";
+      tenureInput.value = emiValues[type].tenure || "";
+      amountInput.addEventListener("input", () => { formatInput(amountInput); emiValues[type].amount = numberValue(amountInput.value); calculateOtherEMIs(); });
+      tenureInput.addEventListener("input", () => { emiValues[type].tenure = parseInt(tenureInput.value, 10) || 0; calculateOtherEMIs(); });
+    } else {
+      inputs.innerHTML = `<div class="form-group"><label>Monthly EMI Amount</label><div class="input-wrap"><span class="currency">₨</span><input id="emiAmount_${type}" class="currency-input" type="text" inputmode="numeric" placeholder="Enter monthly installment"></div></div>`;
+      const input = inputs.querySelector("input");
+      input.value = emiValues[type].amount ? Number(emiValues[type].amount).toLocaleString("en-PK") : "";
+      input.addEventListener("input", () => { formatInput(input); emiValues[type].amount = numberValue(input.value); calculateOtherEMIs(); });
+    }
+  });
+  calculateOtherEMIs();
+}
+document.addEventListener("change", event => {
+  if (event.target && event.target.classList.contains("emi-option-check")) renderOtherEMIPopupForms();
+});
+function getEMIValue(type, data) {
+  data = data || {};
+  const amount = Number(data.amount) || 0;
+  if (type === "creditCard" || type === "runningFinance") return amount * 0.05;
+  if (type === "otherEMI") return amount;
+  const tenure = parseInt(data.tenure, 10) || 0;
+  if (amount <= 0 || tenure <= 0 || tenure > 360) return 0;
+  const kibor = parseFloat(document.getElementById("kibor").value) || 0;
+  const rate = type === "personalLoan" ? 27 : (type === "autoFinance" ? kibor + 8 : kibor + 5);
+  return PMT(amount, rate, tenure);
+}
+function calculateOtherEMIs() {
+  const popupSelected = Array.from(document.querySelectorAll(".emi-option-check:checked")).map(el => el.value);
+  let popupTotal = 0;
+  popupSelected.forEach(type => {
+    const emi = getEMIValue(type, emiValues[type]);
+    popupTotal += emi;
+    const result = document.getElementById(`emiResult_${type}`);
+    if (result) result.textContent = pkr(emi);
+  });
+  const popupTotalEl = document.getElementById("popupEMITotal");
+  if (popupTotalEl) popupTotalEl.textContent = pkr(popupTotal);
+  updateDBR();
+}
+function updateDBR() {
+  const income = numberValue(document.getElementById("income").value);
+  const otherTotal = selectedEMITypes.reduce((sum, type) => sum + getEMIValue(type, appliedEMIValues[type]), 0);
+  const total = installmentValue + otherTotal;
+  const threshold = getThreshold(); // 35 or 40
+  const maxAllowable = income * (threshold / 100);
+
+  document.getElementById("dbrIncome").textContent = pkr(income);
+  document.getElementById("dbrInstallment").textContent = pkr(installmentValue);
+  document.getElementById("otherEMITotal").textContent = pkr(otherTotal);
+  document.getElementById("totalObligation").textContent = pkr(total);
+  document.getElementById("maxAllowableObligation").textContent = pkr(maxAllowable);
+
+  const breakdownCard = document.getElementById("dbrEMIBreakdown");
+  const breakdownHost = document.getElementById("dbrEMIBreakdownItems");
+  if (selectedEMITypes.length) {
+    breakdownCard.style.display = "block";
+    breakdownHost.innerHTML = selectedEMITypes.map(type => `<div style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #edf2f6;font-size:10px"><span style="color:#718293">${EMI_TYPES[type].title}</span><strong style="color:#173b60;white-space:nowrap">${pkr(getEMIValue(type, appliedEMIValues[type]))}</strong></div>`).join("");
+  } else {
+    breakdownCard.style.display = "none";
+    breakdownHost.innerHTML = "";
+  }
+
+  const dbrRatio = income > 0 ? (total / income) * 100 : 0;
+  document.getElementById("dbr").textContent = dbrRatio.toFixed(2) + "%";
+
+  const statusPill = document.getElementById("dbrStatusPill");
+  const barFill = document.getElementById("dbrBarFill");
+  const headroomNote = document.getElementById("dbrHeadroomNote");
+
+  // Progress Bar width capped at 100%
+  const barWidth = Math.min(100, Math.max(0, dbrRatio));
+  barFill.style.width = barWidth + "%";
+
+  if (dbrRatio <= threshold) {
+    const headroomAmount = maxAllowable - total;
+    statusPill.className = "dbr-status-pill status-safe";
+    statusPill.innerHTML = `✓ Within ${threshold}% Limit (${(threshold - dbrRatio).toFixed(1)}% Headroom)`;
+    barFill.className = "dbr-bar-fill safe";
+    headroomNote.innerHTML = `Remaining allowable monthly obligation: <strong style="color:#087857">${pkr(headroomAmount)}</strong>`;
+  } else {
+    const excessAmount = total - maxAllowable;
+    statusPill.className = "dbr-status-pill status-danger";
+    statusPill.innerHTML = `⚠ Exceeds ${threshold}% Threshold by ${(dbrRatio - threshold).toFixed(1)}%`;
+    barFill.className = "dbr-bar-fill danger";
+    headroomNote.innerHTML = `Exceeds permissible threshold by: <strong style="color:#c02626">${pkr(excessAmount)}</strong>`;
+  }
+}
+
+function openTab(tabId, button) {
+  if (tabId === "dbrTab" &&
+      (numberValue(document.getElementById("income").value) <= 0 || installmentValue <= 0)) return;
+
+  document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+
+  const selected = document.getElementById(tabId);
+  if (!selected || !button) return;
+  selected.classList.add("active");
+  button.classList.add("active");
+  if (tabId === "dbrTab") updateDBR();
+  if (tabId === "summaryTab") updateSummaryReport();
+}
+
+function formatCNICInput(input) {
+  if (!input) return;
+  let val = input.value.replace(/[^0-9]/g, '');
+  if (val.length > 13) val = val.substring(0, 13);
+  let formatted = '';
+  if (val.length > 5) {
+    formatted += val.substring(0, 5) + '-';
+    if (val.length > 12) {
+      formatted += val.substring(5, 12) + '-' + val.substring(12, 13);
+    } else {
+      formatted += val.substring(5);
+    }
+  } else {
+    formatted = val;
+  }
+  input.value = formatted;
+}
+
+let customerDetailsEntered = false;
+
+function handleSummaryTabClick(button) {
+  const nameVal = (document.getElementById("modalCustomerName")?.value || "").trim();
+  const cnicVal = (document.getElementById("modalCustomerCNIC")?.value || "").trim();
+
+  // If customer details not entered yet, prompt popup first!
+  if (!customerDetailsEntered || !nameVal || !cnicVal) {
+    openCustomerDetailsModal();
+    return;
+  }
+  openTab('summaryTab', button);
+}
+
+function openCustomerDetailsModal() {
+  document.getElementById("customerDetailsModal").classList.add("show");
+  setTimeout(() => {
+    const input = document.getElementById("modalCustomerName");
+    if (input) input.focus();
+  }, 120);
+}
+
+function saveCustomerDetailsAndShowSummary() {
+  const nameInput = document.getElementById("modalCustomerName");
+  const cnicInput = document.getElementById("modalCustomerCNIC");
+  const name = nameInput ? nameInput.value.trim() : "";
+  const cnic = cnicInput ? cnicInput.value.trim() : "";
+
+  if (!name) {
+    alert("Please enter Customer Full Name.");
+    if (nameInput) nameInput.focus();
+    return;
+  }
+  if (!cnic || cnic.replace(/[^0-9]/g, "").length < 13) {
+    alert("Please enter a valid 13-digit CNIC Number.");
+    if (cnicInput) cnicInput.focus();
+    return;
+  }
+
+  customerDetailsEntered = true;
+  closeModal("customerDetailsModal");
+  openTab('summaryTab', document.getElementById("summaryBtn"));
+  updateSummaryReport();
+  recordAssessmentLog(name, cnic);
+}
+
+// ============================================================
+// ASSESSMENT LOGS MANAGEMENT (PERSISTENT HISTORY)
+// ============================================================
+const LOGS_STORAGE_KEY = 'islamic_finance_assessment_logs';
+
+function getAssessmentLogs() {
+  try {
+    const raw = localStorage.getItem(LOGS_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    console.error("Error reading assessment logs:", e);
+    return [];
+  }
+}
+
+function saveAssessmentLogs(logs) {
+  try {
+    localStorage.setItem(LOGS_STORAGE_KEY, JSON.stringify(logs));
+    updateLogsCountBadge();
+  } catch (e) {
+    console.error("Error saving assessment logs:", e);
+  }
+}
+
+function updateLogsCountBadge() {
+  const logs = getAssessmentLogs();
+  const count = logs.length;
+  const badge = document.getElementById("headerLogsBadge");
+  const totalCountEl = document.getElementById("logsTotalCount");
+  if (totalCountEl) totalCountEl.textContent = count;
+  if (badge) {
+    if (count > 0) {
+      badge.textContent = count > 99 ? "99+" : count;
+      badge.style.display = "inline-block";
+    } else {
+      badge.style.display = "none";
+    }
+  }
+}
+
+function recordAssessmentLog(custName, custCNIC) {
+  const name = (custName || (document.getElementById("modalCustomerName")?.value || "")).trim();
+  const cnic = (custCNIC || (document.getElementById("modalCustomerCNIC")?.value || "")).trim();
+  if (!name || !cnic) return;
+
+  const income = numberValue(document.getElementById("income") ? document.getElementById("income").value : 0);
+  const amount = numberValue(document.getElementById("amount") ? document.getElementById("amount").value : 0);
+  const tenure = parseInt(document.getElementById("tenure") ? document.getElementById("tenure").value : 0, 10) || 0;
+  const kibor = parseFloat(document.getElementById("kibor") ? document.getElementById("kibor").value : 0) || 0;
+  const spread = parseFloat(document.getElementById("spread") ? document.getElementById("spread").value : 0) || 0;
+  const totalRate = kibor + spread;
+
+  let installment = installmentValue;
+  if (installment <= 0 && amount > 0 && tenure > 0 && totalRate > 0) {
+    installment = PMT(amount, totalRate, tenure);
+  }
+
+  const threshold = getThreshold();
+  const otherTotal = selectedEMITypes.reduce((sum, type) => sum + getEMIValue(type, appliedEMIValues[type]), 0);
+  const totalObligations = installment + otherTotal;
+  const maxAllowable = income * (threshold / 100);
+  const dbrRatio = income > 0 ? (totalObligations / income) * 100 : 0;
+  const isWithinDBR = dbrRatio <= threshold;
+  const headroom = maxAllowable - totalObligations;
+
+  const now = new Date();
+  const dateFormatted = now.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+  const timeFormatted = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true });
+
+  const logEntry = {
+    id: "log_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
+    timestamp: now.toISOString(),
+    displayDate: `${dateFormatted}, ${timeFormatted}`,
+    customerName: name,
+    customerCNIC: cnic,
+    customerType: customerType,
+    income: income,
+    amount: amount,
+    tenure: tenure,
+    kibor: kibor,
+    spread: spread,
+    totalRate: totalRate,
+    installment: installment,
+    otherTotal: otherTotal,
+    totalObligations: totalObligations,
+    dbrRatio: dbrRatio,
+    threshold: threshold,
+    isWithinDBR: isWithinDBR,
+    headroom: headroom
+  };
+
+  const logs = getAssessmentLogs();
+
+  // Deduplicate if identical CNIC and amount within 3 seconds
+  if (logs.length > 0) {
+    const first = logs[0];
+    const diff = Date.now() - new Date(first.timestamp).getTime();
+    if (diff < 4000 && first.customerCNIC === cnic && first.amount === amount) {
+      return;
+    }
+  }
+
+  logs.unshift(logEntry);
+  if (logs.length > 150) logs.length = 150;
+  saveAssessmentLogs(logs);
+
+  const logsModal = document.getElementById("logsModal");
+  if (logsModal && logsModal.classList.contains("show")) {
+    const searchVal = document.getElementById("logsSearchInput")?.value || "";
+    renderLogsList(searchVal);
+  }
+}
+
+function openLogsModal() {
+  const modal = document.getElementById("logsModal");
+  if (!modal) return;
+  const searchInput = document.getElementById("logsSearchInput");
+  if (searchInput) searchInput.value = "";
+  renderLogsList("");
+  updateLogsCountBadge();
+  modal.classList.add("show");
+}
+
+function filterLogsList(searchTerm) {
+  renderLogsList(searchTerm);
+}
+
+function escapeLogHtml(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function renderLogsList(filterTerm) {
+  const container = document.getElementById("logsListContainer");
+  if (!container) return;
+
+  const allLogs = getAssessmentLogs();
+  const term = (filterTerm || "").trim().toLowerCase();
+
+  const filtered = term
+    ? allLogs.filter(log =>
+        (log.customerName && log.customerName.toLowerCase().includes(term)) ||
+        (log.customerCNIC && log.customerCNIC.toLowerCase().includes(term))
+      )
+    : allLogs;
+
+  const totalCountEl = document.getElementById("logsTotalCount");
+  if (totalCountEl) totalCountEl.textContent = allLogs.length;
+
+  if (filtered.length === 0) {
+    if (allLogs.length === 0) {
+      container.innerHTML = `
+        <div class="logs-empty">
+          <div class="logs-empty-icon">📋</div>
+          <strong style="display:block;margin-bottom:5px;color:#173b60;font-size:13px">No Assessment Logs Recorded Yet</strong>
+          <span style="font-size:11px;line-height:1.4">Jab bhi Customer Name aur CNIC enter karke summary generate ki jaegi, to uski mukammal details yahan automatically save ho jaengi.</span>
+        </div>
+      `;
+    } else {
+      container.innerHTML = `
+        <div class="logs-empty">
+          <div class="logs-empty-icon">🔍</div>
+          <strong style="display:block;margin-bottom:5px;color:#173b60;font-size:13px">No Matching Records Found</strong>
+          <span style="font-size:11px">"${escapeLogHtml(term)}" ke liye koi log record nahi mila.</span>
+        </div>
+      `;
+    }
+    return;
+  }
+
+  container.innerHTML = filtered.map(log => {
+    const isStaff = log.customerType === 'staff';
+    const safeName = escapeLogHtml(log.customerName);
+    const safeCNIC = escapeLogHtml(log.customerCNIC);
+    const passStatus = log.isWithinDBR;
+    const dbrText = (log.dbrRatio || 0).toFixed(1) + "%";
+
+    return `
+      <div class="log-item-card" id="${log.id}">
+        <div class="log-card-header">
+          <div style="min-width:0">
+            <span class="log-cust-name">${safeName}</span>
+            <span class="dbr-status-pill ${isStaff ? 'status-safe' : ''}" style="font-size:8.5px;padding:2px 6px;margin-left:6px;background:${isStaff ? '#e6f4ea' : '#eef4fa'};color:${isStaff ? '#0d652d' : '#1d5a8f'}">
+              ${isStaff ? 'Staff (40%)' : 'Regular (35%)'}
+            </span>
+          </div>
+          <span class="log-date">${log.displayDate || ''}</span>
+        </div>
+        <div class="log-cnic-row">
+          <span>CNIC: <span class="log-cnic-val">${safeCNIC}</span></span>
+          <span class="dbr-status-pill ${passStatus ? 'status-safe' : 'status-danger'}" style="font-size:9px;padding:2px 7px">
+            ${dbrText} (${passStatus ? 'Within Limit' : 'Exceeds Ceiling'})
+          </span>
+        </div>
+        <div class="log-grid">
+          <div class="log-grid-cell">
+            <span class="log-grid-label">Financing</span>
+            <span class="log-grid-val">${pkr(log.amount)}</span>
+          </div>
+          <div class="log-grid-cell">
+            <span class="log-grid-label">Installment</span>
+            <span class="log-grid-val" style="color:#075cae">${pkr(log.installment)}/m</span>
+          </div>
+          <div class="log-grid-cell">
+            <span class="log-grid-label">Tenure / Rate</span>
+            <span class="log-grid-val">${log.tenure}m @ ${(log.totalRate || 0).toFixed(1)}%</span>
+          </div>
+        </div>
+        <div class="log-card-footer">
+          <span style="font-size:10.5px;color:#6b8296">Monthly Income: <strong style="color:#173b60">${pkr(log.income)}</strong></span>
+          <div style="display:flex;gap:6px;align-items:center">
+            <button type="button" class="log-del-btn" onclick="deleteAssessmentLog('${log.id}', event)" title="Delete this log record">🗑️</button>
+            <button type="button" class="log-load-btn" onclick="loadLogIntoAssessment('${log.id}')">View Summary ➔</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function deleteAssessmentLog(logId, event) {
+  if (event) event.stopPropagation();
+  let logs = getAssessmentLogs();
+  logs = logs.filter(item => item.id !== logId);
+  saveAssessmentLogs(logs);
+  const searchVal = document.getElementById("logsSearchInput")?.value || "";
+  renderLogsList(searchVal);
+}
+
+function clearAllLogs() {
+  const logs = getAssessmentLogs();
+  if (logs.length === 0) return;
+  if (!confirm("Are you sure you want to clear all assessment logs? This cannot be undone.")) {
+    return;
+  }
+  localStorage.removeItem(LOGS_STORAGE_KEY);
+  updateLogsCountBadge();
+  renderLogsList("");
+}
+
+function loadLogIntoAssessment(logId) {
+  const logs = getAssessmentLogs();
+  const log = logs.find(item => item.id === logId);
+  if (!log) return;
+
+  const incomeInput = document.getElementById("income");
+  if (incomeInput && log.income) incomeInput.value = log.income;
+
+  const amountInput = document.getElementById("amount");
+  if (amountInput && log.amount) amountInput.value = log.amount;
+
+  const tenureSelect = document.getElementById("tenure");
+  if (tenureSelect && log.tenure) tenureSelect.value = log.tenure;
+
+  const kiborInput = document.getElementById("kibor");
+  if (kiborInput && log.kibor !== undefined) kiborInput.value = log.kibor;
+
+  const spreadInput = document.getElementById("spread");
+  if (spreadInput && log.spread !== undefined) spreadInput.value = log.spread;
+
+  if (log.customerType) {
+    setCustomerType(log.customerType);
+  }
+
+  const nameInput = document.getElementById("modalCustomerName");
+  if (nameInput) nameInput.value = log.customerName || "";
+
+  const cnicInput = document.getElementById("modalCustomerCNIC");
+  if (cnicInput) cnicInput.value = log.customerCNIC || "";
+
+  customerDetailsEntered = true;
+
+  if (typeof updateMultiple === 'function') updateMultiple();
+  if (typeof updateLimit === 'function') updateLimit();
+  if (typeof updateRate === 'function') updateRate();
+  if (typeof calculate === 'function') calculate();
+  if (typeof updateDBRStatus === 'function') updateDBRStatus();
+  if (typeof updateSummaryReport === 'function') updateSummaryReport();
+
+  closeModal('logsModal');
+  const summaryBtn = document.getElementById("summaryBtn");
+  if (summaryBtn) {
+    openTab('summaryTab', summaryBtn);
+  }
+}
+
+function pdfCurrency(val) {
+  if (!isFinite(val)) return "PKR 0";
+  return "PKR " + Math.round(val).toLocaleString("en-US");
+}
+
+function updateSummaryReport() {
+  const container = document.getElementById("summaryReportContainer");
+  if (!container) return;
+
+  const modalName = (document.getElementById("modalCustomerName")?.value || "").trim();
+  const modalCNIC = (document.getElementById("modalCustomerCNIC")?.value || "").trim();
+  const custName = modalName || "Valued Customer";
+  const custCNIC = modalCNIC || "Pending Verification";
+
+  const cardName = document.getElementById("summaryCardCustomerName");
+  const cardCNIC = document.getElementById("summaryCardCustomerCNIC");
+  const cardType = document.getElementById("summaryCardCustomerType");
+  if (cardName) cardName.textContent = custName;
+  if (cardCNIC) cardCNIC.textContent = custCNIC;
+  if (cardType) cardType.textContent = customerType === 'staff' ? "Bank Staff (40%)" : "Regular Customer (35%)";
+
+  const income = numberValue(document.getElementById("income") ? document.getElementById("income").value : 0);
+  const amount = numberValue(document.getElementById("amount") ? document.getElementById("amount").value : 0);
+  const tenure = parseInt(document.getElementById("tenure") ? document.getElementById("tenure").value : 0, 10) || 0;
+  const kibor = parseFloat(document.getElementById("kibor") ? document.getElementById("kibor").value : 0) || 0;
+  const spread = parseFloat(document.getElementById("spread") ? document.getElementById("spread").value : 0) || 0;
+  const totalRate = kibor + spread;
+
+  let installment = installmentValue;
+  if (installment <= 0 && amount > 0 && tenure > 0 && totalRate > 0) {
+    installment = PMT(amount, totalRate, tenure);
+  }
+  const totalPayable = installment > 0 && tenure > 0 ? installment * tenure : 0;
+  const totalProfit = totalPayable > amount ? totalPayable - amount : 0;
+
+  const threshold = getThreshold();
+  const otherTotal = selectedEMITypes.reduce((sum, type) => sum + getEMIValue(type, appliedEMIValues[type]), 0);
+  const totalObligations = installment + otherTotal;
+  const maxAllowable = income * (threshold / 100);
+  const dbrRatio = income > 0 ? (totalObligations / income) * 100 : 0;
+  const isWithinDBR = dbrRatio <= threshold;
+  const headroom = maxAllowable - totalObligations;
+
+  const today = new Date();
+  const dateStr = today.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+  const catText = customerType === 'staff' ? "Bank Staff (40% Ceiling)" : "Regular Customer (35% Ceiling)";
+
+  if (income <= 0 || installment <= 0) {
+    container.innerHTML = `
+      <div class="report-title">
+        <span>Executive Assessment Summary</span>
+        <span class="report-badge" style="background:#e8f4fd;color:#075cae;border:1px solid #c9e2f8">Tawarruq</span>
+      </div>
+      <div class="summary-meta-grid">
+        <div class="summary-meta-item">
+          <div class="summary-meta-label">Customer Name</div>
+          <div class="summary-meta-val">${custName}</div>
+        </div>
+        <div class="summary-meta-item">
+          <div class="summary-meta-label">CNIC Number</div>
+          <div class="summary-meta-val">${custCNIC}</div>
+        </div>
+        <div class="summary-meta-item">
+          <div class="summary-meta-label">Classification</div>
+          <div class="summary-meta-val">${catText}</div>
+        </div>
+        <div class="summary-meta-item">
+          <div class="summary-meta-label">Date</div>
+          <div class="summary-meta-val">${dateStr}</div>
+        </div>
+      </div>
+      <div style="background:#edf7ff;border:1px solid #cfe5f8;border-radius:10px;padding:16px;text-align:center;color:#245888;font-size:11px;line-height:1.5">
+        <div style="font-size:22px;margin-bottom:6px">📋</div>
+        <strong>Awaiting Income &amp; Installment Details</strong><br>
+        Please enter Net Monthly Income in <strong>Income</strong> tab and calculate installment in <strong>Installment</strong> tab to generate the full financial assessment summary.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="report-title">
+      <span>Executive Assessment Summary</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button type="button" onclick="openCustomerDetailsModal()" style="border:0;background:#edf6fd;color:#075cae;font-size:10px;font-weight:700;padding:4px 8px;border-radius:6px;cursor:pointer" title="Edit Customer Details">✎ Edit Customer</button>
+        <span class="report-badge" style="background:#e8f4fd;color:#075cae;border:1px solid #c9e2f8">Tawarruq Finance</span>
+      </div>
+    </div>
+
+    <!-- Customer Meta Card -->
+    <div class="summary-meta-grid">
+      <div class="summary-meta-item">
+        <div class="summary-meta-label">Customer Name</div>
+        <div class="summary-meta-val">${custName}</div>
+      </div>
+      <div class="summary-meta-item">
+        <div class="summary-meta-label">CNIC Number</div>
+        <div class="summary-meta-val">${custCNIC}</div>
+      </div>
+      <div class="summary-meta-item">
+        <div class="summary-meta-label">Classification</div>
+        <div class="summary-meta-val">${catText}</div>
+      </div>
+      <div class="summary-meta-item">
+        <div class="summary-meta-label">Assessment Date</div>
+        <div class="summary-meta-val">${dateStr}</div>
+      </div>
+    </div>
+
+    <!-- 1. Income Assessment -->
+    <div class="summary-section">
+      <div class="summary-section-title"><span>◉</span> 1. Income Assessment</div>
+      <table class="summary-data-table">
+        <tr><td>Net Monthly Income</td><td>${pkr(income)}</td></tr>
+        <tr><td>Applicable Multiple</td><td>${multiple}× ${manualMode ? '(Manual)' : '(Standard)'}</td></tr>
+        <tr><td>Maximum Allowable Financing Limit</td><td style="color:#087857">${pkr(income * multiple)}</td></tr>
+      </table>
+    </div>
+
+    <!-- 2. Financing Terms -->
+    <div class="summary-section">
+      <div class="summary-section-title"><span>▣</span> 2. Financing &amp; Repayment Terms</div>
+      <table class="summary-data-table">
+        <tr><td>Requested Financing Amount</td><td>${pkr(amount)}</td></tr>
+        <tr><td>Financing Tenure</td><td>${tenure} Months</td></tr>
+        <tr><td>Benchmark KIBOR Rate</td><td>${kibor.toFixed(2)}% p.a.</td></tr>
+        <tr><td>Bank Spread Rate</td><td>${spread.toFixed(2)}% p.a.</td></tr>
+        <tr><td>Effective Total Profit Rate</td><td style="color:#075cae">${totalRate.toFixed(2)}% p.a.</td></tr>
+        <tr><td style="font-weight:700;color:#173b60">Monthly Installment (PMT)</td><td style="font-size:13px;color:#087857;font-weight:800">${pkr(installment)}</td></tr>
+        <tr><td>Total Profit Amount</td><td>${pkr(totalProfit)}</td></tr>
+        <tr><td>Total Deferred Sale Price</td><td style="font-weight:800">${pkr(totalPayable)}</td></tr>
+      </table>
+    </div>
+
+    <!-- 3. Debt Burden Evaluation -->
+    <div class="summary-section">
+      <div class="summary-section-title"><span>▥</span> 3. Debt Burden Ratio (DBR) Analysis</div>
+      <table class="summary-data-table">
+        <tr><td>Main Financing Monthly Installment</td><td>${pkr(installment)}</td></tr>
+        <tr>
+          <td>Other Monthly Liabilities</td>
+          <td>${pkr(otherTotal)}${selectedEMITypes.length > 0 ? `<div style="display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px;margin-top:3px">${selectedEMITypes.map(t => `<span style="font-size:8.5px;padding:2px 6px;border-radius:5px;background:#edf2f7;color:#39546f;font-weight:600">${EMI_TYPES[t].title}: ${pkr(getEMIValue(t, appliedEMIValues[t]))}</span>`).join('')}</div>` : ''}</td>
+        </tr>
+        <tr><td style="font-weight:700">Total Monthly Debt Obligations</td><td style="font-weight:800;color:#173b60">${pkr(totalObligations)}</td></tr>
+        <tr><td>Permissible Obligation Ceiling (${threshold}%)</td><td>${pkr(maxAllowable)}</td></tr>
+        <tr>
+          <td style="font-weight:700">Calculated Debt Burden Ratio</td>
+          <td>
+            <span class="dbr-status-pill ${isWithinDBR ? 'status-safe' : 'status-danger'}" style="font-size:9.5px;padding:3px 8px;margin:0;display:inline-block">
+              ${dbrRatio.toFixed(2)}% (${isWithinDBR ? 'Within Limit' : 'Exceeds Ceiling'})
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td>${isWithinDBR ? 'Remaining Allowable Headroom' : 'Excess Over Permissible Ceiling'}</td>
+          <td style="color:${isWithinDBR ? '#087857' : '#c02626'};font-weight:800">${pkr(Math.abs(headroom))}</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Tentative Notice -->
+    <div class="summary-disclaimer">
+      <strong>Tentative &amp; Indicative Assessment:</strong> This summary is prepared based on customer-provided declarations for Shariah-compliant Personal Financing (Tawarruq). The final repayment terms, benchmark KIBOR, and disbursement remain subject to formal credit approval and verification.
+    </div>
+
+    <!-- Single Prominent Share Button -->
+    <div style="margin-top:16px">
+      <button class="primary-btn" onclick="shareSummaryAssessmentSheet()" style="background:#075cae;height:48px;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;box-shadow:0 4px 14px rgba(7,92,174,.20)">
+        <span style="font-size:16px">↗</span> Share Assessment Sheet (A4 PDF)
+      </button>
+    </div>
+  `;
+}
+
+async function shareSummaryAssessmentSheet() {
+  const modalName = (document.getElementById("modalCustomerName")?.value || "").trim();
+  const modalCNIC = (document.getElementById("modalCustomerCNIC")?.value || "").trim();
+  const custName = modalName || "Valued Customer";
+  const custCNIC = modalCNIC || "Pending Verification";
+
+  const income = numberValue(document.getElementById("income")?.value);
+  const amount = numberValue(document.getElementById("amount")?.value);
+  const tenure = parseInt(document.getElementById("tenure")?.value, 10) || 0;
+  const kibor = parseFloat(document.getElementById("kibor")?.value) || 0;
+  const spread = parseFloat(document.getElementById("spread")?.value) || 0;
+  const totalRate = kibor + spread;
+  const installment = installmentValue || PMT(amount, totalRate, tenure);
+
+  if (income <= 0 || installment <= 0) {
+    alert("Please enter Net Monthly Income and calculate installment first before sharing the assessment sheet.");
+    return;
+  }
+
+  if (modalName && modalCNIC) {
+    recordAssessmentLog(modalName, modalCNIC);
+  }
+
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    alert("PDF generator is loading. Please try again in a moment.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+
+  const otherTotal = selectedEMITypes.reduce((sum, type) => sum + getEMIValue(type, appliedEMIValues[type]), 0);
+  const totalObligations = installment + otherTotal;
+  const threshold = getThreshold();
+  const maxAllowable = income * (threshold / 100);
+  const dbrRatio = income > 0 ? (totalObligations / income) * 100 : 0;
+  const isWithin = dbrRatio <= threshold;
+  const headroom = maxAllowable - totalObligations;
+  const today = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+
+  // 1. Header Banner
+  doc.setFillColor(7, 92, 174); // #075cae
+  doc.rect(0, 0, 210, 24, "F");
+  
+  // Emerald accent stripe
+  doc.setFillColor(8, 120, 87); // #087857
+  doc.rect(0, 24, 210, 1.5, "F");
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(13);
+  doc.setFont("helvetica", "bold");
+  doc.text("ISLAMIC PERSONAL FINANCE - ASSESSMENT SUMMARY", 14, 11);
+  doc.setFontSize(8.5);
+  doc.setFont("helvetica", "normal");
+  doc.text("Mode of Financing: Tawarruq (Commodity Murabaha) | Tentative Repayment Assessment", 14, 18);
+
+  // 2. Customer Information AutoTable
+  doc.autoTable({
+    startY: 29,
+    head: [[
+      { content: "Customer Name", styles: { halign: "left" } },
+      { content: "CNIC Number", styles: { halign: "center" } },
+      { content: "Customer Classification", styles: { halign: "center" } },
+      { content: "Assessment Date", styles: { halign: "right" } }
+    ]],
+    body: [[
+      { content: custName, styles: { halign: "left", fontStyle: "bold" } },
+      { content: custCNIC, styles: { halign: "center", fontStyle: "bold" } },
+      { content: customerType === 'staff' ? "Bank Staff (40% Ceiling)" : "Regular Customer (35% Ceiling)", styles: { halign: "center", fontStyle: "bold" } },
+      { content: today, styles: { halign: "right", fontStyle: "bold" } }
+    ]],
+    theme: "plain",
+    styles: {
+      fontSize: 8.5,
+      textColor: [23, 59, 96],
+      cellPadding: { top: 2.5, bottom: 2.5, left: 3, right: 3 },
+      lineColor: [217, 231, 242],
+      lineWidth: 0.25,
+      font: "helvetica"
+    },
+    headStyles: {
+      fillColor: [241, 246, 252],
+      textColor: [95, 118, 140],
+      fontSize: 7.5,
+      fontStyle: "bold"
+    },
+    bodyStyles: {
+      fillColor: [255, 255, 255]
+    },
+    columnStyles: {
+      0: { cellWidth: 55 },
+      1: { cellWidth: 42 },
+      2: { cellWidth: 50 },
+      3: { cellWidth: 35 }
+    },
+    margin: { left: 14, right: 14 }
+  });
+
+  // 3. Income Assessment Table
+  doc.autoTable({
+    startY: doc.lastAutoTable.finalY + 4.5,
+    head: [[
+      { content: "1. Income Assessment Parameter", styles: { halign: "left" } },
+      { content: "Financial Figure", styles: { halign: "right" } }
+    ]],
+    body: [
+      ["Net Monthly Income", pdfCurrency(income)],
+      ["Applicable Income Multiple", `${multiple}x ${manualMode ? '(Manual Multiple)' : '(Standard Matrix)'}`],
+      ["Maximum Allowable Financing Limit", pdfCurrency(income * multiple)]
+    ],
+    theme: "grid",
+    headStyles: {
+      fillColor: [7, 92, 174],
+      textColor: 255,
+      fontSize: 8.5,
+      fontStyle: "bold",
+      cellPadding: { top: 3, bottom: 3, left: 3.5, right: 3.5 }
+    },
+    bodyStyles: {
+      textColor: [23, 50, 79],
+      fontSize: 8.5,
+      font: "helvetica",
+      cellPadding: { top: 2.5, bottom: 2.5, left: 3.5, right: 3.5 }
+    },
+    alternateRowStyles: {
+      fillColor: [248, 251, 254]
+    },
+    columnStyles: {
+      0: { cellWidth: 115, halign: "left" },
+      1: { cellWidth: 67, halign: "right", fontStyle: "bold" }
+    },
+    styles: {
+      lineColor: [218, 230, 242],
+      lineWidth: 0.2
+    },
+    margin: { left: 14, right: 14 }
+  });
+
+  // 4. Financing Terms & Repayment Table
+  doc.autoTable({
+    startY: doc.lastAutoTable.finalY + 4.5,
+    head: [[
+      { content: "2. Financing Terms & Repayment Schedule", styles: { halign: "left" } },
+      { content: "Term / Amount", styles: { halign: "right" } }
+    ]],
+    body: [
+      ["Requested Financing Amount", pdfCurrency(amount)],
+      ["Financing Tenure", `${tenure} Months`],
+      ["Benchmark KIBOR Rate", `${kibor.toFixed(2)}% p.a.`],
+      ["Bank Profit Spread Rate", `${spread.toFixed(2)}% p.a.`],
+      ["Effective Total Profit Rate", `${totalRate.toFixed(2)}% p.a.`],
+      ["Monthly Installment (PMT)", pdfCurrency(installment)],
+      ["Total Estimated Profit", pdfCurrency(totalProfit)],
+      ["Total Deferred Selling Price (Principal + Profit)", pdfCurrency(totalPayable)]
+    ],
+    theme: "grid",
+    headStyles: {
+      fillColor: [23, 59, 96],
+      textColor: 255,
+      fontSize: 8.5,
+      fontStyle: "bold",
+      cellPadding: { top: 3, bottom: 3, left: 3.5, right: 3.5 }
+    },
+    bodyStyles: {
+      textColor: [23, 50, 79],
+      fontSize: 8.5,
+      font: "helvetica",
+      cellPadding: { top: 2.5, bottom: 2.5, left: 3.5, right: 3.5 }
+    },
+    alternateRowStyles: {
+      fillColor: [248, 251, 254]
+    },
+    columnStyles: {
+      0: { cellWidth: 115, halign: "left" },
+      1: { cellWidth: 67, halign: "right", fontStyle: "bold" }
+    },
+    styles: {
+      lineColor: [218, 230, 242],
+      lineWidth: 0.2
+    },
+    margin: { left: 14, right: 14 }
+  });
+
+  // 5. Debt Burden Ratio (DBR) Table
+  doc.autoTable({
+    startY: doc.lastAutoTable.finalY + 4.5,
+    head: [[
+      { content: "3. Debt Burden Ratio (DBR) Evaluation", styles: { halign: "left" } },
+      { content: "Assessment Metric", styles: { halign: "right" } }
+    ]],
+    body: [
+      ["Main Financing Monthly Installment", pdfCurrency(installment)],
+      ["Other Monthly Liabilities / EMIs", pdfCurrency(otherTotal)],
+      ["Total Monthly Debt Obligations", pdfCurrency(totalObligations)],
+      [`Permissible Obligation Ceiling (${threshold}%)`, pdfCurrency(maxAllowable)],
+      ["Calculated Debt Burden Ratio (DBR)", `${dbrRatio.toFixed(2)}%`],
+      ["SBP Regulatory Compliance Status", isWithin ? `PASS (Within ${threshold}% Limit)` : `FAIL (Exceeds by ${(dbrRatio - threshold).toFixed(1)}%)`],
+      [isWithin ? "Available Monthly Headroom" : "Excess Over Permissible Limit", pdfCurrency(Math.abs(headroom))]
+    ],
+    theme: "grid",
+    headStyles: {
+      fillColor: [8, 120, 87],
+      textColor: 255,
+      fontSize: 8.5,
+      fontStyle: "bold",
+      cellPadding: { top: 3, bottom: 3, left: 3.5, right: 3.5 }
+    },
+    bodyStyles: {
+      textColor: [23, 50, 79],
+      fontSize: 8.5,
+      font: "helvetica",
+      cellPadding: { top: 2.5, bottom: 2.5, left: 3.5, right: 3.5 }
+    },
+    alternateRowStyles: {
+      fillColor: [248, 251, 254]
+    },
+    columnStyles: {
+      0: { cellWidth: 115, halign: "left" },
+      1: { cellWidth: 67, halign: "right", fontStyle: "bold" }
+    },
+    styles: {
+      lineColor: [218, 230, 242],
+      lineWidth: 0.2
+    },
+    margin: { left: 14, right: 14 }
+  });
+
+  // 6. Disclaimer Note
+  const finalY = doc.lastAutoTable.finalY + 4.5;
+  doc.setFillColor(253, 251, 232);
+  doc.setDrawColor(241, 228, 163);
+  doc.roundedRect(14, finalY, 182, 13, 2, 2, "FD");
+  doc.setTextColor(112, 88, 18);
+  doc.setFontSize(7.5);
+  doc.setFont("helvetica", "normal");
+  doc.text("Important Notice: This assessment summary is indicative and tentative. Final repayment terms, benchmark KIBOR, and financing disbursement remain subject to formal bank approval, documentation verification, and prevailing rates.", 18, finalY + 5.5, { maxWidth: 174 });
+
+  // 7. Signature lines
+  const sigY = finalY + 23;
+  doc.setDrawColor(180, 195, 210);
+  doc.setLineWidth(0.4);
+  doc.line(20, sigY, 82, sigY);
+  doc.line(128, sigY, 190, sigY);
+  doc.setTextColor(100, 120, 140);
+  doc.setFontSize(8);
+  doc.text("Relationship Manager / Officer", 27, sigY + 4.5);
+  doc.text("Customer Acknowledgment", 137, sigY + 4.5);
+
+  const safeName = custName.replace(/[^a-zA-Z0-9]/g, '_');
+  const fileName = `Assessment-Summary-${safeName}.pdf`;
+
+  // Base64 PDF generation
+  const pdfDataUri = doc.output('datauristring');
+  const base64Data = pdfDataUri.split(',')[1];
+
+  // 1. Android APK Native Bridge (FileProvider + Intent.ACTION_SEND + ClipData)
+  if (window.Android && typeof window.Android.sharePdf === 'function') {
+    try {
+      window.Android.sharePdf(base64Data, fileName, 'application/pdf');
+      return;
+    } catch (androidErr) {
+      console.warn("Android native bridge failed, trying Capacitor/Web Share fallback", androidErr);
+    }
+  }
+
+  // 2. Capacitor Official Plugins Fallback (Filesystem + Share)
+  if (window.Capacitor && window.Capacitor.Plugins) {
+    const { Share, Filesystem } = window.Capacitor.Plugins;
+    if (Share && typeof Share.share === 'function') {
+      try {
+        let fileUri = '';
+        if (Filesystem && typeof Filesystem.writeFile === 'function') {
+          const writeRes = await Filesystem.writeFile({
+            path: fileName,
+            data: base64Data,
+            directory: 'CACHE'
+          });
+          fileUri = writeRes && writeRes.uri ? writeRes.uri : '';
+        }
+
+        if (fileUri) {
+          await Share.share({
+            title: `Assessment Summary - ${custName}`,
+            text: `Islamic Personal Finance Assessment Summary Sheet for ${custName} (CNIC: ${custCNIC})`,
+            url: fileUri,
+            dialogTitle: 'Share Assessment Sheet (A4 PDF)'
+          });
+          return;
+        }
+      } catch (capErr) {
+        console.warn("Capacitor share plugin fallback error", capErr);
+      }
+    }
+  }
+
+  // 3. Mobile Browser Web Share API with File
+  try {
+    const pdfBlob = doc.output('blob');
+    const pdfFile = new File([pdfBlob], fileName, { type: 'application/pdf' });
+    if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+      await navigator.share({
+        title: "Assessment Summary - " + custName,
+        text: "Financial Assessment Summary Sheet for " + custName + " (CNIC: " + custCNIC + ")",
+        files: [pdfFile]
+      });
+      return;
+    }
+  } catch (webShareErr) {
+    if (webShareErr && webShareErr.name === 'AbortError') {
+      return;
+    }
+    console.warn("Web Share files not supported, falling back to download", webShareErr);
+  }
+
+  // 4. Fallback for Desktop Browsers
+  doc.save(fileName);
+}
+
+function showLimit(max) {
+  document.getElementById("popupLimit").textContent = pkr(max);
+  document.getElementById("limitModal").classList.add("show");
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove("show");
+}
+document.querySelectorAll(".modal").forEach(modal => {
+  modal.addEventListener("click", function(event) {
+    if (event.target === modal) modal.classList.remove("show");
+  });
+});
+
+updateMultiple();
+updateLimit();
+updateRate();
+setCustomerType('regular');
+updateDBRStatus();
+updateSummaryReport();
+updateLogsCountBadge();
+</script>
+</body>
+</html>

@@ -18,7 +18,10 @@ body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helv
 .app{width:100%;max-width:540px;min-height:100vh;margin:auto;background:#f7fbff;position:relative;-webkit-transform:translateZ(0);transform:translateZ(0);contain:layout style}
 button,input,select,.tab,.action-btn,.primary-btn,.manual-btn,.preview-tool-btn{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .header{padding:20px 18px 17px;background:linear-gradient(135deg,#075cae,#0b78d0);color:white}
-.header-row{display:flex;align-items:center;gap:13px}
+.header-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.header-logs-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.32);border-radius:9px;color:#fff;font-family:inherit;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap;user-select:none;-webkit-user-select:none;transition:background .15s ease;flex-shrink:0}
+.header-logs-btn:active,.header-logs-btn:hover{background:rgba(255,255,255,.28)}
+.logs-badge{background:#fff;color:#075cae;font-size:9.5px;font-weight:800;padding:1px 5px;border-radius:10px;line-height:1.2}
 .logo{width:43px;height:43px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.20);font-size:20px;font-weight:800}
 .header h1{margin:0;font-size:18px;line-height:1.25;font-weight:800}
 .header p{margin:4px 0 0;font-size:10px;color:rgba(255,255,255,.76)}
@@ -156,6 +159,33 @@ input::placeholder{color:#a8b5c1;font-weight:400}
 .modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(12,32,54,.68);padding:14px;align-items:center;justify-content:center;-webkit-transform:translateZ(0);transform:translateZ(0)}
 .modal.show{display:flex}
 .modal-box{width:100%;max-width:420px;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;background:white;border-radius:16px;padding:20px;box-shadow:0 16px 45px rgba(0,0,0,.20);transform:translateZ(0);will-change:transform,opacity}
+.logs-modal-box{width:100%;max-width:480px;max-height:88vh;display:flex;flex-direction:column;background:#fff;border-radius:16px;box-shadow:0 16px 45px rgba(0,0,0,.22);overflow:hidden;padding:0}
+.logs-modal-header{padding:15px 16px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eef4f9;background:#f8fbfe}
+.logs-modal-title{font-size:15px;font-weight:800;color:#173b60;display:flex;align-items:center;gap:7px}
+.logs-modal-tools{padding:10px 16px;display:flex;gap:8px;align-items:center;background:#fff;border-bottom:1px solid #eef4f9}
+.logs-search-input{flex:1;height:36px;border:1px solid #dce8f2;border-radius:8px;padding:0 11px;font-size:12px;color:#173b60;background:#fbfdff;outline:none}
+.logs-search-input:focus{border-color:#76b4e5}
+.logs-clear-btn{height:36px;padding:0 11px;border:1px solid #fed7d7;background:#fff5f5;color:#c53030;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+.logs-clear-btn:hover{background:#fed7d7}
+.logs-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 16px;display:flex;flex-direction:column;gap:10px;min-height:160px;max-height:58vh}
+.log-item-card{background:#fff;border:1px solid #dce8f2;border-radius:12px;padding:12px 13px;box-shadow:0 2px 8px rgba(29,76,115,.04);transition:border-color .15s}
+.log-item-card:hover{border-color:#b8d6f0}
+.log-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
+.log-cust-name{font-size:13px;font-weight:800;color:#173b60}
+.log-date{font-size:10px;color:#8296a8;font-weight:500;white-space:nowrap}
+.log-cnic-row{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:8px;font-size:11px}
+.log-cnic-val{color:#3f5872;font-weight:700;font-family:monospace;letter-spacing:.3px}
+.log-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:#f6f9fc;border-radius:8px;padding:8px 9px;margin-bottom:8px}
+.log-grid-cell{display:flex;flex-direction:column}
+.log-grid-label{font-size:8.5px;color:#74899d;font-weight:600;text-transform:uppercase}
+.log-grid-val{font-size:11px;color:#173b60;font-weight:800;margin-top:2px}
+.log-card-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:7px;border-top:1px dashed #e9f0f6}
+.log-load-btn{padding:5px 12px;border:0;background:#075cae;color:#fff;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer}
+.log-load-btn:hover{background:#064d91}
+.log-del-btn{padding:5px 8px;border:0;background:transparent;color:#9aaec0;font-size:13px;cursor:pointer}
+.log-del-btn:hover{color:#e53e3e}
+.logs-empty{text-align:center;padding:32px 16px;color:#7e93a6}
+.logs-empty-icon{font-size:32px;margin-bottom:8px;opacity:.7}
 .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .modal-head h2{margin:0;font-size:17px;color:#173b60;font-weight:800}
 .close{width:32px;height:32px;border:0;border-radius:50%;background:#f0f4f7;color:#687b8d;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
@@ -232,8 +262,18 @@ input::placeholder{color:#a8b5c1;font-weight:400}
 <div class="app">
 <header class="header">
   <div class="header-row">
-    <div class="logo">☪</div>
-    <div><h1>Islamic Personal Finance</h1><p>Installment &amp; DBR Calculator</p></div>
+    <div style="display:flex;align-items:center;gap:11px;min-width:0">
+      <div class="logo">☪</div>
+      <div style="min-width:0">
+        <h1 style="font-size:17px">Islamic Personal Finance</h1>
+        <p>Installment &amp; DBR Calculator</p>
+      </div>
+    </div>
+    <button type="button" class="header-logs-btn" onclick="openLogsModal()" title="View Assessment Logs">
+      <span>📋</span>
+      <span>Logs</span>
+      <span class="logs-badge" id="headerLogsBadge" style="display:none">0</span>
+    </button>
   </div>
 </header>
 
@@ -401,6 +441,24 @@ input::placeholder{color:#a8b5c1;font-weight:400}
   <button class="primary-btn" onclick="saveCustomerDetailsAndShowSummary()" style="background:#075cae;font-size:13px;font-weight:800;height:44px">
     Generate Summary Report ➔
   </button>
+</div></div>
+
+<!-- Assessment Logs Modal -->
+<div id="logsModal" class="modal"><div class="logs-modal-box">
+  <div class="logs-modal-header">
+    <div class="logs-modal-title">
+      <span style="font-size:16px">📋</span>
+      <span>Assessment Logs (<span id="logsTotalCount">0</span>)</span>
+    </div>
+    <button type="button" class="close" onclick="closeModal('logsModal')">×</button>
+  </div>
+  <div class="logs-modal-tools">
+    <input type="text" id="logsSearchInput" class="logs-search-input" placeholder="🔍 Search by customer name or CNIC..." oninput="filterLogsList(this.value)">
+    <button type="button" class="logs-clear-btn" onclick="clearAllLogs()" title="Clear all recorded assessment logs">Clear All</button>
+  </div>
+  <div class="logs-list" id="logsListContainer">
+    <!-- Populated dynamically -->
+  </div>
 </div></div>
 
 <div id="otherEMISelectorModal" class="modal"><div class="modal-box">
@@ -892,6 +950,298 @@ function saveCustomerDetailsAndShowSummary() {
   closeModal("customerDetailsModal");
   openTab('summaryTab', document.getElementById("summaryBtn"));
   updateSummaryReport();
+  recordAssessmentLog(name, cnic);
+}
+
+// ============================================================
+// ASSESSMENT LOGS MANAGEMENT (PERSISTENT HISTORY)
+// ============================================================
+const LOGS_STORAGE_KEY = 'islamic_finance_assessment_logs';
+
+function getAssessmentLogs() {
+  try {
+    const raw = localStorage.getItem(LOGS_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    console.error("Error reading assessment logs:", e);
+    return [];
+  }
+}
+
+function saveAssessmentLogs(logs) {
+  try {
+    localStorage.setItem(LOGS_STORAGE_KEY, JSON.stringify(logs));
+    updateLogsCountBadge();
+  } catch (e) {
+    console.error("Error saving assessment logs:", e);
+  }
+}
+
+function updateLogsCountBadge() {
+  const logs = getAssessmentLogs();
+  const count = logs.length;
+  const badge = document.getElementById("headerLogsBadge");
+  const totalCountEl = document.getElementById("logsTotalCount");
+  if (totalCountEl) totalCountEl.textContent = count;
+  if (badge) {
+    if (count > 0) {
+      badge.textContent = count > 99 ? "99+" : count;
+      badge.style.display = "inline-block";
+    } else {
+      badge.style.display = "none";
+    }
+  }
+}
+
+function recordAssessmentLog(custName, custCNIC) {
+  const name = (custName || (document.getElementById("modalCustomerName")?.value || "")).trim();
+  const cnic = (custCNIC || (document.getElementById("modalCustomerCNIC")?.value || "")).trim();
+  if (!name || !cnic) return;
+
+  const income = numberValue(document.getElementById("income") ? document.getElementById("income").value : 0);
+  const amount = numberValue(document.getElementById("amount") ? document.getElementById("amount").value : 0);
+  const tenure = parseInt(document.getElementById("tenure") ? document.getElementById("tenure").value : 0, 10) || 0;
+  const kibor = parseFloat(document.getElementById("kibor") ? document.getElementById("kibor").value : 0) || 0;
+  const spread = parseFloat(document.getElementById("spread") ? document.getElementById("spread").value : 0) || 0;
+  const totalRate = kibor + spread;
+
+  let installment = installmentValue;
+  if (installment <= 0 && amount > 0 && tenure > 0 && totalRate > 0) {
+    installment = PMT(amount, totalRate, tenure);
+  }
+
+  const threshold = getThreshold();
+  const otherTotal = selectedEMITypes.reduce((sum, type) => sum + getEMIValue(type, appliedEMIValues[type]), 0);
+  const totalObligations = installment + otherTotal;
+  const maxAllowable = income * (threshold / 100);
+  const dbrRatio = income > 0 ? (totalObligations / income) * 100 : 0;
+  const isWithinDBR = dbrRatio <= threshold;
+  const headroom = maxAllowable - totalObligations;
+
+  const now = new Date();
+  const dateFormatted = now.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+  const timeFormatted = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true });
+
+  const logEntry = {
+    id: "log_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
+    timestamp: now.toISOString(),
+    displayDate: `${dateFormatted}, ${timeFormatted}`,
+    customerName: name,
+    customerCNIC: cnic,
+    customerType: customerType,
+    income: income,
+    amount: amount,
+    tenure: tenure,
+    kibor: kibor,
+    spread: spread,
+    totalRate: totalRate,
+    installment: installment,
+    otherTotal: otherTotal,
+    totalObligations: totalObligations,
+    dbrRatio: dbrRatio,
+    threshold: threshold,
+    isWithinDBR: isWithinDBR,
+    headroom: headroom
+  };
+
+  const logs = getAssessmentLogs();
+
+  // Deduplicate if identical CNIC and amount within 3 seconds
+  if (logs.length > 0) {
+    const first = logs[0];
+    const diff = Date.now() - new Date(first.timestamp).getTime();
+    if (diff < 4000 && first.customerCNIC === cnic && first.amount === amount) {
+      return;
+    }
+  }
+
+  logs.unshift(logEntry);
+  if (logs.length > 150) logs.length = 150;
+  saveAssessmentLogs(logs);
+
+  const logsModal = document.getElementById("logsModal");
+  if (logsModal && logsModal.classList.contains("show")) {
+    const searchVal = document.getElementById("logsSearchInput")?.value || "";
+    renderLogsList(searchVal);
+  }
+}
+
+function openLogsModal() {
+  const modal = document.getElementById("logsModal");
+  if (!modal) return;
+  const searchInput = document.getElementById("logsSearchInput");
+  if (searchInput) searchInput.value = "";
+  renderLogsList("");
+  updateLogsCountBadge();
+  modal.classList.add("show");
+}
+
+function filterLogsList(searchTerm) {
+  renderLogsList(searchTerm);
+}
+
+function escapeLogHtml(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function renderLogsList(filterTerm) {
+  const container = document.getElementById("logsListContainer");
+  if (!container) return;
+
+  const allLogs = getAssessmentLogs();
+  const term = (filterTerm || "").trim().toLowerCase();
+
+  const filtered = term
+    ? allLogs.filter(log =>
+        (log.customerName && log.customerName.toLowerCase().includes(term)) ||
+        (log.customerCNIC && log.customerCNIC.toLowerCase().includes(term))
+      )
+    : allLogs;
+
+  const totalCountEl = document.getElementById("logsTotalCount");
+  if (totalCountEl) totalCountEl.textContent = allLogs.length;
+
+  if (filtered.length === 0) {
+    if (allLogs.length === 0) {
+      container.innerHTML = `
+        <div class="logs-empty">
+          <div class="logs-empty-icon">📋</div>
+          <strong style="display:block;margin-bottom:5px;color:#173b60;font-size:13px">No Assessment Logs Recorded Yet</strong>
+          <span style="font-size:11px;line-height:1.4">Jab bhi Customer Name aur CNIC enter karke summary generate ki jaegi, to uski mukammal details yahan automatically save ho jaengi.</span>
+        </div>
+      `;
+    } else {
+      container.innerHTML = `
+        <div class="logs-empty">
+          <div class="logs-empty-icon">🔍</div>
+          <strong style="display:block;margin-bottom:5px;color:#173b60;font-size:13px">No Matching Records Found</strong>
+          <span style="font-size:11px">"${escapeLogHtml(term)}" ke liye koi log record nahi mila.</span>
+        </div>
+      `;
+    }
+    return;
+  }
+
+  container.innerHTML = filtered.map(log => {
+    const isStaff = log.customerType === 'staff';
+    const safeName = escapeLogHtml(log.customerName);
+    const safeCNIC = escapeLogHtml(log.customerCNIC);
+    const passStatus = log.isWithinDBR;
+    const dbrText = (log.dbrRatio || 0).toFixed(1) + "%";
+
+    return `
+      <div class="log-item-card" id="${log.id}">
+        <div class="log-card-header">
+          <div style="min-width:0">
+            <span class="log-cust-name">${safeName}</span>
+            <span class="dbr-status-pill ${isStaff ? 'status-safe' : ''}" style="font-size:8.5px;padding:2px 6px;margin-left:6px;background:${isStaff ? '#e6f4ea' : '#eef4fa'};color:${isStaff ? '#0d652d' : '#1d5a8f'}">
+              ${isStaff ? 'Staff (40%)' : 'Regular (35%)'}
+            </span>
+          </div>
+          <span class="log-date">${log.displayDate || ''}</span>
+        </div>
+        <div class="log-cnic-row">
+          <span>CNIC: <span class="log-cnic-val">${safeCNIC}</span></span>
+          <span class="dbr-status-pill ${passStatus ? 'status-safe' : 'status-danger'}" style="font-size:9px;padding:2px 7px">
+            ${dbrText} (${passStatus ? 'Within Limit' : 'Exceeds Ceiling'})
+          </span>
+        </div>
+        <div class="log-grid">
+          <div class="log-grid-cell">
+            <span class="log-grid-label">Financing</span>
+            <span class="log-grid-val">${pkr(log.amount)}</span>
+          </div>
+          <div class="log-grid-cell">
+            <span class="log-grid-label">Installment</span>
+            <span class="log-grid-val" style="color:#075cae">${pkr(log.installment)}/m</span>
+          </div>
+          <div class="log-grid-cell">
+            <span class="log-grid-label">Tenure / Rate</span>
+            <span class="log-grid-val">${log.tenure}m @ ${(log.totalRate || 0).toFixed(1)}%</span>
+          </div>
+        </div>
+        <div class="log-card-footer">
+          <span style="font-size:10.5px;color:#6b8296">Monthly Income: <strong style="color:#173b60">${pkr(log.income)}</strong></span>
+          <div style="display:flex;gap:6px;align-items:center">
+            <button type="button" class="log-del-btn" onclick="deleteAssessmentLog('${log.id}', event)" title="Delete this log record">🗑️</button>
+            <button type="button" class="log-load-btn" onclick="loadLogIntoAssessment('${log.id}')">View Summary ➔</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function deleteAssessmentLog(logId, event) {
+  if (event) event.stopPropagation();
+  let logs = getAssessmentLogs();
+  logs = logs.filter(item => item.id !== logId);
+  saveAssessmentLogs(logs);
+  const searchVal = document.getElementById("logsSearchInput")?.value || "";
+  renderLogsList(searchVal);
+}
+
+function clearAllLogs() {
+  const logs = getAssessmentLogs();
+  if (logs.length === 0) return;
+  if (!confirm("Are you sure you want to clear all assessment logs? This cannot be undone.")) {
+    return;
+  }
+  localStorage.removeItem(LOGS_STORAGE_KEY);
+  updateLogsCountBadge();
+  renderLogsList("");
+}
+
+function loadLogIntoAssessment(logId) {
+  const logs = getAssessmentLogs();
+  const log = logs.find(item => item.id === logId);
+  if (!log) return;
+
+  const incomeInput = document.getElementById("income");
+  if (incomeInput && log.income) incomeInput.value = log.income;
+
+  const amountInput = document.getElementById("amount");
+  if (amountInput && log.amount) amountInput.value = log.amount;
+
+  const tenureSelect = document.getElementById("tenure");
+  if (tenureSelect && log.tenure) tenureSelect.value = log.tenure;
+
+  const kiborInput = document.getElementById("kibor");
+  if (kiborInput && log.kibor !== undefined) kiborInput.value = log.kibor;
+
+  const spreadInput = document.getElementById("spread");
+  if (spreadInput && log.spread !== undefined) spreadInput.value = log.spread;
+
+  if (log.customerType) {
+    setCustomerType(log.customerType);
+  }
+
+  const nameInput = document.getElementById("modalCustomerName");
+  if (nameInput) nameInput.value = log.customerName || "";
+
+  const cnicInput = document.getElementById("modalCustomerCNIC");
+  if (cnicInput) cnicInput.value = log.customerCNIC || "";
+
+  customerDetailsEntered = true;
+
+  if (typeof updateMultiple === 'function') updateMultiple();
+  if (typeof updateLimit === 'function') updateLimit();
+  if (typeof updateRate === 'function') updateRate();
+  if (typeof calculate === 'function') calculate();
+  if (typeof updateDBRStatus === 'function') updateDBRStatus();
+  if (typeof updateSummaryReport === 'function') updateSummaryReport();
+
+  closeModal('logsModal');
+  const summaryBtn = document.getElementById("summaryBtn");
+  if (summaryBtn) {
+    openTab('summaryTab', summaryBtn);
+  }
 }
 
 function pdfCurrency(val) {
@@ -977,7 +1327,10 @@ function updateSummaryReport() {
   container.innerHTML = `
     <div class="report-title">
       <span>Executive Assessment Summary</span>
-      <span class="report-badge" style="background:#e8f4fd;color:#075cae;border:1px solid #c9e2f8">Tawarruq Finance</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button type="button" onclick="openCustomerDetailsModal()" style="border:0;background:#edf6fd;color:#075cae;font-size:10px;font-weight:700;padding:4px 8px;border-radius:6px;cursor:pointer" title="Edit Customer Details">✎ Edit Customer</button>
+        <span class="report-badge" style="background:#e8f4fd;color:#075cae;border:1px solid #c9e2f8">Tawarruq Finance</span>
+      </div>
     </div>
 
     <!-- Customer Meta Card -->
@@ -1065,7 +1418,7 @@ function updateSummaryReport() {
   `;
 }
 
-function shareSummaryAssessmentSheet() {
+async function shareSummaryAssessmentSheet() {
   const modalName = (document.getElementById("modalCustomerName")?.value || "").trim();
   const modalCNIC = (document.getElementById("modalCustomerCNIC")?.value || "").trim();
   const custName = modalName || "Valued Customer";
@@ -1082,6 +1435,10 @@ function shareSummaryAssessmentSheet() {
   if (income <= 0 || installment <= 0) {
     alert("Please enter Net Monthly Income and calculate installment first before sharing the assessment sheet.");
     return;
+  }
+
+  if (modalName && modalCNIC) {
+    recordAssessmentLog(modalName, modalCNIC);
   }
 
   if (!window.jspdf || !window.jspdf.jsPDF) {
@@ -1312,35 +1669,70 @@ function shareSummaryAssessmentSheet() {
   const safeName = custName.replace(/[^a-zA-Z0-9]/g, '_');
   const fileName = `Assessment-Summary-${safeName}.pdf`;
 
-  // 1. Android APK Native Bridge (FileProvider + Share Sheet)
+  // Base64 PDF generation
+  const pdfDataUri = doc.output('datauristring');
+  const base64Data = pdfDataUri.split(',')[1];
+
+  // 1. Android APK Native Bridge (FileProvider + Intent.ACTION_SEND + ClipData)
   if (window.Android && typeof window.Android.sharePdf === 'function') {
-    const pdfDataUri = doc.output('datauristring');
-    const base64Data = pdfDataUri.split(',')[1];
-    window.Android.sharePdf(base64Data, fileName, 'application/pdf');
-    return;
+    try {
+      window.Android.sharePdf(base64Data, fileName, 'application/pdf');
+      return;
+    } catch (androidErr) {
+      console.warn("Android native bridge failed, trying Capacitor/Web Share fallback", androidErr);
+    }
   }
 
-  // 2. Mobile Browser Web Share API with File
+  // 2. Capacitor Official Plugins Fallback (Filesystem + Share)
+  if (window.Capacitor && window.Capacitor.Plugins) {
+    const { Share, Filesystem } = window.Capacitor.Plugins;
+    if (Share && typeof Share.share === 'function') {
+      try {
+        let fileUri = '';
+        if (Filesystem && typeof Filesystem.writeFile === 'function') {
+          const writeRes = await Filesystem.writeFile({
+            path: fileName,
+            data: base64Data,
+            directory: 'CACHE'
+          });
+          fileUri = writeRes && writeRes.uri ? writeRes.uri : '';
+        }
+
+        if (fileUri) {
+          await Share.share({
+            title: `Assessment Summary - ${custName}`,
+            text: `Islamic Personal Finance Assessment Summary Sheet for ${custName} (CNIC: ${custCNIC})`,
+            url: fileUri,
+            dialogTitle: 'Share Assessment Sheet (A4 PDF)'
+          });
+          return;
+        }
+      } catch (capErr) {
+        console.warn("Capacitor share plugin fallback error", capErr);
+      }
+    }
+  }
+
+  // 3. Mobile Browser Web Share API with File
   try {
     const pdfBlob = doc.output('blob');
     const pdfFile = new File([pdfBlob], fileName, { type: 'application/pdf' });
     if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
-      navigator.share({
+      await navigator.share({
         title: "Assessment Summary - " + custName,
         text: "Financial Assessment Summary Sheet for " + custName + " (CNIC: " + custCNIC + ")",
         files: [pdfFile]
-      }).catch(err => {
-        if (err.name !== 'AbortError') {
-          doc.save(fileName);
-        }
       });
       return;
     }
-  } catch (e) {
-    console.warn("Web Share files not supported, falling back to download", e);
+  } catch (webShareErr) {
+    if (webShareErr && webShareErr.name === 'AbortError') {
+      return;
+    }
+    console.warn("Web Share files not supported, falling back to download", webShareErr);
   }
 
-  // 3. Fallback for Desktop Browsers
+  // 4. Fallback for Desktop Browsers
   doc.save(fileName);
 }
 
@@ -1364,6 +1756,7 @@ updateRate();
 setCustomerType('regular');
 updateDBRStatus();
 updateSummaryReport();
+updateLogsCountBadge();
 </script>
 </body>
 </html>

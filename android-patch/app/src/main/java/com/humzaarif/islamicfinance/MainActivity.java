@@ -3,6 +3,8 @@ package com.humzaarif.islamicfinance;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ClipData;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
@@ -12,6 +14,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.print.PrintAttributes;
 import android.print.PrintManager;
+import android.os.Build;
+import android.os.Environment;
+import android.content.ContentValues;
+import android.provider.MediaStore;
+import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
@@ -20,11 +27,7 @@ import com.getcapacitor.BridgeActivity;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import android.os.Build;
-import android.os.Environment;
-import android.content.ContentValues;
-import android.provider.MediaStore;
-import android.widget.Toast;
+import java.util.List;
 
 public class MainActivity extends BridgeActivity {
 
@@ -33,17 +36,29 @@ public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        attachBridgeInterface();
+    }
 
-        // JavaScript se native Android functions access karne ke liye
-        getBridge()
-                .getWebView()
-                .addJavascriptInterface(new AndroidBridge(), "Android");
+    @Override
+    public void onResume() {
+        super.onResume();
+        attachBridgeInterface();
+    }
+
+    private void attachBridgeInterface() {
+        try {
+            if (getBridge() != null && getBridge().getWebView() != null) {
+                getBridge().getWebView().addJavascriptInterface(new AndroidBridge(), "Android");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private class AndroidBridge {
 
         // ============================================================
-        // PDF SHARE
+        // NATIVE PDF SHARE VIA ANDROID SHARE SHEET (A4 PDF)
         // ============================================================
 
         @JavascriptInterface
@@ -53,69 +68,74 @@ public class MainActivity extends BridgeActivity {
                 String mimeType
         ) {
             try {
+                if (base64 == null || base64.trim().isEmpty()) {
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "PDF content is empty", Toast.LENGTH_SHORT).show());
+                    return;
+                }
+
+                // Strip data URI header if present (e.g., data:application/pdf;base64,...)
+                if (base64.contains(",")) {
+                    base64 = base64.substring(base64.indexOf(",") + 1);
+                }
+                base64 = base64.trim().replaceAll("\\s+", "");
 
                 if (fileName == null || fileName.trim().isEmpty()) {
-                    fileName = "document.pdf";
+                    fileName = "Assessment-Summary.pdf";
+                }
+                if (!fileName.toLowerCase().endsWith(".pdf")) {
+                    fileName += ".pdf";
                 }
 
                 if (mimeType == null || mimeType.trim().isEmpty()) {
                     mimeType = "application/pdf";
                 }
 
-                // Temporary sharing folder
-                File shareDir = new File(
-                        getCacheDir(),
-                        "shared_documents"
-                );
+                // Clean filename
+                String safeFileName = fileName.replaceAll("[^a-zA-Z0-9._-]", "_");
 
+                // Save to cache directory
+                File shareDir = new File(getCacheDir(), "shared_documents");
                 if (!shareDir.exists()) {
                     shareDir.mkdirs();
                 }
 
-                // Safe filename
-                String safeFileName =
-                        fileName.replaceAll(
-                                "[^a-zA-Z0-9._-]",
-                                "_"
-                        );
+                File file = new File(shareDir, safeFileName);
 
-                File file = new File(
-                        shareDir,
-                        safeFileName
-                );
+                // Decode base64 bytes
+                byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
 
-                // Decode Base64 PDF
-                byte[] bytes = Base64.decode(
-                        base64,
-                        Base64.DEFAULT
-                );
-
-                // Save PDF
-                try (FileOutputStream fos =
-                             new FileOutputStream(file)) {
-
+                try (FileOutputStream fos = new FileOutputStream(file)) {
                     fos.write(bytes);
                     fos.flush();
                 }
 
-                // Get secure FileProvider URI
-                Uri uri = FileProvider.getUriForFile(
-                        MainActivity.this,
-                        getPackageName()
-                                + ".fileprovider",
-                        file
-                );
+                // Generate secure FileProvider URI
+                String authority = getPackageName() + ".fileprovider";
+                Uri uri = FileProvider.getUriForFile(MainActivity.this, authority, file);
 
-                // Android native Share Sheet with ClipData permission
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.setType(mimeType);
-                intent.putExtra(Intent.EXTRA_STREAM, uri);
-                intent.setClipData(ClipData.newRawUri("", uri));
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                // Native Android Share Intent
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType(mimeType);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Islamic Personal Finance - Assessment Summary");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, "Assessment Summary Sheet (A4 PDF)");
+                shareIntent.setClipData(ClipData.newUri(getContentResolver(), safeFileName, uri));
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                Intent chooser = Intent.createChooser(intent, "Share PDF");
+                Intent chooser = Intent.createChooser(shareIntent, "Share Assessment Sheet (A4 PDF)");
                 chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                // Explicitly grant read URI permissions to target applications
+                try {
+                    List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(chooser, PackageManager.MATCH_DEFAULT_ONLY);
+                    for (ResolveInfo resolveInfo : resInfoList) {
+                        String targetPackage = resolveInfo.activityInfo.packageName;
+                        grantUriPermission(targetPackage, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
 
                 runOnUiThread(() -> {
                     try {
@@ -128,8 +148,9 @@ public class MainActivity extends BridgeActivity {
 
             } catch (Exception e) {
                 e.printStackTrace();
+                final String msg = e.getMessage() != null ? e.getMessage() : "Unknown error";
                 runOnUiThread(() -> {
-                    Toast.makeText(MainActivity.this, "Share error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Share error: " + msg, Toast.LENGTH_SHORT).show();
                 });
             }
         }
@@ -146,18 +167,22 @@ public class MainActivity extends BridgeActivity {
         ) {
             try {
                 if (fileName == null || fileName.trim().isEmpty()) {
-                    fileName = "Tentative-Amortization-Schedule.pdf";
+                    fileName = "Assessment-Summary.pdf";
                 }
                 if (mimeType == null || mimeType.trim().isEmpty()) {
                     mimeType = "application/pdf";
                 }
+
+                if (base64.contains(",")) {
+                    base64 = base64.substring(base64.indexOf(",") + 1);
+                }
+                base64 = base64.trim().replaceAll("\\s+", "");
 
                 String safeFileName = fileName.replaceAll("[^a-zA-Z0-9._-]", "_");
                 byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
 
                 boolean saved = false;
 
-                // Android 10+ (Q) MediaStore Scoped Storage (No extra dangerous permissions needed)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     ContentValues values = new ContentValues();
                     values.put(MediaStore.MediaColumns.DISPLAY_NAME, safeFileName);
@@ -180,7 +205,6 @@ public class MainActivity extends BridgeActivity {
                     }
                 }
 
-                // Fallback for older Android versions
                 if (!saved) {
                     File downloadsDir = Environment.getExternalStoragePublicDirectory(
                             Environment.DIRECTORY_DOWNLOADS
@@ -200,17 +224,9 @@ public class MainActivity extends BridgeActivity {
                 final String finalName = safeFileName;
                 runOnUiThread(() -> {
                     if (isSaved) {
-                        Toast.makeText(
-                                MainActivity.this,
-                                "PDF saved to Downloads: " + finalName,
-                                Toast.LENGTH_LONG
-                        ).show();
+                        Toast.makeText(MainActivity.this, "PDF saved to Downloads: " + finalName, Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(
-                                MainActivity.this,
-                                "Could not save PDF to Downloads",
-                                Toast.LENGTH_SHORT
-                        ).show();
+                        Toast.makeText(MainActivity.this, "Could not save PDF to Downloads", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -218,11 +234,7 @@ public class MainActivity extends BridgeActivity {
                 e.printStackTrace();
                 final String errMsg = e.getMessage();
                 runOnUiThread(() -> {
-                    Toast.makeText(
-                            MainActivity.this,
-                            "Failed to save file: " + errMsg,
-                            Toast.LENGTH_SHORT
-                    ).show();
+                    Toast.makeText(MainActivity.this, "Failed to save file: " + errMsg, Toast.LENGTH_SHORT).show();
                 });
             }
         }
@@ -236,147 +248,66 @@ public class MainActivity extends BridgeActivity {
                 final String html,
                 final String title
         ) {
-
             runOnUiThread(() -> {
-
                 try {
-
-                    // Purana print WebView clean karein
                     if (printWebView != null) {
-
                         try {
                             printWebView.stopLoading();
                             printWebView.destroy();
                         } catch (Exception ignored) {
                         }
-
                         printWebView = null;
                     }
 
-                    // New hidden WebView
-                    printWebView =
-                            new WebView(MainActivity.this);
-
-                    WebSettings settings =
-                            printWebView.getSettings();
-
+                    printWebView = new WebView(MainActivity.this);
+                    WebSettings settings = printWebView.getSettings();
                     settings.setJavaScriptEnabled(true);
                     settings.setDomStorageEnabled(true);
 
-                    printWebView.setWebViewClient(
-                            new WebViewClient() {
+                    printWebView.setWebViewClient(new WebViewClient() {
+                        @Override
+                        public void onPageFinished(WebView view, String url) {
+                            super.onPageFinished(view, url);
+                            view.postDelayed(() -> {
+                                try {
+                                    PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+                                    if (printManager == null) return;
 
-                                @Override
-                                public void onPageFinished(
-                                        WebView view,
-                                        String url
-                                ) {
+                                    String jobName = (title == null || title.trim().isEmpty()) ? "Assessment Summary" : title.trim();
+                                    android.print.PrintDocumentAdapter adapter = view.createPrintDocumentAdapter(jobName);
 
-                                    super.onPageFinished(
-                                            view,
-                                            url
-                                    );
+                                    PrintAttributes attributes = new PrintAttributes.Builder()
+                                            .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
+                                            .setMinMargins(PrintAttributes.Margins.NO_MARGINS)
+                                            .build();
 
-                                    // Thoda wait taake HTML/CSS properly render ho
-                                    view.postDelayed(() -> {
-
-                                        try {
-
-                                            PrintManager printManager =
-                                                    (PrintManager)
-                                                            getSystemService(
-                                                                    Context.PRINT_SERVICE
-                                                            );
-
-                                            if (printManager == null) {
-                                                return;
-                                            }
-
-                                            String jobName;
-
-                                            if (title == null
-                                                    || title.trim().isEmpty()) {
-
-                                                jobName =
-                                                        "Amortization Sheet";
-
-                                            } else {
-
-                                                jobName =
-                                                        title.trim();
-                                            }
-
-                                            // Android print adapter
-                                            android.print.PrintDocumentAdapter adapter =
-                                                    view.createPrintDocumentAdapter(
-                                                            jobName
-                                                    );
-
-                                            // A4 print settings
-                                            PrintAttributes attributes =
-                                                    new PrintAttributes.Builder()
-                                                            .setMediaSize(
-                                                                    PrintAttributes.MediaSize.ISO_A4
-                                                            )
-                                                            .setMinMargins(
-                                                                    PrintAttributes.Margins.NO_MARGINS
-                                                            )
-                                                            .build();
-
-                                            // Native Android Print dialog
-                                            printManager.print(
-                                                    jobName,
-                                                    adapter,
-                                                    attributes
-                                            );
-
-                                        } catch (Exception e) {
-
-                                            e.printStackTrace();
-
-                                        }
-
-                                    }, 700);
+                                    printManager.print(jobName, adapter, attributes);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-                            }
-                    );
+                            }, 700);
+                        }
+                    });
 
-                    // HTML ko WebView mein load karein
-                    printWebView.loadDataWithBaseURL(
-                            "https://localhost/",
-                            html,
-                            "text/html",
-                            "UTF-8",
-                            null
-                    );
+                    printWebView.loadDataWithBaseURL("https://localhost/", html, "text/html", "UTF-8", null);
 
                 } catch (Exception e) {
-
                     e.printStackTrace();
-
                 }
             });
         }
     }
 
-    // ============================================================
-    // CLEANUP
-    // ============================================================
-
     @Override
     public void onDestroy() {
-
         if (printWebView != null) {
-
             try {
                 printWebView.stopLoading();
                 printWebView.destroy();
             } catch (Exception ignored) {
             }
-
             printWebView = null;
         }
-
         super.onDestroy();
     }
 }
