@@ -39,6 +39,9 @@ jobs:
         run: |
           mkdir -p www
           cp -f index.html www/index.html
+          if [ -f "node_modules/@capacitor/core/dist/capacitor.js" ]; then
+            cp -f node_modules/@capacitor/core/dist/capacitor.js www/capacitor.js
+          fi
 
       - name: Sync Capacitor
         run: npx cap sync android

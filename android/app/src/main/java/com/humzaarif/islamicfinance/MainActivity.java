@@ -3,8 +3,6 @@ package com.humzaarif.islamicfinance;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ClipData;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
@@ -27,7 +25,6 @@ import com.getcapacitor.BridgeActivity;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.List;
 
 public class MainActivity extends BridgeActivity {
 
@@ -36,26 +33,38 @@ public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        attachBridgeInterface();
+        setupAndroidBridge();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        attachBridgeInterface();
+        setupAndroidBridge();
     }
 
-    private void attachBridgeInterface() {
+    private void setupAndroidBridge() {
         try {
             if (getBridge() != null && getBridge().getWebView() != null) {
-                getBridge().getWebView().addJavascriptInterface(new AndroidBridge(), "Android");
+                getBridge().getWebView().addJavascriptInterface(new AndroidBridge(this), "Android");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private class AndroidBridge {
+    // Must be public class for Android WebView reflection engine
+    public static class AndroidBridge {
+
+        private final MainActivity activity;
+
+        public AndroidBridge(MainActivity activity) {
+            this.activity = activity;
+        }
+
+        @JavascriptInterface
+        public boolean isNative() {
+            return true;
+        }
 
         // ============================================================
         // NATIVE PDF SHARE VIA ANDROID SHARE SHEET (A4 PDF)
@@ -67,13 +76,15 @@ public class MainActivity extends BridgeActivity {
                 String fileName,
                 String mimeType
         ) {
+            if (activity == null) return;
+
             try {
                 if (base64 == null || base64.trim().isEmpty()) {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "PDF content is empty", Toast.LENGTH_SHORT).show());
+                    activity.runOnUiThread(() -> Toast.makeText(activity, "PDF content is empty", Toast.LENGTH_SHORT).show());
                     return;
                 }
 
-                // Strip data URI header if present (e.g., data:application/pdf;base64,...)
+                // Strip data URI header if present
                 if (base64.contains(",")) {
                     base64 = base64.substring(base64.indexOf(",") + 1);
                 }
@@ -90,18 +101,15 @@ public class MainActivity extends BridgeActivity {
                     mimeType = "application/pdf";
                 }
 
-                // Clean filename
                 String safeFileName = fileName.replaceAll("[^a-zA-Z0-9._-]", "_");
 
                 // Save to cache directory
-                File shareDir = new File(getCacheDir(), "shared_documents");
+                File shareDir = new File(activity.getCacheDir(), "shared_documents");
                 if (!shareDir.exists()) {
                     shareDir.mkdirs();
                 }
 
                 File file = new File(shareDir, safeFileName);
-
-                // Decode base64 bytes
                 byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
 
                 try (FileOutputStream fos = new FileOutputStream(file)) {
@@ -110,47 +118,36 @@ public class MainActivity extends BridgeActivity {
                 }
 
                 // Generate secure FileProvider URI
-                String authority = getPackageName() + ".fileprovider";
-                Uri uri = FileProvider.getUriForFile(MainActivity.this, authority, file);
+                String authority = activity.getPackageName() + ".fileprovider";
+                Uri uri = FileProvider.getUriForFile(activity, authority, file);
 
                 // Native Android Share Intent
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType(mimeType);
                 shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Islamic Personal Finance - Assessment Summary");
-                shareIntent.putExtra(Intent.EXTRA_TEXT, "Assessment Summary Sheet (A4 PDF)");
-                shareIntent.setClipData(ClipData.newUri(getContentResolver(), safeFileName, uri));
+                shareIntent.putExtra(Intent.EXTRA_TEXT, "Financial Assessment Summary Sheet (A4 PDF)");
+                shareIntent.setClipData(ClipData.newUri(activity.getContentResolver(), safeFileName, uri));
                 shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
                 Intent chooser = Intent.createChooser(shareIntent, "Share Assessment Sheet (A4 PDF)");
                 chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                // Explicitly grant read URI permissions to target activities for maximum compatibility
-                try {
-                    List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(chooser, PackageManager.MATCH_DEFAULT_ONLY);
-                    for (ResolveInfo resolveInfo : resInfoList) {
-                        String targetPackage = resolveInfo.activityInfo.packageName;
-                        grantUriPermission(targetPackage, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-
-                runOnUiThread(() -> {
+                activity.runOnUiThread(() -> {
                     try {
-                        startActivity(chooser);
+                        activity.startActivity(chooser);
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Toast.makeText(MainActivity.this, "Unable to share file: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Unable to share file: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
             } catch (Exception e) {
                 e.printStackTrace();
                 final String msg = e.getMessage() != null ? e.getMessage() : "Unknown error";
-                runOnUiThread(() -> {
-                    Toast.makeText(MainActivity.this, "Share error: " + msg, Toast.LENGTH_SHORT).show();
+                activity.runOnUiThread(() -> {
+                    Toast.makeText(activity, "Share error: " + msg, Toast.LENGTH_SHORT).show();
                 });
             }
         }
@@ -165,6 +162,8 @@ public class MainActivity extends BridgeActivity {
                 String fileName,
                 String mimeType
         ) {
+            if (activity == null) return;
+
             try {
                 if (fileName == null || fileName.trim().isEmpty()) {
                     fileName = "Assessment-Summary.pdf";
@@ -189,13 +188,13 @@ public class MainActivity extends BridgeActivity {
                     values.put(MediaStore.MediaColumns.MIME_TYPE, mimeType);
                     values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
 
-                    Uri uri = getContentResolver().insert(
+                    Uri uri = activity.getContentResolver().insert(
                             MediaStore.Downloads.EXTERNAL_CONTENT_URI,
                             values
                     );
 
                     if (uri != null) {
-                        try (OutputStream os = getContentResolver().openOutputStream(uri)) {
+                        try (OutputStream os = activity.getContentResolver().openOutputStream(uri)) {
                             if (os != null) {
                                 os.write(bytes);
                                 os.flush();
@@ -222,19 +221,19 @@ public class MainActivity extends BridgeActivity {
 
                 final boolean isSaved = saved;
                 final String finalName = safeFileName;
-                runOnUiThread(() -> {
+                activity.runOnUiThread(() -> {
                     if (isSaved) {
-                        Toast.makeText(MainActivity.this, "PDF saved to Downloads: " + finalName, Toast.LENGTH_LONG).show();
+                        Toast.makeText(activity, "PDF saved to Downloads: " + finalName, Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(MainActivity.this, "Could not save PDF to Downloads", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Could not save PDF to Downloads", Toast.LENGTH_SHORT).show();
                     }
                 });
 
             } catch (Exception e) {
                 e.printStackTrace();
                 final String errMsg = e.getMessage();
-                runOnUiThread(() -> {
-                    Toast.makeText(MainActivity.this, "Failed to save file: " + errMsg, Toast.LENGTH_SHORT).show();
+                activity.runOnUiThread(() -> {
+                    Toast.makeText(activity, "Failed to save file: " + errMsg, Toast.LENGTH_SHORT).show();
                 });
             }
         }
@@ -248,29 +247,31 @@ public class MainActivity extends BridgeActivity {
                 final String html,
                 final String title
         ) {
-            runOnUiThread(() -> {
+            if (activity == null) return;
+
+            activity.runOnUiThread(() -> {
                 try {
-                    if (printWebView != null) {
+                    if (activity.printWebView != null) {
                         try {
-                            printWebView.stopLoading();
-                            printWebView.destroy();
+                            activity.printWebView.stopLoading();
+                            activity.printWebView.destroy();
                         } catch (Exception ignored) {
                         }
-                        printWebView = null;
+                        activity.printWebView = null;
                     }
 
-                    printWebView = new WebView(MainActivity.this);
-                    WebSettings settings = printWebView.getSettings();
+                    activity.printWebView = new WebView(activity);
+                    WebSettings settings = activity.printWebView.getSettings();
                     settings.setJavaScriptEnabled(true);
                     settings.setDomStorageEnabled(true);
 
-                    printWebView.setWebViewClient(new WebViewClient() {
+                    activity.printWebView.setWebViewClient(new WebViewClient() {
                         @Override
                         public void onPageFinished(WebView view, String url) {
                             super.onPageFinished(view, url);
                             view.postDelayed(() -> {
                                 try {
-                                    PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+                                    PrintManager printManager = (PrintManager) activity.getSystemService(Context.PRINT_SERVICE);
                                     if (printManager == null) return;
 
                                     String jobName = (title == null || title.trim().isEmpty()) ? "Assessment Summary" : title.trim();
@@ -289,7 +290,7 @@ public class MainActivity extends BridgeActivity {
                         }
                     });
 
-                    printWebView.loadDataWithBaseURL("https://localhost/", html, "text/html", "UTF-8", null);
+                    activity.printWebView.loadDataWithBaseURL("https://localhost/", html, "text/html", "UTF-8", null);
 
                 } catch (Exception e) {
                     e.printStackTrace();

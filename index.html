@@ -257,6 +257,7 @@ input::placeholder{color:#a8b5c1;font-weight:400}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="capacitor.js"></script>
 </head>
 <body>
 <div class="app">
@@ -1046,16 +1047,20 @@ function recordAssessmentLog(custName, custCNIC) {
 
   const logs = getAssessmentLogs();
 
-  // Deduplicate if identical CNIC and amount within 3 seconds
-  if (logs.length > 0) {
-    const first = logs[0];
-    const diff = Date.now() - new Date(first.timestamp).getTime();
-    if (diff < 4000 && first.customerCNIC === cnic && first.amount === amount) {
-      return;
-    }
+  // Find if a log with this customer CNIC already exists
+  const existingIndex = logs.findIndex(item => item.customerCNIC === cnic);
+  if (existingIndex !== -1) {
+    // Update existing customer record with latest assessment figures
+    logs[existingIndex] = {
+      ...logs[existingIndex],
+      ...logEntry,
+      id: logs[existingIndex].id // retain original id
+    };
+  } else {
+    // Add single new log entry to the top
+    logs.unshift(logEntry);
   }
 
-  logs.unshift(logEntry);
   if (logs.length > 150) logs.length = 150;
   saveAssessmentLogs(logs);
 
@@ -1437,10 +1442,6 @@ async function shareSummaryAssessmentSheet() {
     return;
   }
 
-  if (modalName && modalCNIC) {
-    recordAssessmentLog(modalName, modalCNIC);
-  }
-
   if (!window.jspdf || !window.jspdf.jsPDF) {
     alert("PDF generator is loading. Please try again in a moment.");
     return;
@@ -1673,24 +1674,35 @@ async function shareSummaryAssessmentSheet() {
   const pdfDataUri = doc.output('datauristring');
   const base64Data = pdfDataUri.split(',')[1];
 
-  // 1. Android APK Native Bridge (FileProvider + Intent.ACTION_SEND + ClipData)
+  // 1. Android APK Native Bridge (public AndroidBridge in MainActivity.java)
   if (window.Android && typeof window.Android.sharePdf === 'function') {
     try {
       window.Android.sharePdf(base64Data, fileName, 'application/pdf');
       return;
     } catch (androidErr) {
-      console.warn("Android native bridge failed, trying Capacitor/Web Share fallback", androidErr);
+      console.warn("Android native bridge failed, trying Capacitor fallback:", androidErr);
     }
   }
 
-  // 2. Capacitor Official Plugins Fallback (Filesystem + Share)
-  if (window.Capacitor && window.Capacitor.Plugins) {
-    const { Share, Filesystem } = window.Capacitor.Plugins;
-    if (Share && typeof Share.share === 'function') {
-      try {
+  // 2. Official Capacitor Native Plugins Fallback (Share & Filesystem)
+  if (window.Capacitor) {
+    try {
+      let capShare = null;
+      let capFilesystem = null;
+
+      if (typeof window.Capacitor.registerPlugin === 'function') {
+        try { capShare = window.Capacitor.registerPlugin('Share'); } catch (e) {}
+        try { capFilesystem = window.Capacitor.registerPlugin('Filesystem'); } catch (e) {}
+      }
+      if (!capShare && window.Capacitor.Plugins) {
+        capShare = window.Capacitor.Plugins.Share;
+        capFilesystem = window.Capacitor.Plugins.Filesystem;
+      }
+
+      if (capShare && typeof capShare.share === 'function') {
         let fileUri = '';
-        if (Filesystem && typeof Filesystem.writeFile === 'function') {
-          const writeRes = await Filesystem.writeFile({
+        if (capFilesystem && typeof capFilesystem.writeFile === 'function') {
+          const writeRes = await capFilesystem.writeFile({
             path: fileName,
             data: base64Data,
             directory: 'CACHE'
@@ -1699,17 +1711,24 @@ async function shareSummaryAssessmentSheet() {
         }
 
         if (fileUri) {
-          await Share.share({
+          await capShare.share({
             title: `Assessment Summary - ${custName}`,
             text: `Islamic Personal Finance Assessment Summary Sheet for ${custName} (CNIC: ${custCNIC})`,
             url: fileUri,
             dialogTitle: 'Share Assessment Sheet (A4 PDF)'
           });
           return;
+        } else {
+          await capShare.share({
+            title: `Assessment Summary - ${custName}`,
+            text: `Islamic Personal Finance Assessment Summary Sheet for ${custName} (CNIC: ${custCNIC})`,
+            dialogTitle: 'Share Assessment Sheet'
+          });
+          return;
         }
-      } catch (capErr) {
-        console.warn("Capacitor share plugin fallback error", capErr);
       }
+    } catch (capErr) {
+      console.warn("Capacitor share plugin fallback error:", capErr);
     }
   }
 
