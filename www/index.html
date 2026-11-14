@@ -255,8 +255,14 @@ input::placeholder{color:#a8b5c1;font-weight:400}
 @media(max-width:380px){.header{padding:17px 14px}.content{padding:12px}.card,.report-card{padding:14px}.two-column{gap:8px}.sbp-btn{padding:0 7px;font-size:8px}.tab{height:60px}.tab-title{font-size:7px}.tab-icon{width:24px;height:24px}}
 @media(min-width:541px){body{padding:25px 0}.app{min-height:auto;border-radius:18px;overflow:hidden;box-shadow:0 15px 45px rgba(29,76,115,.10)}.header{border-radius:18px 18px 0 0}}
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="jspdf.umd.min.js"></script>
+<script src="jspdf.plugin.autotable.min.js"></script>
+<script>
+if (!window.jspdf || !window.jspdf.jsPDF) {
+  document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"><\/script>');
+  document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"><\/script>');
+}
+</script>
 <script src="capacitor.js"></script>
 </head>
 <body>
@@ -1414,10 +1420,11 @@ function updateSummaryReport() {
       <strong>Tentative &amp; Indicative Assessment:</strong> This summary is prepared based on customer-provided declarations for Shariah-compliant Personal Financing (Tawarruq). The final repayment terms, benchmark KIBOR, and disbursement remain subject to formal credit approval and verification.
     </div>
 
-    <!-- Single Prominent Share Button -->
+    <!-- Single Share Button -->
     <div style="margin-top:16px">
-      <button class="primary-btn" onclick="shareSummaryAssessmentSheet()" style="background:#075cae;height:48px;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;box-shadow:0 4px 14px rgba(7,92,174,.20)">
-        <span style="font-size:16px">↗</span> Share Assessment Sheet (A4 PDF)
+      <button id="sharePdfBtn" type="button" class="primary-btn" onclick="shareSummaryAssessmentSheet()" style="background:#075cae;height:48px;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;box-shadow:0 4px 14px rgba(7,92,174,.20)">
+        <span id="sharePdfIcon" style="font-size:16px">↗</span>
+        <span id="sharePdfText">Share</span>
       </button>
     </div>
   `;
@@ -1447,8 +1454,18 @@ async function shareSummaryAssessmentSheet() {
     return;
   }
 
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  const btn = document.getElementById("sharePdfBtn");
+  const icon = document.getElementById("sharePdfIcon");
+  const text = document.getElementById("sharePdfText");
+  if (btn) {
+    btn.disabled = true;
+    if (text) text.textContent = "Preparing Share...";
+    if (icon) icon.textContent = "⏳";
+  }
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 
   const otherTotal = selectedEMITypes.reduce((sum, type) => sum + getEMIValue(type, appliedEMIValues[type]), 0);
   const totalObligations = installment + otherTotal;
@@ -1457,6 +1474,8 @@ async function shareSummaryAssessmentSheet() {
   const dbrRatio = income > 0 ? (totalObligations / income) * 100 : 0;
   const isWithin = dbrRatio <= threshold;
   const headroom = maxAllowable - totalObligations;
+  const totalPayable = installment > 0 && tenure > 0 ? installment * tenure : 0;
+  const totalProfit = totalPayable > amount ? totalPayable - amount : 0;
   const today = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
 
   // 1. Header Banner
@@ -1674,7 +1693,26 @@ async function shareSummaryAssessmentSheet() {
   const pdfDataUri = doc.output('datauristring');
   const base64Data = pdfDataUri.split(',')[1];
 
-  // 1. Android APK Native Bridge (public AndroidBridge in MainActivity.java)
+  // 1. Custom Native Capacitor PdfShare Plugin (registered before super.onCreate)
+  if (window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform()) {
+    try {
+      const pdfSharePlugin = (window.Capacitor.Plugins && window.Capacitor.Plugins.PdfShare) ||
+        (typeof window.Capacitor.registerPlugin === 'function' ? window.Capacitor.registerPlugin('PdfShare') : null);
+      if (pdfSharePlugin && typeof pdfSharePlugin.sharePdf === 'function') {
+        await pdfSharePlugin.sharePdf({
+          base64: base64Data,
+          fileName: fileName,
+          title: `Assessment Summary - ${custName}`,
+          text: `Islamic Personal Finance Assessment Summary Sheet for ${custName} (CNIC: ${custCNIC})`
+        });
+        return;
+      }
+    } catch (pdfPluginErr) {
+      console.warn("Capacitor PdfShare plugin fallback triggered:", pdfPluginErr);
+    }
+  }
+
+  // 2. Android APK Native Bridge (public AndroidBridge in MainActivity.java)
   if (window.Android && typeof window.Android.sharePdf === 'function') {
     try {
       window.Android.sharePdf(base64Data, fileName, 'application/pdf');
@@ -1684,20 +1722,13 @@ async function shareSummaryAssessmentSheet() {
     }
   }
 
-  // 2. Official Capacitor Native Plugins Fallback (Share & Filesystem)
-  if (window.Capacitor) {
+  // 3. Official Capacitor Native Plugins Fallback (Share & Filesystem)
+  if (window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform()) {
     try {
-      let capShare = null;
-      let capFilesystem = null;
-
-      if (typeof window.Capacitor.registerPlugin === 'function') {
-        try { capShare = window.Capacitor.registerPlugin('Share'); } catch (e) {}
-        try { capFilesystem = window.Capacitor.registerPlugin('Filesystem'); } catch (e) {}
-      }
-      if (!capShare && window.Capacitor.Plugins) {
-        capShare = window.Capacitor.Plugins.Share;
-        capFilesystem = window.Capacitor.Plugins.Filesystem;
-      }
+      const capShare = (window.Capacitor.Plugins && window.Capacitor.Plugins.Share) ||
+        (typeof window.Capacitor.registerPlugin === 'function' ? window.Capacitor.registerPlugin('Share') : null);
+      const capFilesystem = (window.Capacitor.Plugins && window.Capacitor.Plugins.Filesystem) ||
+        (typeof window.Capacitor.registerPlugin === 'function' ? window.Capacitor.registerPlugin('Filesystem') : null);
 
       if (capShare && typeof capShare.share === 'function') {
         let fileUri = '';
@@ -1715,14 +1746,7 @@ async function shareSummaryAssessmentSheet() {
             title: `Assessment Summary - ${custName}`,
             text: `Islamic Personal Finance Assessment Summary Sheet for ${custName} (CNIC: ${custCNIC})`,
             url: fileUri,
-            dialogTitle: 'Share Assessment Sheet (A4 PDF)'
-          });
-          return;
-        } else {
-          await capShare.share({
-            title: `Assessment Summary - ${custName}`,
-            text: `Islamic Personal Finance Assessment Summary Sheet for ${custName} (CNIC: ${custCNIC})`,
-            dialogTitle: 'Share Assessment Sheet'
+            dialogTitle: 'Share Summary Sheet'
           });
           return;
         }
@@ -1732,7 +1756,7 @@ async function shareSummaryAssessmentSheet() {
     }
   }
 
-  // 3. Mobile Browser Web Share API with File
+  // 4. Mobile Browser Web Share API with File
   try {
     const pdfBlob = doc.output('blob');
     const pdfFile = new File([pdfBlob], fileName, { type: 'application/pdf' });
@@ -1751,8 +1775,28 @@ async function shareSummaryAssessmentSheet() {
     console.warn("Web Share files not supported, falling back to download", webShareErr);
   }
 
-  // 4. Fallback for Desktop Browsers
+  // 5. Native Android Save PDF Fallback
+  if (window.Android && typeof window.Android.savePdf === 'function') {
+    try {
+      window.Android.savePdf(base64Data, fileName, 'application/pdf');
+      return;
+    } catch (saveErr) {
+      console.warn("Android save failed:", saveErr);
+    }
+  }
+
+  // 6. Fallback for Desktop Browsers
   doc.save(fileName);
+  } catch (err) {
+    console.error("PDF generation or sharing error:", err);
+    alert("Could not open share sheet. Please try again.");
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      if (text) text.textContent = "Share";
+      if (icon) icon.textContent = "↗";
+    }
+  }
 }
 
 function showLimit(max) {

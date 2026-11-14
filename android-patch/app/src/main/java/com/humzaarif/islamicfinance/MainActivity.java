@@ -3,6 +3,8 @@ package com.humzaarif.islamicfinance;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ClipData;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
@@ -21,10 +23,15 @@ import android.widget.Toast;
 import androidx.core.content.FileProvider;
 
 import com.getcapacitor.BridgeActivity;
+import com.getcapacitor.Plugin;
+import com.getcapacitor.PluginCall;
+import com.getcapacitor.PluginMethod;
+import com.getcapacitor.annotation.CapacitorPlugin;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 public class MainActivity extends BridgeActivity {
 
@@ -32,7 +39,14 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        this.registerPlugin(PdfSharePlugin.class);
         super.onCreate(savedInstanceState);
+        setupAndroidBridge();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         setupAndroidBridge();
     }
 
@@ -52,7 +66,99 @@ public class MainActivity extends BridgeActivity {
         }
     }
 
-    // Must be public class for Android WebView reflection engine
+    private static void launchPdfShareChooser(android.app.Activity activity, String base64, String fileName, String title, String text) throws Exception {
+        if (activity == null) {
+            throw new IllegalStateException("Activity is null");
+        }
+        if (base64 == null || base64.trim().isEmpty()) {
+            throw new IllegalArgumentException("PDF content is empty");
+        }
+
+        if (base64.contains(",")) {
+            base64 = base64.substring(base64.indexOf(",") + 1);
+        }
+        base64 = base64.trim().replaceAll("\\s+", "");
+
+        if (fileName == null || fileName.trim().isEmpty()) {
+            fileName = "Assessment-Summary.pdf";
+        }
+        if (!fileName.toLowerCase().endsWith(".pdf")) {
+            fileName += ".pdf";
+        }
+        String safeFileName = fileName.replaceAll("[^a-zA-Z0-9._-]", "_");
+
+        File shareDir = new File(activity.getCacheDir(), "shared_documents");
+        if (!shareDir.exists()) {
+            shareDir.mkdirs();
+        }
+
+        File file = new File(shareDir, safeFileName);
+        byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
+
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(bytes);
+            fos.flush();
+        }
+
+        String authority = activity.getPackageName() + ".fileprovider";
+        Uri uri = FileProvider.getUriForFile(activity, authority, file);
+
+        String shareSubject = (title != null && !title.trim().isEmpty()) ? title.trim() : "Islamic Personal Finance Assessment";
+        String shareBody = (text != null && !text.trim().isEmpty()) ? text.trim() : "Financial Assessment Summary Sheet (A4 PDF)";
+
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("application/pdf");
+        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubject);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+        shareIntent.setClipData(ClipData.newRawUri("Assessment Sheet", uri));
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        try {
+            List<ResolveInfo> resInfoList = activity.getPackageManager().queryIntentActivities(shareIntent, PackageManager.MATCH_DEFAULT_ONLY);
+            for (ResolveInfo resolveInfo : resInfoList) {
+                String packageName = resolveInfo.activityInfo.packageName;
+                activity.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
+        } catch (Exception ignored) {
+        }
+
+        Intent chooser = Intent.createChooser(shareIntent, "Share Summary Sheet");
+        chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        activity.runOnUiThread(() -> {
+            try {
+                activity.startActivity(chooser);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(activity, "Share error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    // ============================================================
+    // CAPACITOR NATIVE PLUGIN FOR GUARANTEED EARLY BRIDGE REGISTRATION
+    // ============================================================
+
+    @CapacitorPlugin(name = "PdfShare")
+    public static class PdfSharePlugin extends Plugin {
+        @PluginMethod
+        public void sharePdf(PluginCall call) {
+            String base64 = call.getString("base64");
+            String fileName = call.getString("fileName", "Assessment-Summary.pdf");
+            String title = call.getString("title", "Islamic Personal Finance Assessment");
+            String text = call.getString("text", "Financial Assessment Summary Sheet (A4 PDF)");
+
+            try {
+                launchPdfShareChooser(getActivity(), base64, fileName, title, text);
+                call.resolve();
+            } catch (Exception e) {
+                e.printStackTrace();
+                call.reject("Could not share PDF: " + e.getMessage(), e);
+            }
+        }
+    }
+
     public static class AndroidBridge {
 
         private final MainActivity activity;
@@ -79,75 +185,18 @@ public class MainActivity extends BridgeActivity {
             if (activity == null) return;
 
             try {
-                if (base64 == null || base64.trim().isEmpty()) {
-                    activity.runOnUiThread(() -> Toast.makeText(activity, "PDF content is empty", Toast.LENGTH_SHORT).show());
-                    return;
-                }
-
-                // Strip data URI header if present
-                if (base64.contains(",")) {
-                    base64 = base64.substring(base64.indexOf(",") + 1);
-                }
-                base64 = base64.trim().replaceAll("\\s+", "");
-
-                if (fileName == null || fileName.trim().isEmpty()) {
-                    fileName = "Assessment-Summary.pdf";
-                }
-                if (!fileName.toLowerCase().endsWith(".pdf")) {
-                    fileName += ".pdf";
-                }
-
-                if (mimeType == null || mimeType.trim().isEmpty()) {
-                    mimeType = "application/pdf";
-                }
-
-                String safeFileName = fileName.replaceAll("[^a-zA-Z0-9._-]", "_");
-
-                // Save to cache directory
-                File shareDir = new File(activity.getCacheDir(), "shared_documents");
-                if (!shareDir.exists()) {
-                    shareDir.mkdirs();
-                }
-
-                File file = new File(shareDir, safeFileName);
-                byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
-
-                try (FileOutputStream fos = new FileOutputStream(file)) {
-                    fos.write(bytes);
-                    fos.flush();
-                }
-
-                // Generate secure FileProvider URI
-                String authority = activity.getPackageName() + ".fileprovider";
-                Uri uri = FileProvider.getUriForFile(activity, authority, file);
-
-                // Native Android Share Intent
-                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.setType(mimeType);
-                shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Islamic Personal Finance - Assessment Summary");
-                shareIntent.putExtra(Intent.EXTRA_TEXT, "Financial Assessment Summary Sheet (A4 PDF)");
-                shareIntent.setClipData(ClipData.newUri(activity.getContentResolver(), safeFileName, uri));
-                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                Intent chooser = Intent.createChooser(shareIntent, "Share Assessment Sheet (A4 PDF)");
-                chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                activity.runOnUiThread(() -> {
-                    try {
-                        activity.startActivity(chooser);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Toast.makeText(activity, "Unable to share file: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
+                launchPdfShareChooser(
+                    activity,
+                    base64,
+                    fileName,
+                    "Islamic Personal Finance Assessment",
+                    "Financial Assessment Summary Sheet (A4 PDF)"
+                );
             } catch (Exception e) {
                 e.printStackTrace();
                 final String msg = e.getMessage() != null ? e.getMessage() : "Unknown error";
                 activity.runOnUiThread(() -> {
-                    Toast.makeText(activity, "Share error: " + msg, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "Could not share PDF: " + msg, Toast.LENGTH_LONG).show();
                 });
             }
         }

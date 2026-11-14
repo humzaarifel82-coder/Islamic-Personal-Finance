@@ -39,8 +39,16 @@ jobs:
         run: |
           mkdir -p www
           cp -f index.html www/index.html
+          if [ -f "jspdf.umd.min.js" ]; then
+            cp -f jspdf.umd.min.js www/jspdf.umd.min.js
+          fi
+          if [ -f "jspdf.plugin.autotable.min.js" ]; then
+            cp -f jspdf.plugin.autotable.min.js www/jspdf.plugin.autotable.min.js
+          fi
           if [ -f "node_modules/@capacitor/core/dist/capacitor.js" ]; then
             cp -f node_modules/@capacitor/core/dist/capacitor.js www/capacitor.js
+          elif [ -f "capacitor.js" ]; then
+            cp -f capacitor.js www/capacitor.js
           fi
 
       - name: Sync Capacitor
